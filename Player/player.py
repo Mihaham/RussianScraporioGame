@@ -24,6 +24,7 @@ class Player:
         return f"Player {self.name}"
 
     def move(self, event):
+        print(event)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
                 self.direction[1] = -1

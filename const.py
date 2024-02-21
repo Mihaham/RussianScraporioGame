@@ -1,6 +1,6 @@
 step = 12
 scale = 72
-field = 100
+field = 1500
 LENGTH = 1750
 HIGHT = 1000
 

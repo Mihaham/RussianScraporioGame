@@ -33,8 +33,8 @@ class Board:
                     self.grid[x + i][y + j].set_skin(prototipe=Water())
 
     def draw(self, surface):
-        for x in range(len(self.grid)):
-            for y in range(len(self.grid[x])):
+        for x in range(max(0,(self.game_pos_x)//scale), min((self.game_pos_x+LENGTH)//scale + 1,field)):
+            for y in range(max(0,(self.game_pos_y)//scale), min((self.game_pos_y+HIGHT)//scale + 1,field)):
                 self.grid[x][y].draw(surface, x * scale, y * scale, self.game_pos_x, self.game_pos_y)
 
     def increase_coordinates(self, x, y):
