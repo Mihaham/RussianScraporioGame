@@ -1,9 +1,9 @@
 import pygame
 
-from const import *
-
-from Player.player import Player
+from drawing_pygame.Draw import draw
 from Game.Board import Board
+from Player.player import Player
+from const import *
 
 fps = 60
 
@@ -16,9 +16,7 @@ Board = Board()
 player = Player(position_x=Center_x, position_y=Center_y)
 
 while True:
-    pygame.draw.rect(surface, (0,0,255), (0, 0, LENGTH, HIGHT))
-    Board.draw(surface)
-    player.draw(surface, board_x=Board.game_pos_x, board_y=Board.game_pos_y)
+    draw(surface, player = player, board = Board)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
