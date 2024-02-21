@@ -7,20 +7,20 @@ from const import *
 
 
 class Board:
-    grid = None
-    game_pos_x = 0
-    game_pos_y = 0
-    cat_box = (300, 150)
+    __grid = None
+    __game_pos_x = 0
+    __game_pos_y = 0
+    __cat_box = (300, 150)
 
     def __init__(self):
         line = [None] * field
-        self.grid = []
+        self.__grid = []
         for i in range(field):
-            self.grid.append(line.copy())
+            self.__grid.append(line.copy())
 
         for i in range(field):
             for j in range(field):
-                self.grid[i][j] = SingleSquare(prototipe=Ground())
+                self.__grid[i][j] = SingleSquare(prototipe=Ground())
 
         for k in range(water_amount):
             x = randint(0, field - water_size)
@@ -28,11 +28,35 @@ class Board:
 
             for i in range(water_size):
                 for j in range(water_size):
-                    self.grid[x + i][y + j].set_skin(prototipe=Water())
+                    self.__grid[x + i][y + j].set_skin(prototipe=Water())
 
     def increase_coordinates(self, x, y):
-        self.update_cordinates(self.game_pos_x + x, self.game_pos_y + y)
+        self.update_cordinates(self.__game_pos_x + x, self.__game_pos_y + y)
 
     def update_cordinates(self, new_x, new_y):
-        self.game_pos_x = new_x
-        self.game_pos_y = new_y
+        self.__game_pos_x = new_x
+        self.__game_pos_y = new_y
+
+    def get_grid(self):
+        return self.__grid
+
+    def get_grid_size(self):
+        return field
+
+    def get_cat_box(self):
+        return self.__cat_box
+
+    def set_grid(self, new_grid):
+        self.__grid = new_grid
+
+    def set_cat_box(self, new_cat):
+        self.__cat_box = new_cat
+
+    def get_game_pos(self):
+        return (self.__game_pos_x, self.__game_pos_y)
+
+    def get_game_pos_x(self):
+        return self.__game_pos_x
+
+    def get_game_pos_y(self):
+        return self.__game_pos_y

@@ -12,6 +12,14 @@ class Player:
     __direction = [0, 0]
     __skin = "sprites/player1.png"
 
+    __settings = {
+        "up": pygame.K_w,
+        "left": pygame.K_a,
+        "right": pygame.K_d,
+        "down": pygame.K_s,
+        "set_object": pygame.K_KP_ENTER
+    }
+
     def __init__(self, name="Mihaham", position_x=0, position_y=0, skin="sprites/player1.png"):
         self.__name = name
         self.__inventory = inventory()
@@ -25,22 +33,24 @@ class Player:
     def move(self, event):
         print(event)
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_w:
+            if event.key == self.__settings["up"]:
                 self.__direction[1] = -1
-            if event.key == pygame.K_a:
+            if event.key == self.__settings["left"]:
                 self.__direction[0] = -1
-            if event.key == pygame.K_s:
+            if event.key == self.__settings["down"]:
                 self.__direction[1] = 1
-            if event.key == pygame.K_d:
+            if event.key == self.__settings["right"]:
                 self.__direction[0] = 1
+            if event.key == self.__settings["set_object"]:
+                print("enter")
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_w:
+            if event.key == self.__settings["up"]:
                 self.__direction[1] = 0
-            if event.key == pygame.K_a:
+            if event.key == self.__settings["left"]:
                 self.__direction[0] = 0
-            if event.key == pygame.K_s:
+            if event.key == self.__settings["down"]:
                 self.__direction[1] = 0
-            if event.key == pygame.K_d:
+            if event.key == self.__settings["right"]:
                 self.__direction[0] = 0
 
     def rename(self, new_name):
@@ -71,11 +81,12 @@ class Player:
         new_x = (self.__direction[0] * step + self.__x)
         new_y = (self.__direction[1] * step + self.__y)
         if 0 <= new_x <= (field - 1) * scale and 0 <= new_y <= (field - 1) * scale:
-            if (board.grid[new_x // scale][new_y // scale].is_player_available and board.grid[new_x // scale + 1][
-                new_y // scale].is_player_available and board.grid[new_x // scale][
-                new_y // scale + 1].is_player_available and board.grid[new_x // scale + 1][
+            if (board.get_grid()[new_x // scale][new_y // scale].is_player_available and board.get_grid()[new_x // scale + 1][
+                new_y // scale].is_player_available and board.get_grid()[new_x // scale][
+                new_y // scale + 1].is_player_available and board.get_grid()[new_x // scale + 1][
                 new_y // scale + 1].is_player_available):
-                if not (Center_x - board.cat_box[0] <= new_x - board.game_pos_x <= Center_x + board.cat_box[
-                    0] and Center_y - board.cat_box[1] <= new_y - board.game_pos_y <= Center_y + board.cat_box[1]):
+                if not (Center_x - board.get_cat_box()[0] <= new_x - board.get_game_pos_x()  <= Center_x + board.get_cat_box()[
+                    0] and Center_y - board.get_cat_box()[1] <= new_y - board.get_game_pos_y()  <= Center_y + board.get_cat_box()[
+                            1]):
                     board.increase_coordinates(self.__direction[0] * step, self.__direction[1] * step)
                 self.update_position((self.__direction[0] * step + self.__x, self.__direction[1] * step + self.__y))
