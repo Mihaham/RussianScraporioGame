@@ -16,6 +16,7 @@ Board = Board()
 player = Player(position_x=Center_x, position_y=Center_y)
 
 while True:
+    pygame.draw.rect(surface, (0,0,255), (0, 0, LENGTH, HIGHT))
     Board.draw(surface)
     player.draw(surface, board_x=Board.game_pos_x, board_y=Board.game_pos_y)
     for event in pygame.event.get():

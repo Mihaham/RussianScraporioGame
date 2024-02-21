@@ -12,7 +12,7 @@ class Board:
     grid = None
     game_pos_x = 0
     game_pos_y = 0
-    cat_box = (50, 50)
+    cat_box = (300, 150)
 
     def __init__(self):
         line = [None] * field

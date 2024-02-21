@@ -58,11 +58,12 @@ class Player:
     def update(self, board):
         new_x = (self.direction[0] * step + self.x)
         new_y = (self.direction[1] * step + self.y)
-        if (board.grid[new_x // scale][new_y // scale].is_player_available and board.grid[new_x // scale + 1][
-            new_y // scale].is_player_available and board.grid[new_x // scale][
-            new_y // scale + 1].is_player_available and board.grid[new_x // scale + 1][
-            new_y // scale + 1].is_player_available):
-            if not(Center_x - board.cat_box[0]<=new_x - board.game_pos_x<=Center_x+board.cat_box[0] and Center_y - board.cat_box[1]<=new_y - board.game_pos_y<=Center_y+board.cat_box[1]):
-                board.increase_coordinates(self.direction[0] * step,self.direction[1]*step)
-            self.update_position((self.direction[0] * step + self.x, self.direction[1] * step + self.y))
+        if 0<=new_x<=(field-1)*scale and 0<=new_y<=(field-1)*scale:
+            if (board.grid[new_x // scale][new_y // scale].is_player_available and board.grid[new_x // scale + 1][
+                new_y // scale].is_player_available and board.grid[new_x // scale][
+                new_y // scale + 1].is_player_available and board.grid[new_x // scale + 1][
+                new_y // scale + 1].is_player_available):
+                if not(Center_x - board.cat_box[0]<=new_x - board.game_pos_x<=Center_x+board.cat_box[0] and Center_y - board.cat_box[1]<=new_y - board.game_pos_y<=Center_y+board.cat_box[1]):
+                    board.increase_coordinates(self.direction[0] * step,self.direction[1]*step)
+                self.update_position((self.direction[0] * step + self.x, self.direction[1] * step + self.y))
 

@@ -20,7 +20,7 @@ class SingleSquare:
             self.__take_prototipe__(prototipe)
 
     def draw(self, surface=None, position_x=None, position_y=None, board_x = None, board_y = None):
-        if (board_x <= position_x <= board_x + (LENGTH) and board_y <= position_y <= board_y + (HIGHT)):
+        if (board_x - scale <= position_x <= board_x + (LENGTH) + scale and board_y - scale <= position_y <= board_y + (HIGHT) + scale):
             square_skin = pygame.image.load(self.skin)
             square_skin = pygame.transform.scale(square_skin, (scale, scale))
             square_rect = square_skin.get_rect(topleft=(position_x - board_x, position_y - board_y), width=scale)

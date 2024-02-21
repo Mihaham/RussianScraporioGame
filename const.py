@@ -1,8 +1,8 @@
-step = 10
-scale = 36
-field = 40
-LENGTH = 1000
-HIGHT=500
+step = 12
+scale = 72
+field = 100
+LENGTH = 1750
+HIGHT = 1000
 
 water_amount = 10
 water_size = 2
