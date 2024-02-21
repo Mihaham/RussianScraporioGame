@@ -9,8 +9,9 @@ class Player:
     inventory = None
     x = 0
     y = 0
-    direction = (0, 0)
+    direction = [0,0]
     skin = "sprites/player1.png"
+
 
     def __init__(self, name="Mihaham", position_x=0, position_y=0, skin="sprites/player1.png"):
         self.name = name
@@ -25,27 +26,27 @@ class Player:
     def move(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
-                self.direction = (0, -1)
+                self.direction[1] = -1
             if event.key == pygame.K_a:
-                self.direction = (-1, 0)
+                self.direction[0] = -1
             if event.key == pygame.K_s:
-                self.direction = (0, 1)
+                self.direction[1] = 1
             if event.key == pygame.K_d:
-                self.direction = (1, 0)
+                self.direction[0] = 1
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_w:
-                self.direction = (0, 0)
+                self.direction[1] = 0
             if event.key == pygame.K_a:
-                self.direction = (0, 0)
+                self.direction[0] = 0
             if event.key == pygame.K_s:
-                self.direction = (0, 0)
+                self.direction[1] = 0
             if event.key == pygame.K_d:
-                self.direction = (0, 0)
+                self.direction[0] = 0
 
-    def draw(self, surface):
+    def draw(self, surface, board_x, board_y):
         player_skin = pygame.image.load(self.skin)
         player_skin = pygame.transform.scale(player_skin, (scale, scale))
-        player_rect = player_skin.get_rect(topleft=(self.x, self.y), width=scale)
+        player_rect = player_skin.get_rect(topleft=(self.x - board_x, self.y - board_y), width=scale)
         surface.blit(player_skin, player_rect)
 
     def get_position(self):
@@ -61,4 +62,7 @@ class Player:
             new_y // scale].is_player_available and board.grid[new_x // scale][
             new_y // scale + 1].is_player_available and board.grid[new_x // scale + 1][
             new_y // scale + 1].is_player_available):
-            self.x, self.y = self.direction[0] * step + self.x, self.direction[1] * step + self.y
+            if not(Center_x - board.cat_box[0]<=new_x - board.game_pos_x<=Center_x+board.cat_box[0] and Center_y - board.cat_box[1]<=new_y - board.game_pos_y<=Center_y+board.cat_box[1]):
+                board.increase_coordinates(self.direction[0] * step,self.direction[1]*step)
+            self.update_position((self.direction[0] * step + self.x, self.direction[1] * step + self.y))
+

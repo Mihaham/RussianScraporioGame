@@ -12,12 +12,12 @@ surface = pygame.display.set_mode([LENGTH, HIGHT])
 clock = pygame.time.Clock()
 pygame.display.set_caption("Really russian game")
 
-player = Player()
 Board = Board()
+player = Player(position_x=Center_x, position_y=Center_y)
 
 while True:
     Board.draw(surface)
-    player.draw(surface)
+    player.draw(surface, board_x=Board.game_pos_x, board_y=Board.game_pos_y)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()

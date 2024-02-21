@@ -19,11 +19,12 @@ class SingleSquare:
         else:
             self.__take_prototipe__(prototipe)
 
-    def draw(self, surface=None, position_x=None, position_y=None):
-        square_skin = pygame.image.load(self.skin)
-        square_skin = pygame.transform.scale(square_skin, (scale, scale))
-        square_rect = square_skin.get_rect(topleft=(position_x, position_y), width=scale)
-        surface.blit(square_skin, square_rect)
+    def draw(self, surface=None, position_x=None, position_y=None, board_x = None, board_y = None):
+        if (board_x <= position_x <= board_x + (LENGTH) and board_y <= position_y <= board_y + (HIGHT)):
+            square_skin = pygame.image.load(self.skin)
+            square_skin = pygame.transform.scale(square_skin, (scale, scale))
+            square_rect = square_skin.get_rect(topleft=(position_x - board_x, position_y - board_y), width=scale)
+            surface.blit(square_skin, square_rect)
 
     def set_skin(self, skin = None, prototipe = None):
         if prototipe == None:

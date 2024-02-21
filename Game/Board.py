@@ -12,6 +12,7 @@ class Board:
     grid = None
     game_pos_x = 0
     game_pos_y = 0
+    cat_box = (50, 50)
 
     def __init__(self):
         line = [None] * field
@@ -34,4 +35,10 @@ class Board:
     def draw(self, surface):
         for x in range(len(self.grid)):
             for y in range(len(self.grid[x])):
-                self.grid[x][y].draw(surface, x * scale, y * scale)
+                self.grid[x][y].draw(surface, x * scale, y * scale, self.game_pos_x, self.game_pos_y)
+
+    def increase_coordinates(self, x, y):
+        self.update_cordinates(self.game_pos_x + x, self.game_pos_y + y)
+    def update_cordinates(self, new_x, new_y):
+        self.game_pos_x = new_x
+        self.game_pos_y = new_y
