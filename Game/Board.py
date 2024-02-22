@@ -4,6 +4,7 @@ from Game.Squares.Ground import Ground
 from Game.Squares.Water import Water
 from Game.single_square import SingleSquare
 from const import *
+from Objects.buildings.furnace import Furnace
 
 
 class Board:
@@ -13,11 +14,7 @@ class Board:
     __cat_box = (300, 150)
 
     def __init__(self):
-        line = [None] * field
-        self.__grid = []
-        for i in range(field):
-            self.__grid.append(line.copy())
-
+        self.__grid = [[None for i in range(field)] for j in range(field)]
         for i in range(field):
             for j in range(field):
                 self.__grid[i][j] = SingleSquare(prototipe=Ground())
@@ -29,6 +26,14 @@ class Board:
             for i in range(water_size):
                 for j in range(water_size):
                     self.__grid[x + i][y + j].set_skin(prototipe=Water())
+
+        self.__grid[1][1].add_object(Furnace())
+
+    def __repr__(self):
+        for i in range(field):
+            for j in range(field):
+                print(self.__grid[i][j])
+        return ""
 
     def increase_coordinates(self, x, y):
         self.update_cordinates(self.__game_pos_x + x, self.__game_pos_y + y)

@@ -17,7 +17,7 @@ class Player:
         "left": pygame.K_a,
         "right": pygame.K_d,
         "down": pygame.K_s,
-        "set_object": pygame.K_KP_ENTER
+        "set_object": pygame.K_RETURN
     }
 
     def __init__(self, name="Mihaham", position_x=0, position_y=0, skin="sprites/player1.png"):
@@ -30,7 +30,7 @@ class Player:
     def __repr__(self):
         return f"Player {self.__name}"
 
-    def move(self, event):
+    def move(self, event, board = None):
         print(event)
         if event.type == pygame.KEYDOWN:
             if event.key == self.__settings["up"]:
@@ -43,6 +43,9 @@ class Player:
                 self.__direction[0] = 1
             if event.key == self.__settings["set_object"]:
                 print("enter")
+                board.get_grid()[self.__x//scale][self.__y//scale].get_objects()[0].change_active()
+
+
         if event.type == pygame.KEYUP:
             if event.key == self.__settings["up"]:
                 self.__direction[1] = 0
