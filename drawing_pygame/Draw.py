@@ -19,7 +19,9 @@ def draw(surface, player=None, board=None, this_single_square=None, object=None,
                 topleft=(pos_x - board.get_game_pos_x(), pos_y - board.get_game_pos_y()), width=scale)
             surface.blit(square_skin, square_rect)
             #print(f"Single Square {this_single_square}")
-            for object in this_single_square.get_objects():
+            for object in this_single_square.get_buildings():
+                draw(surface, board=board, this_single_square=this_single_square, object=object, pos_x=pos_x, pos_y=pos_y)
+            for object in this_single_square.get_miners():
                 draw(surface, board=board, this_single_square=this_single_square, object=object, pos_x=pos_x, pos_y=pos_y)
     if object is not None:
         object_skin = pygame.image.load(object.get_skin())

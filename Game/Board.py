@@ -5,6 +5,7 @@ from Game.Squares.Water import Water
 from Game.single_square import SingleSquare
 from const import *
 from Objects.buildings.furnace import Furnace
+from Objects.Miners.Trees.Tree import Tree
 
 
 class Board:
@@ -26,6 +27,11 @@ class Board:
             for i in range(water_size):
                 for j in range(water_size):
                     self.__grid[x + i][y + j].set_skin(prototipe=Water())
+
+
+
+
+        self.__grid[1][2].add_miner(Tree())
 
         self.__grid[1][1].add_object(Furnace())
 

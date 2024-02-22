@@ -6,16 +6,14 @@ from Objects.buildings.furnace import Furnace
 id = 0
 
 class SingleSquare:
-    _skin = None
-    is_player_available = None
-    _objects = []
-
     __id = 0
 
     def __take_prototipe__(self, prototipe):
         self._skin = prototipe.get_skin()
         self.is_player_available = prototipe.is_player_available
-        self._objects = prototipe.get_objects()
+        self._buildings = prototipe.get_buildings()
+        self._miners = prototipe.get_miners()
+        self._resources = prototipe.get_resources()
 
     def __init__(self, skin=None, prototipe=None):
         global id
@@ -24,12 +22,14 @@ class SingleSquare:
         print("Initializing SingleSquare")
         if prototipe == None:
             self._skin = skin
-            self._objects = []
+            self._buildings = []
+            self._miners = []
+            self._resources = []
         else:
             self.__take_prototipe__(prototipe)
 
     def __repr__(self):
-        return f"Objects {self._objects} in single square with id {self.__id} and skin {self.get_skin()}"
+        return f"Objects {self._buildings} in single square with id {self.__id} and skin {self.get_skin()}. Also has {self._miners} miners. Also has {self._resources}"
 
     def set_skin(self, skin=None, prototipe=None):
         self._skin = skin
@@ -41,14 +41,31 @@ class SingleSquare:
 
     def add_object(self, object):
         print(f"Adding object to square with id {self.__id}")
-        self._objects.append(object)
+        self._buildings.append(object)
 
-    def get_objects(self):
-        return self._objects
+    def get_buildings(self):
+        return self._buildings
+
+    def get_miners(self):
+        return self._miners
 
     def copy(self):
         return SingleSquare(prototipe=self)
 
     def update(self):
-        for object in self._objects:
+        for object in self._buildings:
             object.update()
+        if len(self._resources) > 0:
+            print(len(self._resources))
+
+    def add_miner(self, miner):
+        print(f"Adding miner to square with id {self.__id}")
+        if self.is_player_available:
+            self._miners.append(miner)
+
+    def mine(self):
+        for miner in self._miners:
+            self._resources.append(miner.get_resource())
+
+    def get_resources(self):
+        return self._resources

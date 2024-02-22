@@ -9,7 +9,6 @@ class Furnace(Object):
         "cuprum ore" : 1000
     }
     output = {
-        "cuprum" : 0
     }
     fuel = {
         "name" : "coal",
@@ -64,7 +63,7 @@ class Furnace(Object):
                         for resource, amount in self.__input_resources.items():
                             self.input[resource] -= amount
                         for resource, amount in self.__output_resources.items():
-                            if self.output[resource] == None:
+                            if resource not in self.output.keys():
                                 self.output[resource] = 0
                             self.output[resource] += amount
                 else:
