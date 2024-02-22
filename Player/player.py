@@ -43,7 +43,8 @@ class Player:
                 self.__direction[0] = 1
             if event.key == self.__settings["set_object"]:
                 print("enter")
-                board.get_grid()[self.__x//scale][self.__y//scale].get_objects()[0].change_active()
+                if board.get_grid()[self.__x//scale][self.__y//scale].get_objects()!=[]:
+                    board.get_grid()[self.__x//scale][self.__y//scale].get_objects()[0].change_active()
 
 
         if event.type == pygame.KEYUP:

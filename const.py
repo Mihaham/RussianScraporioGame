@@ -1,8 +1,8 @@
 step = 12
 scale = 72
 field = 20
-LENGTH = 1750
-HIGHT = 1000
+LENGTH = 1200
+HIGHT = 750
 
 water_amount = 1
 water_size = 2

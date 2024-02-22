@@ -48,3 +48,7 @@ class SingleSquare:
 
     def copy(self):
         return SingleSquare(prototipe=self)
+
+    def update(self):
+        for object in self._objects:
+            object.update()

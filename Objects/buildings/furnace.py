@@ -9,7 +9,7 @@ class Furnace(Object):
         "cuprum ore" : 1000
     }
     output = {
-
+        "cuprum" : 0
     }
     fuel = {
         "name" : "coal",
@@ -24,7 +24,7 @@ class Furnace(Object):
     }
     __alowded_fuel = ["coal"]
     __is_active = False
-    __start_of_active = None
+    __start_of_active = time.time()
 
     def __init__(self):
         print("Initializing Furnace")
@@ -61,9 +61,11 @@ class Furnace(Object):
                             self.change_skin()
                             break
                     if self.__is_active:
-                        for resource, amount in self.__input_resources.copy().items():
+                        for resource, amount in self.__input_resources.items():
                             self.input[resource] -= amount
-                        for resource, amount in self.__output_resources.copy().items():
+                        for resource, amount in self.__output_resources.items():
+                            if self.output[resource] == None:
+                                self.output[resource] = 0
                             self.output[resource] += amount
                 else:
                     self.__is_active = False

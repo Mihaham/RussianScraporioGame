@@ -65,3 +65,8 @@ class Board:
 
     def get_game_pos_y(self):
         return self.__game_pos_y
+
+    def update(self):
+        for i in range(field):
+            for j in range(field):
+                self.__grid[i][j].update()

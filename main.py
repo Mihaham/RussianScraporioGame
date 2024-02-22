@@ -25,6 +25,7 @@ def main():
                 player.move(event, board = board)
 
         player.update(board)
+        board.update()
 
         pygame.display.flip()
         pygame.display.update()
