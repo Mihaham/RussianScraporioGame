@@ -1,6 +1,6 @@
 import pygame
 
-from drawing_pygame.Draw import draw
+from drawing_pygame.Draw import draw, load_sprites
 from Game.Board import Board
 from Player.player import Player
 from const import *
@@ -12,9 +12,9 @@ def main():
     clock = pygame.time.Clock()
     pygame.display.set_caption("Really russian game")
 
+    load_sprites()
     board = Board()
     player = Player(position_x=Center_x, position_y=Center_y)
-    print(board)
 
     while True:
         draw(surface, player = player, board = board)

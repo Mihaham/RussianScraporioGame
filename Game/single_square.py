@@ -19,7 +19,6 @@ class SingleSquare:
         global id
         id+=1
         self.__id = id
-        print("Initializing SingleSquare")
         if prototipe == None:
             self._skin = skin
             self._buildings = []
@@ -55,8 +54,6 @@ class SingleSquare:
     def update(self):
         for object in self._buildings:
             object.update()
-        if len(self._resources) > 0:
-            print(len(self._resources))
 
     def add_miner(self, miner):
         print(f"Adding miner to square with id {self.__id}")
@@ -64,8 +61,13 @@ class SingleSquare:
             self._miners.append(miner)
 
     def mine(self):
-        for miner in self._miners:
-            self._resources.append(miner.get_resource())
+        for i in range(len(self._miners)):
+            resource = self._miners[i].get_resource()
+            if resource is not None:
+                self._resources.append(self._miners[i].get_resource())
+            else:
+                self._miners.pop(i)
+
 
     def get_resources(self):
         return self._resources

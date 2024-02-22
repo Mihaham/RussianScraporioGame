@@ -28,10 +28,11 @@ class Board:
                 for j in range(water_size):
                     self.__grid[x + i][y + j].set_skin(prototipe=Water())
 
+        for k in range(tree_amount):
+            x = randint(0, field - water_size)
+            y = randint(0, field - water_size)
 
-
-
-        self.__grid[1][2].add_miner(Tree())
+            self.__grid[x][y].add_miner(Tree())
 
         self.__grid[1][1].add_object(Furnace())
 
