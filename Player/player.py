@@ -5,12 +5,6 @@ from const import *
 
 
 class Player:
-    __name = "UserName"
-    __inventory = None
-    __x = 0
-    __y = 0
-    __direction = [0, 0]
-    __skin = "sprites/player1.png"
 
     __settings = {
         "up": pygame.K_w,
@@ -26,6 +20,7 @@ class Player:
         self.__x = position_x
         self.__y = position_y
         self.__skin = skin
+        self.__direction = [0, 0]
 
     def __repr__(self):
         return f"Player {self.__name}"
@@ -58,6 +53,9 @@ class Player:
                 self.__direction[1] = 0
             if event.key == self.__settings["right"]:
                 self.__direction[0] = 0
+
+    def get_name(self):
+        return self.__name
 
     def rename(self, new_name):
         self.__name = new_name

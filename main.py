@@ -8,6 +8,7 @@ from const import *
 def main():
     fps = 60
     pygame.init()
+    pygame.font.init()
     surface = pygame.display.set_mode([LENGTH, HIGHT])
     clock = pygame.time.Clock()
     pygame.display.set_caption("Really russian game")

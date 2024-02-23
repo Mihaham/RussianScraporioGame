@@ -6,6 +6,8 @@ from glob import glob
 
 def load_sprites():
     global sprites
+    global my_font
+    my_font = pygame.font.SysFont('Comic Sans MS', 30)
     sprites = {}
 
     for filename in glob('sprites/**/*.png', recursive=True):
@@ -16,6 +18,7 @@ def load_sprites():
 
 def draw(surface, player=None, board=None, this_single_square=None, object=None, pos_x = None, pos_y = None):
     global sprites
+    global my_font
     if board is not None and this_single_square is None:
         pygame.draw.rect(surface, (0, 0, 255), (0, 0, LENGTH, HIGHT))
         for i in range(max(0, board.get_game_pos_x() // scale), min((board.get_game_pos_x() + LENGTH) // scale + 1, field)):
@@ -42,6 +45,13 @@ def draw(surface, player=None, board=None, this_single_square=None, object=None,
             topleft=(pos_x - board.get_game_pos_x(), pos_y - board.get_game_pos_y()), width=scale)
         surface.blit(object_skin, object_rect)
     if player is not None:
+        text_skin = my_font.render(player.get_name(), False, (255, 0, 0))
+        text_rect = text_skin.get_rect(
+            midbottom=(player.get_x() - board.get_game_pos_x(), player.get_y() - board.get_game_pos_y() - scale//2),
+            width=scale)
+        surface.blit(text_skin, text_rect)
+
+
         player_skin = sprites[player.get_skin()]
         player_skin = pygame.transform.scale(player_skin, (scale, scale))
         player_rect = player_skin.get_rect(
