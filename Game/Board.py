@@ -6,6 +6,7 @@ from Game.single_square import SingleSquare
 from const import *
 from Objects.buildings.furnace import Furnace
 from Objects.Miners.Trees.Tree import Tree
+from Objects.Miners.Fertile_soil.Fertile_soil import Fertile_soil
 
 
 class Board:
@@ -33,6 +34,12 @@ class Board:
             y = randint(0, field - water_size)
 
             self.__grid[x][y].add_miner(Tree())
+
+        for k in range(fertile_soil_amount):
+            x = randint(0, field - water_size)
+            y = randint(0, field - water_size)
+
+            self.__grid[x][y].add_miner(Fertile_soil())
 
         self.__grid[1][1].add_object(Furnace())
 

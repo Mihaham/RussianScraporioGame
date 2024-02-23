@@ -57,14 +57,14 @@ class SingleSquare:
 
     def add_miner(self, miner):
         print(f"Adding miner to square with id {self.__id}")
-        if self.is_player_available:
+        if self.is_player_available and len(self._miners) == 0:
             self._miners.append(miner)
 
     def mine(self):
         for i in range(len(self._miners)):
             resource = self._miners[i].get_resource()
             if resource is not None:
-                self._resources.append(self._miners[i].get_resource())
+                return resource
             else:
                 self._miners.pop(i)
 
