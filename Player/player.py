@@ -6,53 +6,78 @@ from const import *
 
 class Player:
 
-    __settings = {
-        "up": pygame.K_w,
-        "left": pygame.K_a,
-        "right": pygame.K_d,
-        "down": pygame.K_s,
-        "set_object": pygame.K_RETURN
+    __statuses = {
+        'paused': 1,
+        'walking': 2,
+        'inventory': 3,
+        'crafting': 4
     }
 
-    def __init__(self, name="Mihaham", position_x=0, position_y=0, skin="sprites/player1.png"):
+
+
+
+    def __init__(self, name="Mihaham", position_x=0, position_y=0, skin="sprites/player1.png", settings = None):
         self.__name = name
         self.__inventory = inventory()
         self.__x = position_x
         self.__y = position_y
         self.__skin = skin
         self.__direction = [0, 0]
+        self.__status = Player.__statuses["walking"]
+        self.__settings = {
+            "up": pygame.K_w,
+            "left": pygame.K_a,
+            "right": pygame.K_d,
+            "down": pygame.K_s,
+            "set_object": pygame.K_RETURN,
+            "inventory": pygame.K_i
+        } if settings is None else settings
 
     def __repr__(self):
         return f"Player {self.__name}"
 
     def move(self, event, board = None):
-        print(event)
-        if event.type == pygame.KEYDOWN:
-            if event.key == self.__settings["up"]:
-                self.__direction[1] = -1
-            if event.key == self.__settings["left"]:
-                self.__direction[0] = -1
-            if event.key == self.__settings["down"]:
-                self.__direction[1] = 1
-            if event.key == self.__settings["right"]:
-                self.__direction[0] = 1
-            if event.key == self.__settings["set_object"]:
-                print("enter")
-                if board.get_grid()[self.__x//scale][self.__y//scale].get_buildings()!=[]:
-                    board.get_grid()[self.__x//scale][self.__y//scale].get_buildings()[0].change_active()
-                if board.get_grid()[self.__x//scale][self.__y//scale].get_miners()!=[]:
-                    board.get_grid()[self.__x // scale][self.__y // scale].mine()
+        if self.__status == Player.__statuses["walking"]:
+            if event.type == pygame.KEYDOWN:
+                if event.key == self.__settings["up"]:
+                    self.__direction[1] = -1
+                if event.key == self.__settings["left"]:
+                    self.__direction[0] = -1
+                if event.key == self.__settings["down"]:
+                    self.__direction[1] = 1
+                if event.key == self.__settings["right"]:
+                    self.__direction[0] = 1
+                if event.key == self.__settings["set_object"]:
+                    print("enter")
+                    if board.get_grid()[self.__x//scale][self.__y//scale].get_buildings()!=[]:
+                        board.get_grid()[self.__x//scale][self.__y//scale].get_buildings()[0].change_active()
+                    if board.get_grid()[self.__x//scale][self.__y//scale].get_miners()!=[]:
+                        board.get_grid()[self.__x // scale][self.__y // scale].mine()
+                if event.key == self.__settings["inventory"]:
+                    self.__status = Player.__statuses["inventory"]
+            if event.type == pygame.KEYUP:
+                if event.key == self.__settings["up"]:
+                    self.__direction[1] = 0
+                if event.key == self.__settings["left"]:
+                    self.__direction[0] = 0
+                if event.key == self.__settings["down"]:
+                    self.__direction[1] = 0
+                if event.key == self.__settings["right"]:
+                    self.__direction[0] = 0
+        elif self.__status == Player.__statuses["inventory"]:
+            if event.type == pygame.KEYDOWN:
+                if event.key == self.__settings["up"]:
+                    self.__inventory.move_up()
+                if event.key == self.__settings["down"]:
+                    self.__inventory.move_down()
+                if event.key == self.__settings["right"]:
+                    self.__inventory.move_right()
+                if event.key == self.__settings["left"]:
+                    self.__inventory.move_left()
 
+                if event.key == self.__settings["inventory"]:
+                    self.__status = self.__statuses["walking"]
 
-        if event.type == pygame.KEYUP:
-            if event.key == self.__settings["up"]:
-                self.__direction[1] = 0
-            if event.key == self.__settings["left"]:
-                self.__direction[0] = 0
-            if event.key == self.__settings["down"]:
-                self.__direction[1] = 0
-            if event.key == self.__settings["right"]:
-                self.__direction[0] = 0
 
     def get_name(self):
         return self.__name
