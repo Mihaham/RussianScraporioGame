@@ -14,10 +14,6 @@ def load_sprites():
 
     print(sprites)
 
-
-
-
-
 def draw(surface, player=None, board=None, this_single_square=None, object=None, pos_x = None, pos_y = None):
     global sprites
     if board is not None and this_single_square is None:
@@ -49,6 +45,6 @@ def draw(surface, player=None, board=None, this_single_square=None, object=None,
         player_skin = sprites[player.get_skin()]
         player_skin = pygame.transform.scale(player_skin, (scale, scale))
         player_rect = player_skin.get_rect(
-            topleft=(player.get_x() - board.get_game_pos_x(), player.get_y() - board.get_game_pos_y()),
+            center=(player.get_x() - board.get_game_pos_x(), player.get_y() - board.get_game_pos_y()),
             width=scale)
         surface.blit(player_skin, player_rect)

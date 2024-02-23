@@ -86,11 +86,8 @@ class Player:
     def update(self, board):
         new_x = (self.__direction[0] * step + self.__x)
         new_y = (self.__direction[1] * step + self.__y)
-        if 0 <= new_x <= (field - 1) * scale and 0 <= new_y <= (field - 1) * scale:
-            if (board.get_grid()[new_x // scale][new_y // scale].is_player_available and board.get_grid()[(new_x + scale -1) // scale][
-                new_y // scale].is_player_available and board.get_grid()[new_x // scale][
-                (new_y + scale -1)// scale].is_player_available and board.get_grid()[(new_x + scale -1)// scale][
-                (new_y + scale - 1) // scale ].is_player_available):
+        if 0 <= new_x <= (field) * scale and 0 <= new_y <= (field) * scale:
+            if (board.get_grid()[min(new_x // scale,field-1)][min(new_y // scale,field-1)].is_player_available):
                 if not (Center_x - board.get_cat_box()[0] <= new_x - board.get_game_pos_x()  <= Center_x + board.get_cat_box()[
                     0] and Center_y - board.get_cat_box()[1] <= new_y - board.get_game_pos_y()  <= Center_y + board.get_cat_box()[
                             1]):
