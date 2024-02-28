@@ -1,8 +1,4 @@
-import pygame
-
-
 class Object:
-
     _skin = None
     _type = None
 
@@ -10,7 +6,7 @@ class Object:
         self._skin = prototipe.get_skin()
         self._type = prototipe.get_type()
 
-    def __init__(self, skin = "sprites/furnace.png", type = None, prototype = None):
+    def __init__(self, skin="sprites/furnace.png", type=None, prototype=None):
         self._skin = skin
         self._type = type
 
@@ -22,4 +18,3 @@ class Object:
 
     def get_type(self):
         return self._type
-

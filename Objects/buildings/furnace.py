@@ -2,24 +2,25 @@ import time
 
 from Objects.Object import Object
 
+
 class Furnace(Object):
     _skin = "sprites/furnace.png"
     _type = "buildings"
     input = {
-        "cuprum ore" : 1000
+        "cuprum ore": 1000
     }
     output = {
     }
     fuel = {
-        "name" : "coal",
-        "amount" : 100,
+        "name": "coal",
+        "amount": 100,
         "burning_time": 1
     }
     __input_resources = {
-        "cuprum ore" : 1
+        "cuprum ore": 1
     }
     __output_resources = {
-        "cuprum" : 1
+        "cuprum": 1
     }
     __alowded_fuel = ["coal"]
     __is_active = False
@@ -45,7 +46,6 @@ class Furnace(Object):
         else:
             self._skin = "sprites/furnace.png"
 
-
     def update(self):
         if self.__is_active:
             if self.fuel["burning_time"] < time.time() - self.__start_of_active:
@@ -69,5 +69,3 @@ class Furnace(Object):
                 else:
                     self.__is_active = False
                     self.change_skin()
-
-

@@ -1,9 +1,10 @@
 import pygame
 
-from drawing_pygame.Draw import draw, load_sprites
 from Game.Board import Board
 from Player.player import Player
 from const import *
+from drawing_pygame.Draw import draw, load_sprites
+
 
 def main():
     fps = 60
@@ -18,12 +19,12 @@ def main():
     player = Player(position_x=Center_x, position_y=Center_y)
 
     while True:
-        draw(surface, player = player, board = board)
+        draw(surface, player=player, board=board)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
             if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
-                player.move(event, board = board)
+                player.move(event, board=board)
 
         player.update(board)
         board.update()
@@ -31,6 +32,7 @@ def main():
         pygame.display.flip()
         pygame.display.update()
         clock.tick(fps)
+
 
 if __name__ == "__main__":
     main()

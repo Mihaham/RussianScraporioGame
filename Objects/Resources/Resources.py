@@ -1,5 +1,3 @@
-from const import *
-
 class Resources:
     _skin = None
     _is_burnable = None
@@ -8,8 +6,7 @@ class Resources:
         self._skin = prototipe.get_skin()
         self._is_burnable = prototipe.get_is_burnable()
 
-
-    def __init__(self, prototipe = None):
+    def __init__(self, prototipe=None):
         if prototipe:
             self.__from_prototipe(prototipe)
 
@@ -19,7 +16,5 @@ class Resources:
     def get_is_burnable(self):
         return self._is_burnable
 
-
     def copy(self):
         return Resources(prototipe=self)
-

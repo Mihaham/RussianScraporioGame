@@ -1,9 +1,5 @@
-import pygame
-
-from const import *
-from Objects.buildings.furnace import Furnace
-
 id = 0
+
 
 class SingleSquare:
     __id = 0
@@ -17,7 +13,7 @@ class SingleSquare:
 
     def __init__(self, skin=None, prototipe=None):
         global id
-        id+=1
+        id += 1
         self.__id = id
         if prototipe == None:
             self._skin = skin
@@ -67,7 +63,6 @@ class SingleSquare:
                 return resource
             else:
                 self._miners.pop(i)
-
 
     def get_resources(self):
         return self._resources

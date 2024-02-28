@@ -3,10 +3,10 @@ from random import randint
 from Game.Squares.Ground import Ground
 from Game.Squares.Water import Water
 from Game.single_square import SingleSquare
-from const import *
-from Objects.buildings.furnace import Furnace
-from Objects.Miners.Trees.Tree import Tree
 from Objects.Miners.Fertile_soil.Fertile_soil import Fertile_soil
+from Objects.Miners.Trees.Tree import Tree
+from Objects.buildings.furnace import Furnace
+from const import *
 
 
 class Board:

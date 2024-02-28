@@ -1,55 +1,63 @@
 from Objects.buildings.furnace import Furnace
+from const import *
 
 
 class inventory():
 
-    def __init__(self, size = 5):
-        self._grid = [[None for i in range(size)] for j in range(size)]
-        self._size = size
-        self._cursor = [0,0]
+    def __init__(self, size_x=5, size_y=10):
+        self._grid = [[None for i in range(size_y)] for j in range(size_x)]
+        self._size_x = size_x
+        self._size_y = size_y
+        self._cursor = [0, 0]
         self._selected_item = None
         self._is_selected = False
-
-
+        self._scale = scale / 2
         self._grid[0][0] = Furnace()
-
 
     def __repr__(self):
         return f"Inventory {self._grid}"
 
-    def add_item(self, item, pos = None):
+    def get_selected_item(self):
+        return self._selected_item
+
+    def get_cursor(self):
+        return self._cursor
+
+    def get_sizes(self):
+        return (self._size_x, self._size_y)
+
+    def add_item(self, item, pos=None):
         if pos is None:
-            for i in range(self._size):
-                for j in range(self._size):
+            for i in range(self._size_x):
+                for j in range(self._size_y):
                     if self._grid[i][j] is None:
-                        pos = (i,j)
+                        pos = (i, j)
         self._grid[pos[0]][pos[1]] = item
 
     def move_right(self):
-        self._cursor[1] += 1
-        self._cursor[1] %= self._size
+        self._cursor[0] += 1
+        self._cursor[0] %= self._size_x
 
     def move_left(self):
-        self._cursor[1] -= 1
-        self._cursor[1] %= self._size
+        self._cursor[0] -= 1
+        self._cursor[0] %= self._size_x
 
     def move_up(self):
-        self._cursor[0] -= 1
-        self._cursor[0] %= self._size
+        self._cursor[1] -= 1
+        self._cursor[1] %= self._size_y
 
     def move_down(self):
-        self._cursor[0] += 1
-        self._cursor[0] %= self._size
-
+        self._cursor[1] += 1
+        self._cursor[1] %= self._size_y
 
     def select(self):
-        self._selected_item = self._cursor.copy() if self._is_selected else None
         self._is_selected = not self._is_selected
+        self._selected_item = self._cursor.copy() if self._is_selected else None
 
     def take_item(self):
         item = self._grid[self._selected_item[0]][self._selected_item[1]]
         self._grid[self._selected_item[0]][self._selected_item[1]] = None
         return item
 
-
-
+    def is_selected(self):
+        return self._is_selected
