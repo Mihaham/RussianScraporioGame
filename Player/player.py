@@ -35,6 +35,11 @@ class Player:
     def move(self, event, board=None):
         if self.__status == Player.statuses["walking"]:
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    exit()
+
+
+
                 if event.key == self.__settings["up"]:
                     self.__direction[1] = -1
                 if event.key == self.__settings["left"]:

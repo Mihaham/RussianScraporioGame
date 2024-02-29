@@ -62,8 +62,14 @@ def draw(surface, player=None, board=None, this_single_square=None, object=None,
         small_scale = (LENGTH / 4) / (inventory.get_sizes()[0] + 3)
         for i in range(inventory.get_sizes()[0]):
             for j in range(inventory.get_sizes()[1]):
-                pygame.draw.rect(surface, (255, 0, 0), (
-                20 + LENGTH * 3 / 4 + i * (small_scale + 10), 60 + (small_scale + 10) * j, small_scale, small_scale), 5)
+                pygame.draw.rect(surface, (255, 0, 0), (20 + LENGTH * 3 / 4 + i * (small_scale + 10), 60 + (small_scale + 10) * j, small_scale, small_scale), 5)
+                if inventory.get_grid()[i][j] != None:
+                    skin = inventory.get_grid()[i][j].get_skin()
+                    object_skin = sprites[skin]
+                    object_skin = pygame.transform.scale(object_skin, (small_scale-10, small_scale-10))
+                    object_rect = object_skin.get_rect(
+                        topleft=(20 + LENGTH * 3 / 4 + i * (small_scale + 10) + 5, 60 + (small_scale + 10) * j + 5), width=scale)
+                    surface.blit(object_skin, object_rect)
 
 
         selected = inventory.is_selected()
@@ -75,17 +81,12 @@ def draw(surface, player=None, board=None, this_single_square=None, object=None,
         pygame.draw.rect(surface, (0, 255, 0), (
             20 + LENGTH * 3 / 4 + x * (small_scale + 10), 60 + (small_scale + 10) * y, small_scale, small_scale), 5)
 
-
-
-
-
     if player is not None:
         text_skin = my_font.render(player.get_name(), False, (255, 0, 0))
         text_rect = text_skin.get_rect(
             center=(player.get_x() - board.get_game_pos_x(), player.get_y() - board.get_game_pos_y() - scale // 2),
             width=scale)
         surface.blit(text_skin, text_rect)
-
         player_skin = sprites[player.get_skin()]
         player_skin = pygame.transform.scale(player_skin, (2 * draw_scale * scale, 2 * draw_scale * scale))
         player_rect = player_skin.get_rect(

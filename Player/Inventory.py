@@ -59,5 +59,8 @@ class inventory():
         self._grid[self._selected_item[0]][self._selected_item[1]] = None
         return item
 
+    def get_grid(self):
+        return self._grid
+
     def is_selected(self):
         return self._is_selected
