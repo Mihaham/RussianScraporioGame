@@ -3,7 +3,7 @@ import pygame
 from Game.Board import Board
 from Player.player import Player
 from const import *
-from drawing_pygame.Draw import draw, load_sprites
+from drawing_pygame.Draw import Drawing
 
 
 def main():
@@ -18,12 +18,12 @@ def main():
     clock = pygame.time.Clock()
     pygame.display.set_caption("Really russian game")
 
-    load_sprites()
+    Draw = Drawing()
     board = Board()
     player = Player(position_x=Center_x, position_y=Center_y)
 
     while True:
-        draw(surface, player=player, board=board)
+        Draw.draw(surface, player=player, board=board)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
