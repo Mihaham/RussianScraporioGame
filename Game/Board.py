@@ -43,7 +43,7 @@ class Board:
 
         self.__grid[1][1].add_object(Furnace())
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         for i in range(field):
             for j in range(field):
                 print(self.__grid[i][j])
@@ -56,13 +56,13 @@ class Board:
         self.__game_pos_x = new_x
         self.__game_pos_y = new_y
 
-    def get_grid(self):
+    def get_grid(self) -> list[list[SingleSquare | None]] | None:
         return self.__grid
 
-    def get_grid_size(self):
+    def get_grid_size(self) -> int:
         return field
 
-    def get_cat_box(self):
+    def get_cat_box(self) -> tuple:
         return self.__cat_box
 
     def set_grid(self, new_grid):
@@ -71,13 +71,13 @@ class Board:
     def set_cat_box(self, new_cat):
         self.__cat_box = new_cat
 
-    def get_game_pos(self):
+    def get_game_pos(self) -> tuple:
         return (self.__game_pos_x, self.__game_pos_y)
 
-    def get_game_pos_x(self):
+    def get_game_pos_x(self) -> int:
         return self.__game_pos_x
 
-    def get_game_pos_y(self):
+    def get_game_pos_y(self) -> int:
         return self.__game_pos_y
 
     def update(self):

@@ -10,10 +10,10 @@ class Resources:
         if prototipe:
             self.__from_prototipe(prototipe)
 
-    def get_skin(self):
+    def get_skin(self) -> str:
         return self._skin
 
-    def get_is_burnable(self):
+    def get_is_burnable(self) -> bool:
         return self._is_burnable
 
     def copy(self):

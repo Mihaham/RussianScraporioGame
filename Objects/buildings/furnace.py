@@ -33,7 +33,7 @@ class Furnace(Object):
         self.__output_resources["cuprum"] = 1
         self._type = "buildings"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Furnace with {self.input} and {self.output} and {self.fuel}"
 
     def change_active(self):

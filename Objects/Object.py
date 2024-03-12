@@ -13,8 +13,8 @@ class Object:
         if prototype is not None:
             self.__get_prototipe(prototipe=prototype)
 
-    def get_skin(self):
+    def get_skin(self) -> str:
         return self._skin
 
-    def get_type(self):
+    def get_type(self) -> str:
         return self._type
