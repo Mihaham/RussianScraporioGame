@@ -29,7 +29,7 @@ class Player:
             "inventory": pygame.K_i
         } if settings is None else settings
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Player {self.__name}"
 
     def move(self, event, board=None):

@@ -1,4 +1,5 @@
 import pygame
+from logger.Logger import Logger
 
 from Game.Board import Board
 from Player.player import Player
@@ -18,14 +19,20 @@ def main():
     clock = pygame.time.Clock()
     pygame.display.set_caption("Really russian game")
 
+    Log = Logger()
+
     Draw = Drawing()
+    Log.add_info("Drawing is initialized")
     board = Board()
+    Log.add_info("Board is initialized")
     player = Player(position_x=Center_x, position_y=Center_y)
+    Log.add_info("Player is initialized")
 
     while True:
         Draw.draw(surface, player=player, board=board)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                Log.add_info("Game is over")
                 exit()
             if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
                 player.move(event, board=board)
