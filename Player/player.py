@@ -102,31 +102,31 @@ class Player:
         if self.__direction == [1, -1]:
             self.__skin = "sprites/topright.png"
 
-    def get_inventory(self):
+    def get_inventory(self) -> inventory:
         return self.__inventory
 
-    def get_status(self):
+    def get_status(self) -> int:
         return self.__status
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.__name
 
     def rename(self, new_name):
         self.__name = new_name
 
-    def get_skin(self):
+    def get_skin(self) -> str:
         return self.__skin
 
-    def get_direction(self):
+    def get_direction(self) -> list[int]:
         return self.__direction
 
-    def get_position(self):
+    def get_position(self) -> tuple[int, int]:
         return self.__x, self.__y
 
-    def get_x(self):
+    def get_x(self) -> int:
         return self.__x
 
-    def get_y(self):
+    def get_y(self) -> int:
         return self.__y
 
     def set_direction(self, new_direction):
