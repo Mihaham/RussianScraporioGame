@@ -1,4 +1,5 @@
 #!/bin/bash
+#sudo ./run.sh --input_folder  --extension py --backup_folder backup --backup_archive_name backup.tar.gz
 path=$(pwd)
 while [ -n "$1" ]
 do
@@ -23,7 +24,7 @@ do
 if [ -d "$file" ]
 then
 	last_dir=$(basename "$file")
-	if [[ $last_dir != "$backup_folder" ]]
+	if [[ ($last_dir != "$backup_folder") && ($last_dir != "venv")]]
 	then
 		mkdir "$2"/"$last_dir" > /dev/null
 		cd "$last_dir" || return
@@ -35,7 +36,7 @@ then
 	filename=$(basename "$file")
 	if [[ $filename == *.$extension ]]
 	then
-		cat "$filename" >> "/home/mihaham/RussianSraporioGame/backup.py"
+		cat "$filename" >> "/mnt/e/RussianScraporioGame/backup.py"
 	fi
 fi
 done
@@ -45,6 +46,5 @@ cd "$input_folder" || return
 recoursive_function "$input_folder/*" "$path/$backup_folder"
 cd "$path"/"$backup_folder" || return
 cd ..
-tar -cvzf "$backup_archive_name" "$backup_folder" > /dev/null
 
 echo "done"

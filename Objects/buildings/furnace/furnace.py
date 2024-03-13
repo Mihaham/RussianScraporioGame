@@ -1,39 +1,37 @@
 import time
 
-from Objects.Something import Something
+from Objects.Object import Object
 
 
-class Furnace(Something):
-    _skin = "sprites/furnace.png"
-    _type = "buildings"
-    input = {
-        "cuprum ore": 1000
-    }
-    output = {
-    }
-    fuel = {
-        "name": "coal",
-        "amount": 100,
-        "burning_time": 1
-    }
-    __input_resources = {
-        "cuprum ore": 1
-    }
-    __output_resources = {
-        "cuprum": 1
-    }
-    __alowded_fuel = ["coal"]
-    __is_active = False
-    __start_of_active = time.time()
+class Furnace(Object):
+
 
     def __init__(self):
         print("Initializing Furnace")
         super().__init__()
-        self.__input_resources["cuprum ore"] = 1
-        self.__output_resources["cuprum"] = 1
+        self._skin = "sprites/furnace.png"
         self._type = "buildings"
+        self.input = {
+            "cuprum ore": 1000
+        }
+        self.output = {
+        }
+        self.fuel = {
+            "name": "coal",
+            "amount": 100,
+            "burning_time": 1
+        }
+        self.__input_resources = {
+            "cuprum ore": 1
+        }
+        self.__output_resources = {
+            "cuprum": 1
+        }
+        self.__alowded_fuel = ["coal"]
+        self.__is_active = False
+        self.__start_of_active = time.time()
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         return f"Furnace with {self.input} and {self.output} and {self.fuel}"
 
     def change_active(self):

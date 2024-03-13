@@ -1,142 +1,3 @@
-import pygame
-
-LENGTH = 1500
-HIGHT = 1000
-
-def update_screen_size(x,y):
-    global LENGTH, HIGHT
-    LENGTH = x
-    HIGHT = y
-    print(LENGTH, HIGHT)
-
-pygame.init()
-info = pygame.display.Info()  # You have to call this before pygame.display.set_mode()
-screen_width, screen_height = info.current_w, info.current_h
-update_screen_size(screen_width, screen_height)
-
-step = 12
-scale = 72
-field = 20
-
-water_amount = 1
-water_size = 4
-
-tree_amount = 1
-
-fertile_soil_amount = 10
-
-Center_x = LENGTH // 2
-Center_y = HIGHT // 2
-from glob import glob
-
-from Player.player import Player
-from const import *
-
-
-class Drawing():
-    def __init__(self):
-        self.my_font = pygame.font.SysFont('Comic Sans MS', 30)
-        self.sprites = {}
-
-        for filename in glob('sprites/**/*.png', recursive=True):
-            my_filename = filename.replace("\\", "/")
-            self.sprites[my_filename] = pygame.image.load(filename).convert_alpha()
-        print(self.sprites)
-
-    def draw(self, surface, player=None, board=None, this_single_square=None, object=None, inventory=None, pos_x=None,
-             pos_y=None, draw_scale=1):
-        if board is not None:
-            self.draw_board(surface=surface, board=board)
-        if this_single_square is not None:
-            self.draw_single_square(single_square=this_single_square)
-        if object is not None:
-            self.draw_object()
-        if inventory is not None:
-            self.draw_inventory()
-
-        if player is not None:
-            self.draw_player(surface=surface, player=player, board=board)
-
-    def draw_player(self, surface: pygame, player, board, draw_scale=1):
-        text_skin = self.my_font.render(player.get_name(), False, (255, 0, 0))
-        text_rect = text_skin.get_rect(
-            center=(player.get_x() - board.get_game_pos_x(), player.get_y() - board.get_game_pos_y() - scale // 2),
-            width=scale)
-        surface.blit(text_skin, text_rect)
-        player_skin = self.sprites[player.get_skin()]
-        player_skin = pygame.transform.scale(player_skin, (2 * draw_scale * scale, 2 * draw_scale * scale))
-        player_rect = player_skin.get_rect(
-            center=(player.get_x() - board.get_game_pos_x(), player.get_y() - board.get_game_pos_y()),
-            width=scale)
-        surface.blit(player_skin, player_rect)
-        if player.get_status() == Player.statuses["inventory"]:
-            self.draw_inventory(surface, inventory=player.get_inventory())
-
-    def draw_object(self, surface: pygame, object, board, pos_x, pos_y, draw_scale=1):
-        object_skin = self.sprites[object.get_skin()]
-        object_skin = pygame.transform.scale(object_skin, (draw_scale * scale, draw_scale * scale))
-        object_rect = object_skin.get_rect(
-            topleft=(pos_x - board.get_game_pos_x(), pos_y - board.get_game_pos_y()), width=scale)
-        surface.blit(object_skin, object_rect)
-
-    def draw_inventory(self, surface: pygame, inventory, ):
-        pygame.draw.rect(surface, (0, 0, 0), (LENGTH * 3 / 4, 0, LENGTH, HIGHT))
-        text_skin = self.my_font.render("Inventory", False, (255, 255, 255))
-        text_rect = text_skin.get_rect(
-            midleft=(LENGTH * 3 / 4 + 20, 30),
-            width=scale)
-        surface.blit(text_skin, text_rect)
-
-        small_scale = (LENGTH / 4) / (inventory.get_sizes()[0] + 3)
-        for i in range(inventory.get_sizes()[0]):
-            for j in range(inventory.get_sizes()[1]):
-                pygame.draw.rect(surface, (255, 0, 0), (
-                    20 + LENGTH * 3 / 4 + i * (small_scale + 10), 60 + (small_scale + 10) * j, small_scale,
-                    small_scale), 5)
-                if inventory.get_grid()[i][j] != None:
-                    skin = inventory.get_grid()[i][j].get_skin()
-                    object_skin = self.sprites[skin]
-                    object_skin = pygame.transform.scale(object_skin, (small_scale - 10, small_scale - 10))
-                    object_rect = object_skin.get_rect(
-                        topleft=(20 + LENGTH * 3 / 4 + i * (small_scale + 10) + 5, 60 + (small_scale + 10) * j + 5),
-                        width=scale)
-                    surface.blit(object_skin, object_rect)
-
-        selected = inventory.is_selected()
-        if selected:
-            x, y = inventory.get_selected_item()
-            pygame.draw.rect(surface, (0, 0, 255), (
-                20 + LENGTH * 3 / 4 + x * (small_scale + 10), 60 + (small_scale + 10) * y, small_scale,
-                small_scale), 5)
-        x, y = inventory.get_cursor()
-        pygame.draw.rect(surface, (0, 255, 0), (
-            20 + LENGTH * 3 / 4 + x * (small_scale + 10), 60 + (small_scale + 10) * y, small_scale, small_scale), 5)
-
-    def draw_single_square(self, surface: pygame, single_square, board, pos_x, pos_y, draw_scale = 1):
-        if (board.get_game_pos_x() - scale <= pos_x <= board.get_game_pos_x() + (
-                LENGTH) + scale and board.get_game_pos_y() - scale <= pos_y <= board.get_game_pos_y() + (
-                HIGHT) + scale):
-            square_skin = self.sprites[single_square.get_skin()]
-            square_skin = pygame.transform.scale(square_skin, (draw_scale * scale, draw_scale * scale))
-            square_rect = square_skin.get_rect(
-                topleft=(pos_x - board.get_game_pos_x(), pos_y - board.get_game_pos_y()), width=scale)
-            surface.blit(square_skin, square_rect)
-            # print(f"Single Square {this_single_square}")
-            for object in single_square.get_buildings():
-                self.draw_object(surface, object=object, pos_x=pos_x,
-                                 pos_y=pos_y, board=board)
-            for object in single_square.get_miners():
-                self.draw_object(surface, board=board, object=object, pos_x=pos_x,
-                                 pos_y=pos_y)
-
-    def draw_board(self, surface: pygame, board):
-        pygame.draw.rect(surface, (0, 0, 255), (0, 0, LENGTH, HIGHT))
-        for i in range(max(0, board.get_game_pos_x() // scale),
-                       min((board.get_game_pos_x() + LENGTH) // scale + 1, field)):
-            for j in range(max(0, board.get_game_pos_y() // scale),
-                           min((board.get_game_pos_y() + HIGHT) // scale + 1, field)):
-                self.draw_single_square(surface, board=board, pos_x=i * scale, pos_y=j * scale,
-                                        single_square=board.get_grid()[i][j])
 from random import randint
 
 from Game.Squares.Ground import Ground
@@ -223,6 +84,22 @@ class Board:
         for i in range(field):
             for j in range(field):
                 self.__grid[i][j].update()
+from Game.single_square import SingleSquare
+
+
+class Ground(SingleSquare):
+    def __init__(self):
+        super().__init__()
+        self._skin = "sprites/mishaZemlya.png"
+        self.is_player_available = True
+from Game.single_square import SingleSquare
+
+
+class Water(SingleSquare):
+    def __init__(self):
+        super().__init__()
+        self._skin = "sprites/mishaVoda.png"
+        self.is_player_available = False
 import Objects.Something
 from Objects.Miners.miners import Miners
 from Objects.Resources.Resources import Resources
@@ -295,110 +172,176 @@ class SingleSquare:
 
     def get_resources(self) -> list[Resources]:
         return self._resources
-from Game.single_square import SingleSquare
+from Objects.Miners.miners import Miners
+from Objects.Resources.Soil.Soil import Soil
 
 
-class Ground(SingleSquare):
+class Fertile_soil(Miners):
+
+    def __init__(self):
+        super().__init__(resource=Soil(), amount=10, skin="sprites/fertile_soil.png")
+from Objects.Miners.miners import Miners
+from Objects.Resources.Wood.Wood import Wood
+
+
+class Tree(Miners):
+
+    def __init__(self):
+        super().__init__(resource=Wood(), amount=10, skin="sprites/tree.png")
+from Objects.Something import Something
+from Objects.Resources.Resources import Resources
+
+
+class Miners(Something):
+    _resource = None
+    _amount = None
+    _skin = None
+
+    def __init__(self, resource=None, amount=None, skin=None):
+        self._resource = resource if resource is not None else None
+        self._amount = amount if amount is not None else 0
+        self._skin = skin if skin is not None else None
+
+    def __repr__(self) -> str:
+        return f"_resource {self._resource} _amount {self._amount} _skin {self._skin}"
+
+    def get_resource(self) -> Resources | None:
+        if self._amount > 0:
+            self._amount -= 1
+            return self._resource.copy()
+        else:
+            return None
+
+    def get_skin(self) -> str:
+        return self._skin
+from Objects.Something import Something
+
+
+class Resources(Something):
+    _skin = None
+    _is_burnable = None
+
+    def __from_prototipe(self, prototipe):
+        self._skin = prototipe.get_skin()
+        self._is_burnable = prototipe.get_is_burnable()
+
+    def __init__(self, prototipe=None):
+        if prototipe:
+            self.__from_prototipe(prototipe)
+
+    def get_skin(self) -> str:
+        return self._skin
+
+    def get_is_burnable(self) -> bool:
+        return self._is_burnable
+
+    def copy(self):
+        return Resources(prototipe=self)
+from Objects.Resources.Resources import Resources
+
+
+class Soil(Resources):
     def __init__(self):
         super().__init__()
-        self._skin = "sprites/mishaZemlya.png"
-        self.is_player_available = True
-from Game.single_square import SingleSquare
+        self._is_burnable = False
+        self._skin = "sprites/soil.jpg"
+from Objects.Resources.Resources import Resources
 
 
-class Water(SingleSquare):
+class Wood(Resources):
     def __init__(self):
         super().__init__()
-        self._skin = "sprites/mishaVoda.png"
-        self.is_player_available = False
-import logging
-import datetime
-import os
+        self._is_burnable = True
+        self._skin = "sprites/wood.jpg"
+class Something:
+    _skin = None
+    _type = None
+
+    def __get_prototipe(self, prototipe):
+        self._skin = prototipe.get_skin()
+        self._type = prototipe.get_type()
+
+    def __init__(self, skin="sprites/furnace.png", type=None, prototype=None):
+        self._skin = skin
+        self._type = type
+
+        if prototype is not None:
+            self.__get_prototipe(prototipe=prototype)
+
+    def get_skin(self) -> str:
+        return self._skin
+
+    def get_type(self) -> str:
+        return self._type
+import time
+
+from Objects.Object import Object
 
 
-class Logger():
+class Furnace(Object):
 
 
     def __init__(self):
-        logging.basicConfig(level=logging.INFO,
-                            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        self.date = datetime.datetime.now().strftime('%Y%m%d-%H')
-        os.mkdir(f"{self.date}")
-        self.info = f"{self.date}/info.log"
-        self.warnings = f"{self.date}/warnings.log"
-        self.errors = f"{self.date}/errors.log"
-        self.debug = f"{self.date}/debug.log"
+        print("Initializing Furnace")
+        super().__init__()
+        self._skin = "sprites/furnace.png"
+        self._type = "buildings"
+        self.input = {
+            "cuprum ore": 1000
+        }
+        self.output = {
+        }
+        self.fuel = {
+            "name": "coal",
+            "amount": 100,
+            "burning_time": 1
+        }
+        self.__input_resources = {
+            "cuprum ore": 1
+        }
+        self.__output_resources = {
+            "cuprum": 1
+        }
+        self.__alowded_fuel = ["coal"]
+        self.__is_active = False
+        self.__start_of_active = time.time()
 
-    def add_str_to_file(self, str_to_write, file_name):
-        with open(f"{file_name}", "a") as file:
-            file.write(str_to_write + "\n")
+    def __repr__(self):
+        return f"Furnace with {self.input} and {self.output} and {self.fuel}"
 
-    def add_info(self, text):
-        logging.INFO(text)
-        self.add_str_to_file(text,self.info)
+    def change_active(self):
+        self.__is_active = not self.__is_active
+        self.change_skin()
 
-    def add_warnings(self, text):
-        logging.WARNING(text)
-        self.add_str_to_file(text,self.warnings)
+    def change_skin(self):
+        if self.__is_active:
+            self._skin = "sprites/burning_furnace.png"
+        else:
+            self._skin = "sprites/furnace.png"
 
-    def add_errors(self, text):
-        logging.ERROR(text)
-        self.add_str_to_file(text,self.errors)
-
-    def add_debug(self, text):
-        logging.DEBUG(text)
-        self.add_str_to_file(text,self.debug)
-
-
-import pygame
-from logger.Logger import Logger
-
-from Game.Board import Board
-from Player.player import Player
-from const import *
-from drawing_pygame.Draw import Drawing
-
-
-def main():
-    fps = 60
-    pygame.init()
-    info = pygame.display.Info()  # You have to call this before pygame.display.set_mode()
-    screen_width, screen_height = info.current_w, info.current_h
-    update_screen_size(screen_width, screen_height)
-    print(LENGTH, HIGHT)
-    pygame.font.init()
-    surface = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-    clock = pygame.time.Clock()
-    pygame.display.set_caption("Really russian game")
-
-    Log = Logger()
-
-    Draw = Drawing()
-    Log.add_info("Drawing is initialized")
-    board = Board()
-    Log.add_info("Board is initialized")
-    player = Player(position_x=Center_x, position_y=Center_y)
-    Log.add_info("Player is initialized")
-
-    while True:
-        Draw.draw(surface, player=player, board=board)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                Log.add_info("Game is over")
-                exit()
-            if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
-                player.move(event, board=board)
-
-        player.update(board)
-        board.update()
-
-        pygame.display.flip()
-        pygame.display.update()
-        clock.tick(fps)
-
-
-if __name__ == "__main__":
-    main()
+    def update(self):
+        if self.__is_active:
+            if self.fuel["burning_time"] < time.time() - self.__start_of_active:
+                print(self)
+                print(f"burning time: {time.time()}")
+                self.__start_of_active = time.time()
+                if self.fuel["amount"]:
+                    self.fuel["amount"] -= 1
+                    for resource, amount in self.__input_resources.copy().items():
+                        if self.input[resource] < amount:
+                            self.__is_active = False
+                            self.change_skin()
+                            break
+                    if self.__is_active:
+                        for resource, amount in self.__input_resources.items():
+                            self.input[resource] -= amount
+                        for resource, amount in self.__output_resources.items():
+                            if resource not in self.output.keys():
+                                self.output[resource] = 0
+                            self.output[resource] += amount
+                else:
+                    self.__is_active = False
+                    self.change_skin()
 import time
 
 from Objects.Something import Something
@@ -470,108 +413,7 @@ class Furnace(Something):
                 else:
                     self.__is_active = False
                     self.change_skin()
-from Objects.Miners.miners import Miners
-from Objects.Resources.Soil.Soil import Soil
-
-
-class Fertile_soil(Miners):
-
-    def __init__(self):
-        super().__init__(resource=Soil(), amount=10, skin="sprites/fertile_soil.png")
-import Objects.Something
-from Objects.Resources.Resources import Resources
-
-
-class Miners(Objects.Object.Something):
-    _resource = None
-    _amount = None
-    _skin = None
-
-    def __init__(self, resource=None, amount=None, skin=None):
-        self._resource = resource if resource is not None else None
-        self._amount = amount if amount is not None else 0
-        self._skin = skin if skin is not None else None
-
-    def __repr__(self) -> str:
-        return f"_resource {self._resource} _amount {self._amount} _skin {self._skin}"
-
-    def get_resource(self) -> Resources | None:
-        if self._amount > 0:
-            self._amount -= 1
-            return self._resource.copy()
-        else:
-            return None
-
-    def get_skin(self) -> str:
-        return self._skin
-from Objects.Miners.miners import Miners
-from Objects.Resources.Wood.Wood import Wood
-
-
-class Tree(Miners):
-
-    def __init__(self):
-        super().__init__(resource=Wood(), amount=10, skin="sprites/tree.png")
-import Objects.Something
-
-
-class Resources(Objects.Object.Something):
-    _skin = None
-    _is_burnable = None
-
-    def __from_prototipe(self, prototipe):
-        self._skin = prototipe.get_skin()
-        self._is_burnable = prototipe.get_is_burnable()
-
-    def __init__(self, prototipe=None):
-        if prototipe:
-            self.__from_prototipe(prototipe)
-
-    def get_skin(self) -> str:
-        return self._skin
-
-    def get_is_burnable(self) -> bool:
-        return self._is_burnable
-
-    def copy(self):
-        return Resources(prototipe=self)
-from Objects.Resources.Resources import Resources
-
-
-class Soil(Resources):
-    def __init__(self):
-        super().__init__()
-        self._is_burnable = False
-        self._skin = "sprites/soil.jpg"
-from Objects.Resources.Resources import Resources
-
-
-class Wood(Resources):
-    def __init__(self):
-        super().__init__()
-        self._is_burnable = True
-        self._skin = "sprites/wood.jpg"
-class Something:
-    _skin = None
-    _type = None
-
-    def __get_prototipe(self, prototipe):
-        self._skin = prototipe.get_skin()
-        self._type = prototipe.get_type()
-
-    def __init__(self, skin="sprites/furnace.png", type=None, prototype=None):
-        self._skin = skin
-        self._type = type
-
-        if prototype is not None:
-            self.__get_prototipe(prototipe=prototype)
-
-    def get_skin(self) -> str:
-        return self._skin
-
-    def get_type(self) -> str:
-        return self._type
-import Objects.Something
+from Objects.Something import Something
 from Objects.buildings.furnace import Furnace
 from const import *
 
@@ -591,7 +433,7 @@ class inventory():
     def __repr__(self) -> str:
         return f"Inventory {self._grid}"
 
-    def get_selected_item(self) -> Objects.Object.Something:
+    def get_selected_item(self) -> Something:
         return self._selected_item
 
     def get_cursor(self) -> list[int]:
@@ -628,12 +470,12 @@ class inventory():
         self._is_selected = not self._is_selected
         self._selected_item = self._cursor.copy() if self._is_selected else None
 
-    def take_item(self) -> Objects.Object.Something | None:
+    def take_item(self) -> Something | None:
         item = self._grid[self._selected_item[0]][self._selected_item[1]]
         self._grid[self._selected_item[0]][self._selected_item[1]] = None
         return item
 
-    def get_grid(self) -> list[list[Objects.Object.Something | None]]:
+    def get_grid(self) -> list[list[Something | None]]:
         return self._grid
 
     def is_selected(self) -> bool:
@@ -787,3 +629,230 @@ class Player:
                             1]):
                     board.increase_coordinates(self.__direction[0] * step, self.__direction[1] * step)
                 self.update_position((self.__direction[0] * step + self.__x, self.__direction[1] * step + self.__y))
+import pygame
+
+LENGTH = 1500
+HIGHT = 1000
+
+def update_screen_size(x,y):
+    global LENGTH, HIGHT
+    LENGTH = x
+    HIGHT = y
+    print(LENGTH, HIGHT)
+
+pygame.init()
+info = pygame.display.Info()  # You have to call this before pygame.display.set_mode()
+screen_width, screen_height = info.current_w, info.current_h
+update_screen_size(screen_width, screen_height)
+
+step = 12
+scale = 72
+field = 20
+
+water_amount = 1
+water_size = 4
+
+tree_amount = 1
+
+fertile_soil_amount = 10
+
+Center_x = LENGTH // 2
+Center_y = HIGHT // 2
+from glob import glob
+
+from Player.player import Player
+from const import *
+
+
+class Drawing():
+    def __init__(self):
+        self.my_font = pygame.font.SysFont('Comic Sans MS', 30)
+        self.sprites = {}
+
+        for filename in glob('sprites/**/*.png', recursive=True):
+            my_filename = filename.replace("\\", "/")
+            self.sprites[my_filename] = pygame.image.load(filename).convert_alpha()
+        print(self.sprites)
+
+    def draw(self, surface, player=None, board=None, this_single_square=None, object=None, inventory=None, pos_x=None,
+             pos_y=None, draw_scale=1):
+        if board is not None:
+            self.draw_board(surface=surface, board=board)
+        if this_single_square is not None:
+            self.draw_single_square(single_square=this_single_square)
+        if object is not None:
+            self.draw_object()
+        if inventory is not None:
+            self.draw_inventory()
+
+        if player is not None:
+            self.draw_player(surface=surface, player=player, board=board)
+
+    def draw_player(self, surface: pygame, player, board, draw_scale=1):
+        text_skin = self.my_font.render(player.get_name(), False, (255, 0, 0))
+        text_rect = text_skin.get_rect(
+            center=(player.get_x() - board.get_game_pos_x(), player.get_y() - board.get_game_pos_y() - scale // 2),
+            width=scale)
+        surface.blit(text_skin, text_rect)
+        player_skin = self.sprites[player.get_skin()]
+        player_skin = pygame.transform.scale(player_skin, (2 * draw_scale * scale, 2 * draw_scale * scale))
+        player_rect = player_skin.get_rect(
+            center=(player.get_x() - board.get_game_pos_x(), player.get_y() - board.get_game_pos_y()),
+            width=scale)
+        surface.blit(player_skin, player_rect)
+        if player.get_status() == Player.statuses["inventory"]:
+            self.draw_inventory(surface, inventory=player.get_inventory())
+
+    def draw_object(self, surface: pygame, object, board, pos_x, pos_y, draw_scale=1):
+        object_skin = self.sprites[object.get_skin()]
+        object_skin = pygame.transform.scale(object_skin, (draw_scale * scale, draw_scale * scale))
+        object_rect = object_skin.get_rect(
+            topleft=(pos_x - board.get_game_pos_x(), pos_y - board.get_game_pos_y()), width=scale)
+        surface.blit(object_skin, object_rect)
+
+    def draw_inventory(self, surface: pygame, inventory, ):
+        pygame.draw.rect(surface, (0, 0, 0), (LENGTH * 3 / 4, 0, LENGTH, HIGHT))
+        text_skin = self.my_font.render("Inventory", False, (255, 255, 255))
+        text_rect = text_skin.get_rect(
+            midleft=(LENGTH * 3 / 4 + 20, 30),
+            width=scale)
+        surface.blit(text_skin, text_rect)
+
+        small_scale = (LENGTH / 4) / (inventory.get_sizes()[0] + 3)
+        for i in range(inventory.get_sizes()[0]):
+            for j in range(inventory.get_sizes()[1]):
+                pygame.draw.rect(surface, (255, 0, 0), (
+                    20 + LENGTH * 3 / 4 + i * (small_scale + 10), 60 + (small_scale + 10) * j, small_scale,
+                    small_scale), 5)
+                if inventory.get_grid()[i][j] != None:
+                    skin = inventory.get_grid()[i][j].get_skin()
+                    object_skin = self.sprites[skin]
+                    object_skin = pygame.transform.scale(object_skin, (small_scale - 10, small_scale - 10))
+                    object_rect = object_skin.get_rect(
+                        topleft=(20 + LENGTH * 3 / 4 + i * (small_scale + 10) + 5, 60 + (small_scale + 10) * j + 5),
+                        width=scale)
+                    surface.blit(object_skin, object_rect)
+
+        selected = inventory.is_selected()
+        if selected:
+            x, y = inventory.get_selected_item()
+            pygame.draw.rect(surface, (0, 0, 255), (
+                20 + LENGTH * 3 / 4 + x * (small_scale + 10), 60 + (small_scale + 10) * y, small_scale,
+                small_scale), 5)
+        x, y = inventory.get_cursor()
+        pygame.draw.rect(surface, (0, 255, 0), (
+            20 + LENGTH * 3 / 4 + x * (small_scale + 10), 60 + (small_scale + 10) * y, small_scale, small_scale), 5)
+
+    def draw_single_square(self, surface: pygame, single_square, board, pos_x, pos_y, draw_scale = 1):
+        if (board.get_game_pos_x() - scale <= pos_x <= board.get_game_pos_x() + (
+                LENGTH) + scale and board.get_game_pos_y() - scale <= pos_y <= board.get_game_pos_y() + (
+                HIGHT) + scale):
+            square_skin = self.sprites[single_square.get_skin()]
+            square_skin = pygame.transform.scale(square_skin, (draw_scale * scale, draw_scale * scale))
+            square_rect = square_skin.get_rect(
+                topleft=(pos_x - board.get_game_pos_x(), pos_y - board.get_game_pos_y()), width=scale)
+            surface.blit(square_skin, square_rect)
+            # print(f"Single Square {this_single_square}")
+            for object in single_square.get_buildings():
+                self.draw_object(surface, object=object, pos_x=pos_x,
+                                 pos_y=pos_y, board=board)
+            for object in single_square.get_miners():
+                self.draw_object(surface, board=board, object=object, pos_x=pos_x,
+                                 pos_y=pos_y)
+
+    def draw_board(self, surface: pygame, board):
+        pygame.draw.rect(surface, (0, 0, 255), (0, 0, LENGTH, HIGHT))
+        for i in range(max(0, board.get_game_pos_x() // scale),
+                       min((board.get_game_pos_x() + LENGTH) // scale + 1, field)):
+            for j in range(max(0, board.get_game_pos_y() // scale),
+                           min((board.get_game_pos_y() + HIGHT) // scale + 1, field)):
+                self.draw_single_square(surface, board=board, pos_x=i * scale, pos_y=j * scale,
+                                        single_square=board.get_grid()[i][j])
+import logging
+import datetime
+import os
+
+
+class Logger():
+
+
+    def __init__(self):
+        logging.basicConfig(level=logging.INFO,
+                            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        self.date = datetime.datetime.now().strftime('%Y%m%d-%H')
+        os.mkdir(f"{self.date}")
+        self.info = f"{self.date}/info.log"
+        self.warnings = f"{self.date}/warnings.log"
+        self.errors = f"{self.date}/errors.log"
+        self.debug = f"{self.date}/debug.log"
+
+    def add_str_to_file(self, str_to_write, file_name):
+        with open(f"{file_name}", "a") as file:
+            file.write(str_to_write + "\n")
+
+    def add_info(self, text):
+        logging.INFO(text)
+        self.add_str_to_file(text,self.info)
+
+    def add_warnings(self, text):
+        logging.WARNING(text)
+        self.add_str_to_file(text,self.warnings)
+
+    def add_errors(self, text):
+        logging.ERROR(text)
+        self.add_str_to_file(text,self.errors)
+
+    def add_debug(self, text):
+        logging.DEBUG(text)
+        self.add_str_to_file(text,self.debug)
+
+
+import pygame
+from logger.Logger import Logger
+
+from Game.Board import Board
+from Player.player import Player
+from const import *
+from drawing_pygame.Draw import Drawing
+
+
+def main():
+    fps = 60
+    pygame.init()
+    info = pygame.display.Info()  # You have to call this before pygame.display.set_mode()
+    screen_width, screen_height = info.current_w, info.current_h
+    update_screen_size(screen_width, screen_height)
+    print(LENGTH, HIGHT)
+    pygame.font.init()
+    surface = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+    clock = pygame.time.Clock()
+    pygame.display.set_caption("Really russian game")
+
+    Log = Logger()
+
+    Draw = Drawing()
+    Log.add_info("Drawing is initialized")
+    board = Board()
+    Log.add_info("Board is initialized")
+    player = Player(position_x=Center_x, position_y=Center_y)
+    Log.add_info("Player is initialized")
+
+    while True:
+        Draw.draw(surface, player=player, board=board)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                Log.add_info("Game is over")
+                exit()
+            if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
+                player.move(event, board=board)
+
+        player.update(board)
+        board.update()
+
+        pygame.display.flip()
+        pygame.display.update()
+        clock.tick(fps)
+
+
+if __name__ == "__main__":
+    main()

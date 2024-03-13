@@ -1,8 +1,8 @@
-import Objects.Something
+from Objects.Something import Something
 from Objects.Resources.Resources import Resources
 
 
-class Miners(Objects.Object.Something):
+class Miners(Something):
     _resource = None
     _amount = None
     _skin = None
