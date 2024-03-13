@@ -12,6 +12,9 @@ class Drawing():
         for filename in glob('sprites/**/*.png', recursive=True):
             my_filename = filename.replace("\\", "/")
             self.sprites[my_filename] = pygame.image.load(filename).convert_alpha()
+        for filename in glob('sprites/**/*.jpg', recursive=True):
+            my_filename = filename.replace("\\", "/")
+            self.sprites[my_filename] = pygame.image.load(filename).convert_alpha()
         print(self.sprites)
 
     def draw(self, surface, player=None, board=None, this_single_square=None, object=None, inventory=None, pos_x=None,
@@ -66,15 +69,20 @@ class Drawing():
                     small_scale), 5)
                 if inventory.get_grid()[i][j] != None:
                     items = inventory.get_grid()[i][j]
-                    print(items)
-                    #for item, value in items:
-                    skin = items().get_skin()
-                    object_skin = self.sprites[skin]
-                    object_skin = pygame.transform.scale(object_skin, (small_scale - 10, small_scale - 10))
-                    object_rect = object_skin.get_rect(
-                        topleft=(20 + LENGTH * 3 / 4 + i * (small_scale + 10) + 5, 60 + (small_scale + 10) * j + 5),
-                        width=scale)
-                    surface.blit(object_skin, object_rect)
+                    amount = inventory.get_amount()[i][j]
+                    if items != None:
+                        skin = items().get_skin()
+                        object_skin = self.sprites[skin]
+                        object_skin = pygame.transform.scale(object_skin, (small_scale - 10, small_scale - 10))
+                        object_rect = object_skin.get_rect(
+                            topleft=(20 + LENGTH * 3 / 4 + i * (small_scale + 10) + 5, 60 + (small_scale + 10) * j + 5),
+                            width=scale)
+                        surface.blit(object_skin, object_rect)
+                        text_skin = self.my_font.render(f"{amount}", False, (255, 0, 0))
+                        text_rect = text_skin.get_rect(
+                            topleft=(20 + LENGTH * 3 / 4 + i * (small_scale + 10) + 5, 60 + (small_scale + 10) * j + 5),
+                            width=scale)
+                        surface.blit(text_skin, text_rect)
 
         selected = inventory.is_selected()
         if selected:

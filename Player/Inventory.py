@@ -7,6 +7,7 @@ class inventory():
 
     def __init__(self, size_x=5, size_y=10):
         self._grid = [[None for i in range(size_y)] for j in range(size_x)]
+        self._amount = [[0 for i in range(size_y)] for j in range(size_x)]
         self._size_x = size_x
         self._size_y = size_y
         self._cursor = [0, 0]
@@ -28,19 +29,20 @@ class inventory():
         return (self._size_x, self._size_y)
 
     def add_item(self, item, pos=None):
-        if item is not None:
-            if pos is None:
-                for i in range(self._size_x):
-                    for j in range(self._size_y):
-                        #if self._grid[i][j] != None and item in self._grid[i][j].keys():
-                        #    pos = (i,j)
-                        #    break
-                        if self._grid[i][j] == None:
-                            pos = (i, j)
-                            self._grid[i][j] = item
-                            break
-        #self._grid[pos[0]][pos[1]][item] += 1
-        print(self)
+        try:
+            if item is not None:
+                if pos is None:
+                    for i in range(self._size_x):
+                        for j in range(self._size_y):
+                            if self._grid[i][j] != None and item == self._grid[i][j]:
+                                pos = (i,j)
+                                raise StopIteration
+                            if self._grid[i][j] == None:
+                                pos = (i, j)
+                                self._grid[i][j] = item
+                                raise StopIteration
+        except StopIteration:
+            self._amount[pos[0]][pos[1]] += 1
 
     def move_right(self):
         self._cursor[0] += 1
@@ -69,6 +71,9 @@ class inventory():
 
     def get_grid(self) -> list[list[Something | None]]:
         return self._grid
+
+    def get_amount(self) -> list[list[int]]:
+        return self._amount
 
     def is_selected(self) -> bool:
         return self._is_selected
