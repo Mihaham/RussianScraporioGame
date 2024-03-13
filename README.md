@@ -50,7 +50,7 @@
 
 [Документация](Documentation.odt)
 
-[UML диаграмма классов](UMLclass.png)
+[UML диаграмма классов](UMLclasses.png)
 
 [UML диаграмма вариантов использования](UMLuse.png)
 
