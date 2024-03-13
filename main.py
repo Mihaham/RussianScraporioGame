@@ -1,3 +1,5 @@
+
+
 import pygame
 from logger.Logger import Logger
 
@@ -39,6 +41,8 @@ def main():
 
         player.update(board)
         board.update()
+
+
 
         pygame.display.flip()
         pygame.display.update()

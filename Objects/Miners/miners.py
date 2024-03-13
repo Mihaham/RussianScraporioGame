@@ -18,7 +18,7 @@ class Miners(Something):
     def get_resource(self) -> Resources | None:
         if self._amount > 0:
             self._amount -= 1
-            return self._resource.copy()
+            return self._resource
         else:
             return None
 

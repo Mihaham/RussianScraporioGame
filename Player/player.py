@@ -52,7 +52,8 @@ class Player:
                     if board.get_grid()[self.__x // scale][self.__y // scale].get_buildings() != []:
                         board.get_grid()[self.__x // scale][self.__y // scale].get_buildings()[0].change_active()
                     if board.get_grid()[self.__x // scale][self.__y // scale].get_miners() != []:
-                        board.get_grid()[self.__x // scale][self.__y // scale].mine()
+                        item = board.get_grid()[self.__x // scale][self.__y // scale].mine()
+                        self.__inventory.add_item(item)
                 if event.key == self.__settings["inventory"]:
                     self.__direction = [0, 0]
                     self.__status = Player.statuses["inventory"]

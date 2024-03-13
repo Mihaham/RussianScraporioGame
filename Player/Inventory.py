@@ -13,7 +13,7 @@ class inventory():
         self._selected_item = None
         self._is_selected = False
         self._scale = scale / 2
-        self._grid[0][0] = Furnace()
+        self._grid[0][0] = Furnace
 
     def __repr__(self) -> str:
         return f"Inventory {self._grid}"
@@ -28,12 +28,19 @@ class inventory():
         return (self._size_x, self._size_y)
 
     def add_item(self, item, pos=None):
-        if pos is None:
-            for i in range(self._size_x):
-                for j in range(self._size_y):
-                    if self._grid[i][j] is None:
-                        pos = (i, j)
-        self._grid[pos[0]][pos[1]] = item
+        if item is not None:
+            if pos is None:
+                for i in range(self._size_x):
+                    for j in range(self._size_y):
+                        #if self._grid[i][j] != None and item in self._grid[i][j].keys():
+                        #    pos = (i,j)
+                        #    break
+                        if self._grid[i][j] == None:
+                            pos = (i, j)
+                            self._grid[i][j] = item
+                            break
+        #self._grid[pos[0]][pos[1]][item] += 1
+        print(self)
 
     def move_right(self):
         self._cursor[0] += 1

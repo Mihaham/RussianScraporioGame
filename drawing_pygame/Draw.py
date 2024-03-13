@@ -65,7 +65,10 @@ class Drawing():
                     20 + LENGTH * 3 / 4 + i * (small_scale + 10), 60 + (small_scale + 10) * j, small_scale,
                     small_scale), 5)
                 if inventory.get_grid()[i][j] != None:
-                    skin = inventory.get_grid()[i][j].get_skin()
+                    items = inventory.get_grid()[i][j]
+                    print(items)
+                    #for item, value in items:
+                    skin = items.__init__().get_skin()
                     object_skin = self.sprites[skin]
                     object_skin = pygame.transform.scale(object_skin, (small_scale - 10, small_scale - 10))
                     object_rect = object_skin.get_rect(

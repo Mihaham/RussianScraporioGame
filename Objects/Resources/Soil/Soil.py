@@ -5,4 +5,4 @@ class Soil(Resources):
     def __init__(self):
         super().__init__()
         self._is_burnable = False
-        self._skin = "sprites/soil.jpg"
+        self._skin = "sprites/soil.png"

@@ -10,7 +10,7 @@ class Logger():
         logging.basicConfig(level=logging.INFO,
                             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         self.date = datetime.datetime.now().strftime('%Y%m%d-%H')
-        os.mkdir(f"{self.date}")
+        os.makedirs(f"{self.date}", mode=0o777, exist_ok=True)
         self.info = f"{self.date}/info.log"
         self.warnings = f"{self.date}/warnings.log"
         self.errors = f"{self.date}/errors.log"
