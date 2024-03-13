@@ -1,4 +1,7 @@
-class Resources:
+import Objects.Something
+
+
+class Resources(Objects.Object.Something):
     _skin = None
     _is_burnable = None
 

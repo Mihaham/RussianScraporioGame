@@ -182,7 +182,7 @@ class Board:
 
         self.__grid[1][1].add_object(Furnace())
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         for i in range(field):
             for j in range(field):
                 print(self.__grid[i][j])
@@ -195,13 +195,13 @@ class Board:
         self.__game_pos_x = new_x
         self.__game_pos_y = new_y
 
-    def get_grid(self):
+    def get_grid(self) -> list[list[SingleSquare | None]] | None:
         return self.__grid
 
-    def get_grid_size(self):
+    def get_grid_size(self) -> int:
         return field
 
-    def get_cat_box(self):
+    def get_cat_box(self) -> tuple:
         return self.__cat_box
 
     def set_grid(self, new_grid):
@@ -210,19 +210,23 @@ class Board:
     def set_cat_box(self, new_cat):
         self.__cat_box = new_cat
 
-    def get_game_pos(self):
+    def get_game_pos(self) -> tuple:
         return (self.__game_pos_x, self.__game_pos_y)
 
-    def get_game_pos_x(self):
+    def get_game_pos_x(self) -> int:
         return self.__game_pos_x
 
-    def get_game_pos_y(self):
+    def get_game_pos_y(self) -> int:
         return self.__game_pos_y
 
     def update(self):
         for i in range(field):
             for j in range(field):
                 self.__grid[i][j].update()
+import Objects.Something
+from Objects.Miners.miners import Miners
+from Objects.Resources.Resources import Resources
+
 id = 0
 
 
@@ -248,7 +252,7 @@ class SingleSquare:
         else:
             self.__take_prototipe__(prototipe)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Objects {self._buildings} in single square with id {self.__id} and skin {self.get_skin()}. Also has {self._miners} miners. Also has {self._resources}"
 
     def set_skin(self, skin=None, prototipe=None):
@@ -256,17 +260,17 @@ class SingleSquare:
         if prototipe is not None:
             self.__take_prototipe__(prototipe)
 
-    def get_skin(self):
+    def get_skin(self) -> str:
         return self._skin
 
     def add_object(self, object):
         print(f"Adding object to square with id {self.__id}")
         self._buildings.append(object)
 
-    def get_buildings(self):
+    def get_buildings(self) -> list[Objects.Object.Something]:
         return self._buildings
 
-    def get_miners(self):
+    def get_miners(self) -> list[Miners]:
         return self._miners
 
     def copy(self):
@@ -281,7 +285,7 @@ class SingleSquare:
         if self.is_player_available and len(self._miners) == 0:
             self._miners.append(miner)
 
-    def mine(self):
+    def mine(self) -> Resources:
         for i in range(len(self._miners)):
             resource = self._miners[i].get_resource()
             if resource is not None:
@@ -289,7 +293,7 @@ class SingleSquare:
             else:
                 self._miners.pop(i)
 
-    def get_resources(self):
+    def get_resources(self) -> list[Resources]:
         return self._resources
 from Game.single_square import SingleSquare
 
@@ -397,10 +401,10 @@ if __name__ == "__main__":
     main()
 import time
 
-from Objects.Object import Object
+from Objects.Something import Something
 
 
-class Furnace(Object):
+class Furnace(Something):
     _skin = "sprites/furnace.png"
     _type = "buildings"
     input = {
@@ -430,7 +434,7 @@ class Furnace(Object):
         self.__output_resources["cuprum"] = 1
         self._type = "buildings"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Furnace with {self.input} and {self.output} and {self.fuel}"
 
     def change_active(self):
@@ -474,7 +478,11 @@ class Fertile_soil(Miners):
 
     def __init__(self):
         super().__init__(resource=Soil(), amount=10, skin="sprites/fertile_soil.png")
-class Miners:
+import Objects.Something
+from Objects.Resources.Resources import Resources
+
+
+class Miners(Objects.Object.Something):
     _resource = None
     _amount = None
     _skin = None
@@ -484,17 +492,17 @@ class Miners:
         self._amount = amount if amount is not None else 0
         self._skin = skin if skin is not None else None
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"_resource {self._resource} _amount {self._amount} _skin {self._skin}"
 
-    def get_resource(self):
+    def get_resource(self) -> Resources | None:
         if self._amount > 0:
             self._amount -= 1
             return self._resource.copy()
         else:
             return None
 
-    def get_skin(self):
+    def get_skin(self) -> str:
         return self._skin
 from Objects.Miners.miners import Miners
 from Objects.Resources.Wood.Wood import Wood
@@ -504,27 +512,10 @@ class Tree(Miners):
 
     def __init__(self):
         super().__init__(resource=Wood(), amount=10, skin="sprites/tree.png")
-class Object:
-    _skin = None
-    _type = None
+import Objects.Something
 
-    def __get_prototipe(self, prototipe):
-        self._skin = prototipe.get_skin()
-        self._type = prototipe.get_type()
 
-    def __init__(self, skin="sprites/furnace.png", type=None, prototype=None):
-        self._skin = skin
-        self._type = type
-
-        if prototype is not None:
-            self.__get_prototipe(prototipe=prototype)
-
-    def get_skin(self):
-        return self._skin
-
-    def get_type(self):
-        return self._type
-class Resources:
+class Resources(Objects.Object.Something):
     _skin = None
     _is_burnable = None
 
@@ -536,10 +527,10 @@ class Resources:
         if prototipe:
             self.__from_prototipe(prototipe)
 
-    def get_skin(self):
+    def get_skin(self) -> str:
         return self._skin
 
-    def get_is_burnable(self):
+    def get_is_burnable(self) -> bool:
         return self._is_burnable
 
     def copy(self):
@@ -560,6 +551,27 @@ class Wood(Resources):
         super().__init__()
         self._is_burnable = True
         self._skin = "sprites/wood.jpg"
+class Something:
+    _skin = None
+    _type = None
+
+    def __get_prototipe(self, prototipe):
+        self._skin = prototipe.get_skin()
+        self._type = prototipe.get_type()
+
+    def __init__(self, skin="sprites/furnace.png", type=None, prototype=None):
+        self._skin = skin
+        self._type = type
+
+        if prototype is not None:
+            self.__get_prototipe(prototipe=prototype)
+
+    def get_skin(self) -> str:
+        return self._skin
+
+    def get_type(self) -> str:
+        return self._type
+import Objects.Something
 from Objects.buildings.furnace import Furnace
 from const import *
 
@@ -576,16 +588,16 @@ class inventory():
         self._scale = scale / 2
         self._grid[0][0] = Furnace()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Inventory {self._grid}"
 
-    def get_selected_item(self):
+    def get_selected_item(self) -> Objects.Object.Something:
         return self._selected_item
 
-    def get_cursor(self):
+    def get_cursor(self) -> list[int]:
         return self._cursor
 
-    def get_sizes(self):
+    def get_sizes(self) -> tuple:
         return (self._size_x, self._size_y)
 
     def add_item(self, item, pos=None):
@@ -616,15 +628,15 @@ class inventory():
         self._is_selected = not self._is_selected
         self._selected_item = self._cursor.copy() if self._is_selected else None
 
-    def take_item(self):
+    def take_item(self) -> Objects.Object.Something | None:
         item = self._grid[self._selected_item[0]][self._selected_item[1]]
         self._grid[self._selected_item[0]][self._selected_item[1]] = None
         return item
 
-    def get_grid(self):
+    def get_grid(self) -> list[list[Objects.Object.Something | None]]:
         return self._grid
 
-    def is_selected(self):
+    def is_selected(self) -> bool:
         return self._is_selected
 import pygame
 
@@ -730,31 +742,31 @@ class Player:
         if self.__direction == [1, -1]:
             self.__skin = "sprites/topright.png"
 
-    def get_inventory(self):
+    def get_inventory(self) -> inventory:
         return self.__inventory
 
-    def get_status(self):
+    def get_status(self) -> int:
         return self.__status
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.__name
 
     def rename(self, new_name):
         self.__name = new_name
 
-    def get_skin(self):
+    def get_skin(self) -> str:
         return self.__skin
 
-    def get_direction(self):
+    def get_direction(self) -> list[int]:
         return self.__direction
 
-    def get_position(self):
+    def get_position(self) -> tuple[int, int]:
         return self.__x, self.__y
 
-    def get_x(self):
+    def get_x(self) -> int:
         return self.__x
 
-    def get_y(self):
+    def get_y(self) -> int:
         return self.__y
 
     def set_direction(self, new_direction):

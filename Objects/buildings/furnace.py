@@ -1,9 +1,9 @@
 import time
 
-from Objects.Object import Object
+from Objects.Something import Something
 
 
-class Furnace(Object):
+class Furnace(Something):
     _skin = "sprites/furnace.png"
     _type = "buildings"
     input = {

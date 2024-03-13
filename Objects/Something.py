@@ -1,4 +1,4 @@
-class Object:
+class Something:
     _skin = None
     _type = None
 
