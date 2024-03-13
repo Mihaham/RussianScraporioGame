@@ -21,19 +21,19 @@ class Logger():
             file.write(str_to_write + "\n")
 
     def add_info(self, text):
-        logging.INFO(text)
+        logging.info(text)
         self.add_str_to_file(text,self.info)
 
     def add_warnings(self, text):
-        logging.WARNING(text)
+        logging.warning(text)
         self.add_str_to_file(text,self.warnings)
 
     def add_errors(self, text):
-        logging.ERROR(text)
+        logging.error(text)
         self.add_str_to_file(text,self.errors)
 
     def add_debug(self, text):
-        logging.DEBUG(text)
+        logging.debug(text)
         self.add_str_to_file(text,self.debug)
 
 

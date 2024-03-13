@@ -1,4 +1,4 @@
-import Objects.Something
+from Objects.Something import Something
 from Objects.Miners.miners import Miners
 from Objects.Resources.Resources import Resources
 
@@ -42,7 +42,7 @@ class SingleSquare:
         print(f"Adding object to square with id {self.__id}")
         self._buildings.append(object)
 
-    def get_buildings(self) -> list[Objects.Object.Something]:
+    def get_buildings(self) -> list[Something]:
         return self._buildings
 
     def get_miners(self) -> list[Miners]:
