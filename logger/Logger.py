@@ -15,9 +15,13 @@ class Logger():
         self.warnings = f"{self.date}/warnings.log"
         self.errors = f"{self.date}/errors.log"
         self.debug = f"{self.date}/debug.log"
+        self.add_str_to_file("Game started\n", self.info, filemod="w")
+        self.add_str_to_file("Game started\n", self.warnings, filemod="w")
+        self.add_str_to_file("Game started\n", self.errors, filemod="w")
+        self.add_str_to_file("Game started\n", self.debug, filemod="w")
 
-    def add_str_to_file(self, str_to_write, file_name):
-        with open(f"{file_name}", "a") as file:
+    def add_str_to_file(self, str_to_write, file_name, filemod = "a"):
+        with open(f"{file_name}", filemod) as file:
             file.write(str_to_write + "\n")
 
     def add_info(self, text):
