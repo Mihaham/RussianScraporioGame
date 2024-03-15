@@ -17,15 +17,17 @@ class Drawing():
         print(self.sprites)
 
     def draw(self, surface, player=None, board=None, this_single_square=None, object=None, inventory=None, pos_x=None,
-             pos_y=None, draw_scale=1):
+             pos_y=None, draw_scale=1, button=None):
         if board is not None:
             self.draw_board(surface=surface, board=board)
         if this_single_square is not None:
             self.draw_single_square(single_square=this_single_square)
         if object is not None:
-            self.draw_object()
+            self.draw_object(surface, object=object, board=board, pos_x=pos_x, pos_y=pos_y, draw_scale=draw_scale)
         if inventory is not None:
-            self.draw_inventory()
+            self.draw_inventory(surface, inventory=inventory)
+        if button is not None:
+            self.draw_button(surface, button=button)
 
         if player is not None:
             self.draw_player(surface=surface, player=player, board=board)
@@ -52,7 +54,7 @@ class Drawing():
             topleft=(pos_x - board.get_game_pos_x(), pos_y - board.get_game_pos_y()), width=scale)
         surface.blit(object_skin, object_rect)
 
-    def draw_inventory(self, surface: pygame, inventory, ):
+    def draw_inventory(self, surface: pygame, inventory):
         pygame.draw.rect(surface, (0, 0, 0), (LENGTH * 3 / 4, 0, LENGTH, HIGHT))
         text_skin = self.my_font.render("Inventory", False, (255, 255, 255))
         text_rect = text_skin.get_rect(
@@ -118,3 +120,13 @@ class Drawing():
                            min((board.get_game_pos_y() + HIGHT) // scale + 1, field)):
                 self.draw_single_square(surface, board=board, pos_x=i * scale, pos_y=j * scale,
                                         single_square=board.get_grid()[i][j])
+
+    def draw_button(self, surface : pygame, button):
+        image = pygame.transform.scale(self.sprites[button.skin], (button.width,button.height))
+        rect = image.get_rect(topright = button.position)
+        surface.blit(image, rect.topright)
+        font = pygame.font.Font(None, 36)
+        text_surface = font.render(button.text, True, (255,255,255))
+        text_rect = text_surface.get_rect(topright=rect.topright)
+        surface.blit(text_surface, text_rect)
+

@@ -4,6 +4,7 @@ from src.Game.Board import Board
 from src.Player.player import Player
 from const import *
 from src.drawing_pygame.Draw import Drawing
+from src.buttons.button import Button
 
 
 def main():
@@ -19,7 +20,13 @@ def main():
     pygame.display.set_caption("Really russian game")
 
     Log = Logger()
-
+    Exit = Button(width=LENGTH//20,
+                  height=HIGHT//10,
+                  text="",
+                  not_hovered_skin="sprites/Large Buttons/Large Buttons/Exit Button.png",
+                  hovered_skin="sprites/Large Buttons/Colored Large Buttons/Exit  col_Button.png",
+                  position=[LENGTH-LENGTH//20,0],
+                  func = exit)
     Draw = Drawing()
     Log.add_info("Drawing is initialized")
     board = Board()
@@ -28,13 +35,16 @@ def main():
     Log.add_info("Player is initialized")
 
     while True:
-        Draw.draw(surface, player=player, board=board)
+        Draw.draw(surface, player=player, board=board, button=Exit)
+        Exit.handle_hover()
         for event in pygame.event.get():
+            Exit.update(event)
             if event.type == pygame.QUIT:
                 Log.add_info("Game is over")
                 exit()
             if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
                 player.move(event, board=board)
+
 
         player.update(board)
         board.update()
