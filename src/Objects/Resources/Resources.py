@@ -1,9 +1,6 @@
-from Objects.Something import Something
+from src.Objects.GameObject import GameObject
 
-
-class Resources(Something):
-    _skin = None
-    _is_burnable = None
+class Resources(GameObject):
 
     def __from_prototipe(self, prototipe):
         self._skin = prototipe.get_skin()

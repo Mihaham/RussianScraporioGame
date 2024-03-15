@@ -1,4 +1,4 @@
-class Something:
+class GameObject:
     _skin = None
     _type = None
 

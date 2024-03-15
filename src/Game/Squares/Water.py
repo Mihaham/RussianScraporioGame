@@ -1,4 +1,4 @@
-from Game.single_square import SingleSquare
+from src.Game.single_square import SingleSquare
 
 
 class Water(SingleSquare):

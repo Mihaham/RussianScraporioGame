@@ -1,22 +1,21 @@
 from random import randint
 
-from Game.Squares.Ground import Ground
-from Game.Squares.Water import Water
-from Game.single_square import SingleSquare
-from Objects.Miners.Fertile_soil.Fertile_soil import Fertile_soil
-from Objects.Miners.Trees.Tree import Tree
-from Objects.buildings.furnace import Furnace
+from src.Game.Squares.Ground import Ground
+from src.Game.Squares.Water import Water
+from src.Game.single_square import SingleSquare
+from src.Objects.Miners.Fertile_soil.Fertile_soil import Fertile_soil
+from src.Objects.Miners.Trees.Tree import Tree
+from src.Objects.buildings.furnace.furnace import Furnace
 from const import *
 
 
 class Board:
-    __grid = None
-    __game_pos_x = 0
-    __game_pos_y = 0
-    __cat_box = (300, 150)
 
     def __init__(self):
         self.__grid = [[None for i in range(field)] for j in range(field)]
+        self.__game_pos_x = 0
+        self.__game_pos_y = 0
+        self.__cat_box = (300, 150)
         for i in range(field):
             for j in range(field):
                 self.__grid[i][j] = SingleSquare(prototipe=Ground())

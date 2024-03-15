@@ -1,6 +1,4 @@
-import pygame
-
-from Player.Inventory import inventory
+from src.Player.Inventory import inventory
 from const import *
 
 

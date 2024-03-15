@@ -1,4 +1,4 @@
-from Objects.Resources.Resources import Resources
+from src.Objects.Resources.Resources import Resources
 
 
 class Soil(Resources):

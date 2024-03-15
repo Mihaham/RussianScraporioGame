@@ -1,12 +1,10 @@
-from Objects.Something import Something
-from Objects.Miners.miners import Miners
-from Objects.Resources.Resources import Resources
-
-id = 0
+from src.Objects.GameObject import GameObject
+from src.Objects.Miners.miners import Miners
+from src.Objects.Resources.Resources import Resources
 
 
 class SingleSquare:
-    __id = 0
+    id = 0
 
     def __take_prototipe__(self, prototipe):
         self._skin = prototipe.get_skin()
@@ -16,9 +14,8 @@ class SingleSquare:
         self._resources = prototipe.get_resources()
 
     def __init__(self, skin=None, prototipe=None):
-        global id
-        id += 1
-        self.__id = id
+        SingleSquare.id += 1
+        self.__id = SingleSquare.id
         if prototipe == None:
             self._skin = skin
             self._buildings = []
@@ -42,7 +39,7 @@ class SingleSquare:
         print(f"Adding object to square with id {self.__id}")
         self._buildings.append(object)
 
-    def get_buildings(self) -> list[Something]:
+    def get_buildings(self) -> list[GameObject]:
         return self._buildings
 
     def get_miners(self) -> list[Miners]:

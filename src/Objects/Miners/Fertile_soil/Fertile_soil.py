@@ -1,5 +1,5 @@
-from Objects.Miners.miners import Miners
-from Objects.Resources.Soil.Soil import Soil
+from src.Objects.Miners.miners import Miners
+from src.Objects.Resources.Soil.Soil import Soil
 
 
 class Fertile_soil(Miners):

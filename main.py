@@ -1,12 +1,9 @@
+from src.logger.Logger import Logger
 
-
-import pygame
-from logger.Logger import Logger
-
-from Game.Board import Board
-from Player.player import Player
+from src.Game.Board import Board
+from src.Player.player import Player
 from const import *
-from drawing_pygame.Draw import Drawing
+from src.drawing_pygame.Draw import Drawing
 
 
 def main():

@@ -1,5 +1,5 @@
-from Objects.Miners.miners import Miners
-from Objects.Resources.Wood.Wood import Wood
+from src.Objects.Miners.miners import Miners
+from src.Objects.Resources.Wood.Wood import Wood
 
 
 class Tree(Miners):

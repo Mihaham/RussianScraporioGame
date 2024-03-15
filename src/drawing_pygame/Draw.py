@@ -1,6 +1,5 @@
 from glob import glob
-
-from Player.player import Player
+from src.Player.player import Player
 from const import *
 
 
