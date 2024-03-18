@@ -1,21 +1,20 @@
 from random import randint
-
 from src.Game.Squares.Ground import Ground
 from src.Game.Squares.Water import Water
 from src.Game.single_square import SingleSquare
 from src.Objects.Miners.Fertile_soil.Fertile_soil import Fertile_soil
 from src.Objects.Miners.Trees.Tree import Tree
 from src.Objects.buildings.furnace.furnace import Furnace
-from const import *
 
 
 class Board:
 
-    def __init__(self):
+    def __init__(self, field=400, water_amount=10, water_size=5, tree_amount=10, fertile_soil_amount=10):
         self.__grid = [[None for i in range(field)] for j in range(field)]
         self.__game_pos_x = 0
         self.__game_pos_y = 0
         self.__cat_box = (300, 150)
+        self.field = field
         for i in range(field):
             for j in range(field):
                 self.__grid[i][j] = SingleSquare(prototipe=Ground())
@@ -43,8 +42,8 @@ class Board:
         self.__grid[1][1].add_object(Furnace())
 
     def __repr__(self) -> str:
-        for i in range(field):
-            for j in range(field):
+        for i in range(self.field):
+            for j in range(self.field):
                 print(self.__grid[i][j])
         return ""
 
@@ -59,7 +58,7 @@ class Board:
         return self.__grid
 
     def get_grid_size(self) -> int:
-        return field
+        return self.field
 
     def get_cat_box(self) -> tuple:
         return self.__cat_box
@@ -80,6 +79,6 @@ class Board:
         return self.__game_pos_y
 
     def update(self):
-        for i in range(field):
-            for j in range(field):
+        for i in range(self.field):
+            for j in range(self.field):
                 self.__grid[i][j].update()

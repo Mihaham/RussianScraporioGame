@@ -1,22 +1,29 @@
 import pygame
 
+
 class Button():
-    def __init__(self, text = None, width= None, height = None, hovered_skin = None, not_hovered_skin = None, func = None, position = None):
-        self.text : str = text
-        self.position : list[int] = position
-        self.is_hovered : bool = False
-        self.not_hovered_skin : str = not_hovered_skin
-        self.hovered_skin : str = hovered_skin
-        self.skin : str = self.not_hovered_skin
+    def __init__(self, text="START", width=None, height=None, hovered_skin=None, not_hovered_skin=None, func=None,
+                 position=None, parent=None, parent_position="absolute"):
+        self.text: str = text
+        self.position: list[int] = position
+        self.is_hovered: bool = False
+        self.not_hovered_skin: str = not_hovered_skin
+        self.hovered_skin: str = hovered_skin
+        self.skin: str = self.not_hovered_skin
         self.func = func
-        self.width : int = width
-        self.height : int = height
+        self.width: int = width
+        self.height: int = height
+        self.parent_position = parent_position
+        self.parent = parent
 
         self.image = pygame.image.load(self.hovered_skin)
-        self.buttonRect = pygame.Rect(self.position[0], self.position[1], self.width, self.height)
+        if self.parent_position == "absolute":
+            self.buttonRect = pygame.Rect(self.position[0], self.position[1], self.width, self.height)
+        else:
+            pass
 
     def handle_hover(self):
-        self.is_hovered =  self.buttonRect.collidepoint(pygame.mouse.get_pos())
+        self.is_hovered = self.buttonRect.collidepoint(pygame.mouse.get_pos())
         self.change_skin()
 
     def handle_event(self, event):

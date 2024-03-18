@@ -2,6 +2,7 @@ import time
 
 from src.Objects.buildings.Buildings import Building
 
+
 class Furnace(Building):
     def __init__(self):
         print("Initializing Furnace")

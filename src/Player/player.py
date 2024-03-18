@@ -1,5 +1,5 @@
 from src.Player.Inventory import inventory
-from const import *
+import pygame
 
 
 class Player:
@@ -10,9 +10,9 @@ class Player:
         'crafting': 4
     }
 
-    def __init__(self, name="Mihaham", position_x=0, position_y=0, skin="sprites/bottom.png", settings=None):
+    def __init__(self, name="Mihaham", position_x=0, position_y=0, skin="sprites/bottom.png", settings=None, scale=72):
         self.__name = name
-        self.__inventory = inventory()
+        self.__inventory = inventory(scale=scale)
         self.__x = position_x
         self.__y = position_y
         self.__skin = skin
@@ -30,13 +30,11 @@ class Player:
     def __repr__(self) -> str:
         return f"Player {self.__name}"
 
-    def move(self, event, board=None):
+    def move(self, event, board=None, scale=72):
         if self.__status == Player.statuses["walking"]:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     exit()
-
-
 
                 if event.key == self.__settings["up"]:
                     self.__direction[1] = -1
@@ -134,7 +132,7 @@ class Player:
     def update_position(self, position):
         self.__x, self.__y = position
 
-    def update(self, board):
+    def update(self, board, step=None, scale=None, field=None, Center_x=0, Center_y=0):
         new_x = (self.__direction[0] * step + self.__x)
         new_y = (self.__direction[1] * step + self.__y)
         if 0 <= new_x <= (field) * scale and 0 <= new_y <= (field) * scale:

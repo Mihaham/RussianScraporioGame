@@ -1,5 +1,6 @@
 from src.Objects.GameObject import GameObject
 
+
 class Resources(GameObject):
 
     def __from_prototipe(self, prototipe):
