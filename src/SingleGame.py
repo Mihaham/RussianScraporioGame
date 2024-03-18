@@ -20,8 +20,11 @@ def start_game():
 class SingleGame():
     def __init__(self):
         self.fps = 60
-        self.LENGTH = 1500
-        self.HIGHT = 1000
+        pygame.init()
+        info = pygame.display.Info()
+        screen_width, screen_height = info.current_w, info.current_h
+        self.LENGTH = screen_width
+        self.HIGHT = screen_height
         self.step = 12
         self.scale = 72
         self.field = 20
