@@ -1,8 +1,9 @@
 import pygame
 
 
-class Button():
-    def __init__(self, text="START", width=None, height=None, hovered_skin=None, not_hovered_skin=None, func=None,
+class Button:
+    def __init__(self, text="START", width=None, height=None, hovered_skin=None,
+                 not_hovered_skin=None, func=None,
                  position=None, parent=None, parent_position="absolute"):
         self.text: str = text
         self.position: list[int] = position
@@ -18,7 +19,8 @@ class Button():
 
         self.image = pygame.image.load(self.hovered_skin)
         if self.parent_position == "absolute":
-            self.buttonRect = pygame.Rect(self.position[0], self.position[1], self.width, self.height)
+            self.buttonRect = pygame.Rect(self.position[0], self.position[1], self.width,
+                                          self.height)
         else:
             pass
 

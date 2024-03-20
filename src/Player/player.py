@@ -1,5 +1,6 @@
-from src.Player.Inventory import inventory
 import pygame
+
+from src.Player.Inventory import inventory
 
 
 class Player:
@@ -10,7 +11,8 @@ class Player:
         'crafting': 4
     }
 
-    def __init__(self, name="Mihaham", position_x=0, position_y=0, skin="sprites/bottom.png", settings=None, scale=72):
+    def __init__(self, name="Mihaham", position_x=0, position_y=0, skin="sprites/bottom.png",
+                 settings=None, scale=72):
         self.__name = name
         self.__inventory = inventory(scale=scale)
         self.__x = position_x
@@ -46,7 +48,8 @@ class Player:
                     self.__direction[0] = 1
                 if event.key == self.__settings["set_object"]:
                     if board.get_grid()[self.__x // scale][self.__y // scale].get_buildings() != []:
-                        board.get_grid()[self.__x // scale][self.__y // scale].get_buildings()[0].change_active()
+                        board.get_grid()[self.__x // scale][self.__y // scale].get_buildings()[
+                            0].change_active()
                     if board.get_grid()[self.__x // scale][self.__y // scale].get_miners() != []:
                         item = board.get_grid()[self.__x // scale][self.__y // scale].mine()
                         self.__inventory.add_item(item)
@@ -136,11 +139,16 @@ class Player:
         new_x = (self.__direction[0] * step + self.__x)
         new_y = (self.__direction[1] * step + self.__y)
         if 0 <= new_x <= (field) * scale and 0 <= new_y <= (field) * scale:
-            if (board.get_grid()[min(new_x // scale, field - 1)][min(new_y // scale, field - 1)].is_player_available):
-                if not (Center_x - board.get_cat_box()[0] <= new_x - board.get_game_pos_x() <= Center_x +
+            if (board.get_grid()[min(new_x // scale, field - 1)][
+                min(new_y // scale, field - 1)].is_player_available):
+                if not (Center_x - board.get_cat_box()[
+                    0] <= new_x - board.get_game_pos_x() <= Center_x +
                         board.get_cat_box()[
-                            0] and Center_y - board.get_cat_box()[1] <= new_y - board.get_game_pos_y() <= Center_y +
+                            0] and Center_y - board.get_cat_box()[
+                            1] <= new_y - board.get_game_pos_y() <= Center_y +
                         board.get_cat_box()[
                             1]):
-                    board.increase_coordinates(self.__direction[0] * step, self.__direction[1] * step)
-                self.update_position((self.__direction[0] * step + self.__x, self.__direction[1] * step + self.__y))
+                    board.increase_coordinates(self.__direction[0] * step,
+                                               self.__direction[1] * step)
+                self.update_position(
+                    (self.__direction[0] * step + self.__x, self.__direction[1] * step + self.__y))

@@ -1,6 +1,7 @@
-from src.buttons.button import Button
-from src.buttons.start_button import start_button
 import pygame
+
+from src.buttons.button import Button
+from src.buttons.startbutton import StartButton
 from src.drawing_pygame.Draw import Drawing
 
 
@@ -42,13 +43,13 @@ class MainMenu(Menu):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         k = 1;
-        self.buttons[0].append(start_button(width=600 // k,
-                                            height=200 // k,
-                                            text="",
-                                            not_hovered_skin="sprites/Large Buttons/Large Buttons/Start Button.png",
-                                            hovered_skin="sprites/Large Buttons/Colored Large Buttons/Start  col_Button.png",
-                                            # position=[self.LENGTH - self.LENGTH // 15, 100],
-                                            position=[self.width // 2 - (600 // k) // 2, 200]))
+        self.buttons[0].append(StartButton(width=600 // k,
+                                           height=200 // k,
+                                           text="",
+                                           not_hovered_skin="sprites/Large Buttons/Large Buttons/Start Button.png",
+                                           hovered_skin="sprites/Large Buttons/Colored Large Buttons/Start  col_Button.png",
+                                           # position=[self.LENGTH - self.LENGTH // 15, 100],
+                                           position=[self.width // 2 - (600 // k) // 2, 200]))
         self.buttons[0].append(Button(width=600 // k,
                                       height=200 // k,
                                       text="",

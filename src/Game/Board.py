@@ -1,4 +1,5 @@
 from random import randint
+
 from src.Game.Squares.Ground import Ground
 from src.Game.Squares.Water import Water
 from src.Game.single_square import SingleSquare
@@ -9,7 +10,8 @@ from src.Objects.buildings.furnace.furnace import Furnace
 
 class Board:
 
-    def __init__(self, field=400, water_amount=10, water_size=5, tree_amount=10, fertile_soil_amount=10):
+    def __init__(self, field=400, water_amount=10, water_size=5, tree_amount=10,
+                 fertile_soil_amount=10):
         self.__grid = [[None for i in range(field)] for j in range(field)]
         self.__game_pos_x = 0
         self.__game_pos_y = 0

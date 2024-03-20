@@ -1,7 +1,7 @@
-from src.SingleGame import SingleGame
 import pygame
 
 from src.Menu import MainMenu
+from src.SingleGame import SingleGame
 
 
 def start_game():

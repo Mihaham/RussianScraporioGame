@@ -56,10 +56,13 @@ class SingleGame():
                              # position=[self.LENGTH - self.LENGTH // 15, 100],
                              position=[0, 0],
                              func=self.change_screen_size)
-        self.Draw = Drawing(scale=self.scale, LENGTH=self.LENGTH, HIGHT=self.HIGHT, field=self.field, step=self.step)
+        self.Draw = Drawing(scale=self.scale, LENGTH=self.LENGTH, HIGHT=self.HIGHT,
+                            field=self.field, step=self.step)
         self.Log.add_info("Drawing is initialized")
-        self.board = Board(field=self.field, water_amount=self.water_amount, water_size=self.water_size,
-                           tree_amount=self.tree_amount, fertile_soil_amount=self.fertile_soil_amount)
+        self.board = Board(field=self.field, water_amount=self.water_amount,
+                           water_size=self.water_size,
+                           tree_amount=self.tree_amount,
+                           fertile_soil_amount=self.fertile_soil_amount)
         self.Log.add_info("Board is initialized")
         self.player = Player(position_x=self.Center_x, position_y=self.Center_y, scale=self.scale)
         self.Log.add_info("Player is initialized")
@@ -78,7 +81,8 @@ class SingleGame():
                     exit()
                 if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
                     self.player.move(event, board=self.board, scale=self.scale)
-            self.player.update(self.board, scale=self.scale, field=self.field, Center_x=self.Center_x,
+            self.player.update(self.board, scale=self.scale, field=self.field,
+                               Center_x=self.Center_x,
                                Center_y=self.Center_y, step=self.step)
             self.board.update()
 
@@ -98,7 +102,8 @@ class SingleGame():
             info = pygame.display.Info()
             self.update_screen_size(info.current_w, info.current_h)
             self.surface = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        self.Draw.update_parametrs(scale=self.scale, LENGTH=self.LENGTH, HIGHT=self.HIGHT, field=self.field,
+        self.Draw.update_parametrs(scale=self.scale, LENGTH=self.LENGTH, HIGHT=self.HIGHT,
+                                   field=self.field,
                                    step=self.step)
 
 
