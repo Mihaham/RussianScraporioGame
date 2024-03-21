@@ -3,6 +3,7 @@ import pygame
 from src.buttons.button import Button
 from src.buttons.startbutton import StartButton
 from src.drawing_pygame.Draw import Drawing
+from src.logger.Logger import Logger
 
 class Menu():
     def __init__(self, background=None, buttons=[[]], width=2000, height=1000, x=0, y=0):
@@ -14,6 +15,7 @@ class Menu():
         self.x: int = x
         self.y: int = y
         self.Draw : Drawing = Drawing()
+        Logger.add_info("Menu is initialized")
 
     def handle_hover(self) -> None:
         for buttons_list in self.buttons:
@@ -26,6 +28,7 @@ class Menu():
                 button.update(event)
 
     def show(self) -> None:
+        Logger.add_info("Showing menu")
         while True:
             self.Draw.draw(surface=self.surface, Menu=self)
             self.handle_hover()
@@ -57,3 +60,4 @@ class MainMenu(Menu):
                                       position=[self.width // 2 - (600 // k) // 2, 500],
                                       func=exit))
         self.background = "sprites/menu_back.png"
+        Logger.add_info("MainMenu is initialized")

@@ -3,6 +3,7 @@ import time
 from src.Objects.GameObject import GameObject
 from src.Objects.Resources.Resources import Resources
 from typing import Optional
+from src.logger.Logger import Logger
 
 class Building(GameObject):
     def __init__(self) -> None:
@@ -20,6 +21,7 @@ class Building(GameObject):
         self.__alowded_fuel : list[Optional[Resources]] = []
         self.__is_active : bool = False
         self.__start_of_active : time.time = time.time()
+        Logger.add_info("Building is initialized")
 
     def __repr__(self) -> str:
         return f"Building with {self.input} and {self.output} and {self.fuel}"

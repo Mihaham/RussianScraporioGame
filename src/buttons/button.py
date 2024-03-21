@@ -1,12 +1,15 @@
 from typing import Optional
-
+from src.logger.Logger import Logger
 import pygame
 
 
 class Button:
+    id = 0
     def __init__(self, text : str="START", width : int =100, height : int = 100, hovered_skin : str= "sprites/empty.png",
                  not_hovered_skin : str="sprites/empty.png", func=None,
                  position : list[int]=None, parent : Optional=None, parent_position : str = "absolute"):
+        Button.id += 1
+        self.__id = Button.id
         self.text: str = text
         self.position: list[int] = position
         self.is_hovered: bool = False
@@ -25,6 +28,7 @@ class Button:
                                           self.height)
         else:
             pass
+        Logger.add_info(f"Button is initialized with id {self.__id}")
 
     def handle_hover(self) -> None:
         self.is_hovered = self.buttonRect.collidepoint(pygame.mouse.get_pos())

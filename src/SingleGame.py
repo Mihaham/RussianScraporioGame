@@ -29,7 +29,6 @@ class SingleGame():
         pygame.display.set_caption("Really russian game")
 
         self.surface : pygame.display = pygame.display.set_mode((self.LENGTH, self.HIGHT))
-        self.Log : Logger = Logger()
         self.Exit : Button = Button(width=self.LENGTH // 15,
                            height=self.HIGHT // 10,
                            text="",
@@ -47,16 +46,15 @@ class SingleGame():
                              func=self.change_screen_size)
         self.Draw : Drawing = Drawing(scale=self.scale, LENGTH=self.LENGTH, HIGHT=self.HIGHT,
                             field=self.field, step=self.step)
-        self.Log.add_info("Drawing is initialized")
         self.board : Board = Board(field=self.field, water_amount=self.water_amount,
                            water_size=self.water_size,
                            tree_amount=self.tree_amount,
                            fertile_soil_amount=self.fertile_soil_amount)
-        self.Log.add_info("Board is initialized")
         self.player : Player = Player(position_x=self.center_x, position_y=self.center_y, scale=self.scale)
-        self.Log.add_info("Player is initialized")
+        Logger.add_info("Game is initialized")
 
     def play(self) -> None:
+        Logger.add_info("Started single game")
         while True:
             self.Draw.draw(self.surface, player=self.player, board=self.board, button=self.Exit)
             self.Draw.draw(self.surface, button=self.Screen)
@@ -80,10 +78,12 @@ class SingleGame():
             self.clock.tick(self.fps)
 
     def update_screen_size(self, x : int, y : int) -> None:
+        Logger.add_info(f"Screen sizes are updated with parametrs x = {x}, y = {y}")
         self.LENGTH = x
         self.HIGHT = y
 
     def change_screen_size(self) -> None:
+        Logger.add_info("Screen size is updated")
         if self.LENGTH == pygame.display.Info().current_w:
             self.LENGTH = 2000
             self.surface = pygame.display.set_mode((self.LENGTH, 1000))
@@ -100,8 +100,10 @@ class GameAdapter():
 
     def __init__(self, Game : SingleGame) -> None:
         self.SingleGame = Game
+        Logger.add_info("GameAdapter is initialized")
 
     def get_game_parameters(self) -> dict:
+        Logger.add_info("Getting info about SingleGame")
         dict = {}
         dict["fps"] = self.SingleGame.fps
         dict["LENGTH"] = self.SingleGame.LENGTH
@@ -127,6 +129,7 @@ class GameAdapter():
 
 
 def start_game() -> None:
+    Logger.add_info("Starting SingleGame")
     pygame.init()
     info = pygame.display.Info()
     screen_width, screen_height = info.current_w, info.current_h

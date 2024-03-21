@@ -1,7 +1,7 @@
 from src.Objects.GameObject import GameObject
 from src.Objects.Resources.Resources import Resources
 from typing import Optional
-
+from src.logger.Logger import Logger
 
 class Miners(GameObject):
 
@@ -9,6 +9,7 @@ class Miners(GameObject):
         self._resource : Optional[resource] = resource
         self._amount : int = amount
         self._skin : Optional[str] = skin
+        Logger.add_info("Miner is initialized")
 
     def __repr__(self) -> str:
         return f"_resource {self._resource} _amount {self._amount} _skin {self._skin}"

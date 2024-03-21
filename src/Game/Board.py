@@ -7,12 +7,16 @@ from src.Objects.Miners.Fertile_soil.Fertile_soil import Fertile_soil
 from src.Objects.Miners.Trees.Tree import Tree
 from src.Objects.buildings.furnace.furnace import Furnace
 from typing import Optional
+from src.logger.Logger import Logger
 
 
 class Board:
+    id = 0
 
     def __init__(self, field : int=400, water_amount : int=10, water_size : int = 5, tree_amount : int = 10,
                  fertile_soil_amount : int=10):
+        Board.id +=1
+        self.__id = Board.id
         self.__grid : list[list[Optional[SingleSquare]]] = [[None for i in range(field)] for j in range(field)]
         self.__game_pos_x : int = 0
         self.__game_pos_y : int = 0
@@ -43,6 +47,7 @@ class Board:
             self.__grid[x][y].add_miner(Fertile_soil())
 
         self.__grid[1][1].add_building(Furnace())
+        Logger.add_info(f"Board is initialized with id {self.__id}")
 
     def __repr__(self) -> str:
         for i in range(self.field):

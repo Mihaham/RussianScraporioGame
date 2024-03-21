@@ -4,7 +4,21 @@ import os
 from typing import Optional
 
 
-class Logger():
+def add_str_to_file(str_to_write: str, file_name: str, filemod: Optional[str] = "a") -> None:
+    with open(f"{file_name}", filemod) as file:
+        file.write(str_to_write + "\n")
+
+class Logger:
+    date = datetime.datetime.now().strftime("%Y-%m-%d---%H:%M:%S")
+    os.makedirs(f"logs/{date}", mode=0o777, exist_ok=True)
+    info: str = f"logs/{date}/info.log"
+    warnings: str = f"logs/{date}/warnings.log"
+    errors: str = f"logs/{date}/errors.log"
+    debug: str = f"logs/{date}/debug.log"
+    add_str_to_file("Game started\n", info, filemod="w")
+    add_str_to_file("Game started\n", warnings, filemod="w")
+    add_str_to_file("Game started\n", errors, filemod="w")
+    add_str_to_file("Game started\n", debug, filemod="w")
 
     def __init__(self) -> None:
         logging.basicConfig(level=logging.INFO,
@@ -17,27 +31,22 @@ class Logger():
         self.debug : str = f"logs/{self.date}/debug.log"
 
 
-        self.add_str_to_file("Game started\n", self.info, filemod="w")
-        self.add_str_to_file("Game started\n", self.warnings, filemod="w")
-        self.add_str_to_file("Game started\n", self.errors, filemod="w")
-        self.add_str_to_file("Game started\n", self.debug, filemod="w")
-
-    def add_str_to_file(self, str_to_write : str, file_name : str, filemod : Optional[str]="a") -> None:
-        with open(f"{file_name}", filemod) as file:
-            file.write(str_to_write + "\n")
-
-    def add_info(self, text : str) -> None:
+    @classmethod
+    def add_info(cls, text : str) -> None:
         logging.info(text)
-        self.add_str_to_file(text, self.info)
+        add_str_to_file(text, cls.info)
 
-    def add_warnings(self, text : str) -> None:
+    @classmethod
+    def add_warnings(cls, text : str) -> None:
         logging.warning(text)
-        self.add_str_to_file(text, self.warnings)
+        add_str_to_file(text, cls.warnings)
 
-    def add_errors(self, text : str) -> None:
+    @classmethod
+    def add_errors(cls, text : str) -> None:
         logging.error(text)
-        self.add_str_to_file(text, self.errors)
+        add_str_to_file(text, cls.errors)
 
-    def add_debug(self, text : str) -> None:
+    @classmethod
+    def add_debug(cls, text : str) -> None:
         logging.debug(text)
-        self.add_str_to_file(text, self.debug)
+        add_str_to_file(text, cls.debug)
