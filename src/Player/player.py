@@ -47,11 +47,11 @@ class Player:
                 if event.key == self.__settings["right"]:
                     self.__direction[0] = 1
                 if event.key == self.__settings["set_object"]:
-                    if board.get_grid()[self.__x // scale][self.__y // scale].get_buildings() != []:
-                        board.get_grid()[self.__x // scale][self.__y // scale].get_buildings()[
+                    if board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].get_buildings() != []:
+                        board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].get_buildings()[
                             0].change_active()
-                    if board.get_grid()[self.__x // scale][self.__y // scale].get_miners() != []:
-                        item = board.get_grid()[self.__x // scale][self.__y // scale].mine()
+                    if board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].get_miners() != []:
+                        item = board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].mine()
                         self.__inventory.add_item(item)
                 if event.key == self.__settings["inventory"]:
                     self.__direction = [0, 0]

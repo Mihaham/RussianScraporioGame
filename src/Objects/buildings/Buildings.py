@@ -15,8 +15,8 @@ class Building(GameObject):
         self.input : dict = {}
         self.output : dict = {}
         self.fuel : dict = {}
-        self.__input_resources : dict = {}
-        self.__output_resources : dict = {}
+        self.input_resources : dict = {}
+        self.output_resources : dict = {}
         self.__alowded_fuel : list[Optional[Resources]] = []
         self.__is_active : bool = False
         self.__start_of_active : time.time = time.time()
@@ -34,23 +34,23 @@ class Building(GameObject):
         else:
             self._skin = self.inactive_skin
 
-    def update(self):
+    def update(self) -> None:
         if self.__is_active:
             if self.fuel["burning_time"] < time.time() - self.__start_of_active:
                 print(self)
                 print(f"burning time: {time.time()}")
                 self.__start_of_active = time.time()
                 if self.fuel["amount"]:
-                    self.fuel["amount"] -= 1
-                    for resource, amount in self.__input_resources.copy().items():
+                    self.fuel["amount"] -= self.fuel["fuel_cost"]
+                    for resource, amount in self.input_resources.copy().items():
                         if self.input[resource] < amount:
                             self.__is_active = False
                             self.change_skin()
                             break
                     if self.__is_active:
-                        for resource, amount in self.__input_resources.items():
+                        for resource, amount in self.input_resources.items():
                             self.input[resource] -= amount
-                        for resource, amount in self.__output_resources.items():
+                        for resource, amount in self.output_resources.items():
                             if resource not in self.output.keys():
                                 self.output[resource] = 0
                             self.output[resource] += amount

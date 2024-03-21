@@ -17,6 +17,7 @@ class Drawing():
     def __init__(self, **kwargs):
         self.my_font = pygame.font.SysFont('Comic Sans MS', 30)
         self.sprites = { None : "sprites/empty.png"}
+        self.objects : dict = {}
         self.scale = self.in_kwargs("scale", **kwargs)
         self.LENGTH = self.in_kwargs("LENGTH", **kwargs)
         self.HIGHT = self.in_kwargs("HIGHT", **kwargs)
@@ -105,7 +106,9 @@ class Drawing():
                     items = inventory.get_grid()[i][j]
                     amount = inventory.get_amount()[i][j]
                     if items != None:
-                        skin = items().get_skin()
+                        if items not in self.objects:
+                            self.objects[items] = items()
+                        skin = self.objects[items].get_skin()
                         object_skin = self.sprites[skin]
                         object_skin = pygame.transform.scale(object_skin,
                                                              (small_scale - 10, small_scale - 10))

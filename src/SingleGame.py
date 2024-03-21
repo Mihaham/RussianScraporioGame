@@ -124,3 +124,13 @@ class GameAdapter():
         dict["player"] = self.SingleGame.player
 
         return dict
+
+
+def start_game() -> None:
+    pygame.init()
+    info = pygame.display.Info()
+    screen_width, screen_height = info.current_w, info.current_h
+
+    Game = SingleGame()
+    Game.update_screen_size(screen_width, screen_height)
+    Game.play()
