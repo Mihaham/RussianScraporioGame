@@ -1,24 +1,25 @@
 import time
 
 from src.Objects.GameObject import GameObject
-
+from src.Objects.Resources.Resources import Resources
+from typing import Optional
 
 class Building(GameObject):
-    def __init__(self):
+    def __init__(self) -> None:
         print("Initializing Building")
         super().__init__()
-        self._skin = None
-        self.active_skin = None
-        self.inactive_skin = None
-        self._type = "buildings"
-        self.input = {}
-        self.output = {}
-        self.fuel = {}
-        self.__input_resources = {}
-        self.__output_resources = {}
-        self.__alowded_fuel = []
-        self.__is_active = False
-        self.__start_of_active = time.time()
+        self._skin : Optional[str] = None
+        self.active_skin : Optional[str] = None
+        self.inactive_skin : Optional[str] = None
+        self._type : str = "buildings"
+        self.input : dict = {}
+        self.output : dict = {}
+        self.fuel : dict = {}
+        self.__input_resources : dict = {}
+        self.__output_resources : dict = {}
+        self.__alowded_fuel : list[Optional[Resources]] = []
+        self.__is_active : bool = False
+        self.__start_of_active : time.time = time.time()
 
     def __repr__(self) -> str:
         return f"Building with {self.input} and {self.output} and {self.fuel}"

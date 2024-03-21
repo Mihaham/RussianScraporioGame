@@ -4,7 +4,6 @@ from src.buttons.button import Button
 from src.buttons.startbutton import StartButton
 from src.drawing_pygame.Draw import Drawing
 
-
 class Menu():
     def __init__(self, background=None, buttons=[[]], width=2000, height=1000, x=0, y=0):
         self.surface = pygame.display.set_mode((width, height))
@@ -14,19 +13,19 @@ class Menu():
         self.height: int = height
         self.x: int = x
         self.y: int = y
-        self.Draw = Drawing()
+        self.Draw : Drawing = Drawing()
 
-    def handle_hover(self):
+    def handle_hover(self) -> None:
         for buttons_list in self.buttons:
             for button in buttons_list:
                 button.handle_hover()
 
-    def update(self, event):
+    def update(self, event : pygame.event) -> None:
         for buttons_list in self.buttons:
             for button in buttons_list:
                 button.update(event)
 
-    def show(self):
+    def show(self) -> None:
         while True:
             self.Draw.draw(surface=self.surface, Menu=self)
             self.handle_hover()
@@ -42,7 +41,7 @@ class Menu():
 class MainMenu(Menu):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        k = 1;
+        k = 1
         self.buttons[0].append(StartButton(width=600 // k,
                                            height=200 // k,
                                            text="",

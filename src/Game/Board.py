@@ -6,17 +6,18 @@ from src.Game.single_square import SingleSquare
 from src.Objects.Miners.Fertile_soil.Fertile_soil import Fertile_soil
 from src.Objects.Miners.Trees.Tree import Tree
 from src.Objects.buildings.furnace.furnace import Furnace
+from typing import Optional
 
 
 class Board:
 
-    def __init__(self, field=400, water_amount=10, water_size=5, tree_amount=10,
-                 fertile_soil_amount=10):
-        self.__grid = [[None for i in range(field)] for j in range(field)]
-        self.__game_pos_x = 0
-        self.__game_pos_y = 0
-        self.__cat_box = (300, 150)
-        self.field = field
+    def __init__(self, field : int=400, water_amount : int=10, water_size : int = 5, tree_amount : int = 10,
+                 fertile_soil_amount : int=10):
+        self.__grid : list[list[Optional[SingleSquare]]] = [[None for i in range(field)] for j in range(field)]
+        self.__game_pos_x : int = 0
+        self.__game_pos_y : int = 0
+        self.__cat_box : tuple[int,int] = (300, 150)
+        self.field : int = field
         for i in range(field):
             for j in range(field):
                 self.__grid[i][j] = SingleSquare(prototipe=Ground())
@@ -41,7 +42,7 @@ class Board:
 
             self.__grid[x][y].add_miner(Fertile_soil())
 
-        self.__grid[1][1].add_object(Furnace())
+        self.__grid[1][1].add_building(Furnace())
 
     def __repr__(self) -> str:
         for i in range(self.field):
@@ -49,14 +50,14 @@ class Board:
                 print(self.__grid[i][j])
         return ""
 
-    def increase_coordinates(self, x, y):
+    def increase_coordinates(self, x : int, y : int) -> None:
         self.update_cordinates(self.__game_pos_x + x, self.__game_pos_y + y)
 
-    def update_cordinates(self, new_x, new_y):
-        self.__game_pos_x = new_x
-        self.__game_pos_y = new_y
+    def update_cordinates(self, new_x : int, new_y : int) -> None:
+        self.__game_pos_x : int = new_x
+        self.__game_pos_y : int = new_y
 
-    def get_grid(self) -> list[list[SingleSquare | None]] | None:
+    def get_grid(self) -> Optional[list[list[Optional[SingleSquare]]]]:
         return self.__grid
 
     def get_grid_size(self) -> int:
@@ -65,10 +66,10 @@ class Board:
     def get_cat_box(self) -> tuple:
         return self.__cat_box
 
-    def set_grid(self, new_grid):
+    def set_grid(self, new_grid : list[list[Optional[SingleSquare]]]):
         self.__grid = new_grid
 
-    def set_cat_box(self, new_cat):
+    def set_cat_box(self, new_cat : tuple[int,int]):
         self.__cat_box = new_cat
 
     def get_game_pos(self) -> tuple:
@@ -80,7 +81,7 @@ class Board:
     def get_game_pos_y(self) -> int:
         return self.__game_pos_y
 
-    def update(self):
+    def update(self) -> None:
         for i in range(self.field):
             for j in range(self.field):
                 self.__grid[i][j].update()

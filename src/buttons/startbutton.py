@@ -1,4 +1,4 @@
-from src.SingleGame import start_game
+from main import start_game
 from src.buttons.button import Button
 
 

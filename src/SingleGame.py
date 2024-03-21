@@ -6,49 +6,38 @@ from src.buttons.button import Button
 from src.drawing_pygame.Draw import Drawing
 from src.logger.Logger import Logger
 
-
-def start_game():
-    pygame.init()
-    info = pygame.display.Info()
-    screen_width, screen_height = info.current_w, info.current_h
-
-    Game = SingleGame()
-    Game.update_screen_size(screen_width, screen_height)
-    Game.play()
-
-
 class SingleGame():
     def __init__(self):
-        self.fps = 60
+        self.fps : int = 60
         pygame.init()
         info = pygame.display.Info()
         screen_width, screen_height = info.current_w, info.current_h
-        self.LENGTH = screen_width
-        self.HIGHT = screen_height
-        self.step = 12
-        self.scale = 72
-        self.field = 20
-        self.water_amount = 1
-        self.water_size = 4
-        self.tree_amount = 1
-        self.fertile_soil_amount = 10
-        self.Center_x = self.LENGTH // 2
-        self.Center_y = self.HIGHT // 2
+        self.LENGTH : int = screen_width
+        self.HIGHT : int = screen_height
+        self.step : int = 12
+        self.scale : int = 72
+        self.field : int = 20
+        self.water_amount : int = 1
+        self.water_size : int = 4
+        self.tree_amount : int = 1
+        self.fertile_soil_amount : int = 10
+        self.center_x : int = self.LENGTH // 2
+        self.center_y : int = self.HIGHT // 2
         pygame.font.init()
 
-        self.clock = pygame.time.Clock()
+        self.clock : pygame.time.Clock = pygame.time.Clock()
         pygame.display.set_caption("Really russian game")
 
-        self.surface = pygame.display.set_mode((self.LENGTH, self.HIGHT))
-        self.Log = Logger()
-        self.Exit = Button(width=self.LENGTH // 15,
+        self.surface : pygame.display = pygame.display.set_mode((self.LENGTH, self.HIGHT))
+        self.Log : Logger = Logger()
+        self.Exit : Button = Button(width=self.LENGTH // 15,
                            height=self.HIGHT // 10,
                            text="",
                            not_hovered_skin="sprites/Large Buttons/Large Buttons/Exit Button.png",
                            hovered_skin="sprites/Large Buttons/Colored Large Buttons/Exit  col_Button.png",
                            position=[self.LENGTH - self.LENGTH // 15, 0],
                            func=exit)
-        self.Screen = Button(width=self.LENGTH // 15,
+        self.Screen : Button = Button(width=self.LENGTH // 15,
                              height=self.HIGHT // 10,
                              text="FULLSCREEN MODE",
                              not_hovered_skin="sprites/Large Buttons/Large Buttons/Exit Button.png",
@@ -56,18 +45,18 @@ class SingleGame():
                              # position=[self.LENGTH - self.LENGTH // 15, 100],
                              position=[0, 0],
                              func=self.change_screen_size)
-        self.Draw = Drawing(scale=self.scale, LENGTH=self.LENGTH, HIGHT=self.HIGHT,
+        self.Draw : Drawing = Drawing(scale=self.scale, LENGTH=self.LENGTH, HIGHT=self.HIGHT,
                             field=self.field, step=self.step)
         self.Log.add_info("Drawing is initialized")
-        self.board = Board(field=self.field, water_amount=self.water_amount,
+        self.board : Board = Board(field=self.field, water_amount=self.water_amount,
                            water_size=self.water_size,
                            tree_amount=self.tree_amount,
                            fertile_soil_amount=self.fertile_soil_amount)
         self.Log.add_info("Board is initialized")
-        self.player = Player(position_x=self.Center_x, position_y=self.Center_y, scale=self.scale)
+        self.player : Player = Player(position_x=self.center_x, position_y=self.center_y, scale=self.scale)
         self.Log.add_info("Player is initialized")
 
-    def play(self):
+    def play(self) -> None:
         while True:
             self.Draw.draw(self.surface, player=self.player, board=self.board, button=self.Exit)
             self.Draw.draw(self.surface, button=self.Screen)
@@ -82,19 +71,19 @@ class SingleGame():
                 if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
                     self.player.move(event, board=self.board, scale=self.scale)
             self.player.update(self.board, scale=self.scale, field=self.field,
-                               Center_x=self.Center_x,
-                               Center_y=self.Center_y, step=self.step)
+                               Center_x=self.center_x,
+                               Center_y=self.center_y, step=self.step)
             self.board.update()
 
             pygame.display.flip()
             pygame.display.update()
             self.clock.tick(self.fps)
 
-    def update_screen_size(self, x, y):
+    def update_screen_size(self, x : int, y : int) -> None:
         self.LENGTH = x
         self.HIGHT = y
 
-    def change_screen_size(self):
+    def change_screen_size(self) -> None:
         if self.LENGTH == pygame.display.Info().current_w:
             self.LENGTH = 2000
             self.surface = pygame.display.set_mode((self.LENGTH, 1000))
@@ -109,10 +98,10 @@ class SingleGame():
 
 class GameAdapter():
 
-    def __init__(self, Game=None):
+    def __init__(self, Game : SingleGame) -> None:
         self.SingleGame = Game
 
-    def get_game_parameters(self):
+    def get_game_parameters(self) -> dict:
         dict = {}
         dict["fps"] = self.SingleGame.fps
         dict["LENGTH"] = self.SingleGame.LENGTH
@@ -124,8 +113,8 @@ class GameAdapter():
         dict["water_size"] = self.SingleGame.water_size
         dict["tree_amount"] = self.SingleGame.tree_amount
         dict["fertile_soil_amount"] = self.SingleGame.fertile_soil_amount
-        dict["Center_x"] = self.SingleGame.Center_x
-        dict["Center_y"] = self.SingleGame.Center_y
+        dict["Center_x"] = self.SingleGame.center_x
+        dict["Center_y"] = self.SingleGame.center_y
         dict["surface"] = self.SingleGame.surface
         dict["Log"] = self.SingleGame.Log
         dict["Exit"] = self.SingleGame.Exit

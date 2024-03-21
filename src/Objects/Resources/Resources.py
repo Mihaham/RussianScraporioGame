@@ -1,13 +1,14 @@
 from src.Objects.GameObject import GameObject
+from typing import Optional
 
 
 class Resources(GameObject):
 
-    def __from_prototipe(self, prototipe):
+    def __from_prototipe(self, prototipe) -> None:
         self._skin = prototipe.get_skin()
         self._is_burnable = prototipe.get_is_burnable()
 
-    def __init__(self, prototipe=None):
+    def __init__(self, prototipe : Optional =None):
         if prototipe:
             self.__from_prototipe(prototipe)
 

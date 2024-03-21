@@ -1,12 +1,15 @@
+from collections.abc import Callable
+from typing import Optional
+
 class GameObject:
     _skin = None
     _type = None
 
-    def __get_prototipe(self, prototipe):
+    def __get_prototipe(self, prototipe) -> None:
         self._skin = prototipe.get_skin()
         self._type = prototipe.get_type()
 
-    def __init__(self, skin="sprites/furnace.png", type=None, prototype=None):
+    def __init__(self, skin : Optional[str]="sprites/furnace.png", type : Optional[str] =None, prototype : Optional=None):
         self._skin = skin
         self._type = type
 
