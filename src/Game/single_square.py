@@ -27,7 +27,7 @@ class SingleSquare:
             self._resources : list[Resources] = []
         else:
             self.__take_prototipe__(prototipe)
-        Logger.add_info("SingleSquare is initialized")
+        Logger.add_info(f"SingleSquare is initialized with (id - {self.__id})")
 
     def __repr__(self) -> str:
         return f"Objects {self._buildings} in single square with id {self.__id} and skin {self.get_skin()}. Also has {self._miners} miners. Also has {self._resources}"

@@ -7,7 +7,10 @@ from src.drawing_pygame.Draw import Drawing
 from src.logger.Logger import Logger
 
 class SingleGame():
+    id : int = 0
     def __init__(self):
+        SingleGame.id += 1
+        self.__id : int = SingleGame.id
         self.fps : int = 60
         pygame.init()
         info = pygame.display.Info()
@@ -16,7 +19,7 @@ class SingleGame():
         self.HIGHT : int = screen_height
         self.step : int = 12
         self.scale : int = 72
-        self.field : int = 20
+        self.field : int = 40
         self.water_amount : int = 1
         self.water_size : int = 4
         self.tree_amount : int = 1
@@ -51,7 +54,7 @@ class SingleGame():
                            tree_amount=self.tree_amount,
                            fertile_soil_amount=self.fertile_soil_amount)
         self.player : Player = Player(position_x=self.center_x, position_y=self.center_y, scale=self.scale)
-        Logger.add_info("Game is initialized")
+        Logger.add_info(f"Game is initialized with (id - {self.__id})")
 
     def play(self) -> None:
         Logger.add_info("Started single game")
@@ -61,6 +64,7 @@ class SingleGame():
             self.Exit.handle_hover()
             self.Screen.handle_hover()
             for event in pygame.event.get():
+
                 self.Exit.update(event)
                 self.Screen.update(event)
                 if event.type == pygame.QUIT:
@@ -96,34 +100,30 @@ class SingleGame():
                                    step=self.step)
 
 
-class GameAdapter():
-
-    def __init__(self, Game : SingleGame) -> None:
-        self.SingleGame = Game
-        Logger.add_info("GameAdapter is initialized")
-
-    def get_game_parameters(self) -> dict:
+class GameAdapter:
+    @classmethod
+    def get_game_parameters(cls, Game : SingleGame) -> dict:
         Logger.add_info("Getting info about SingleGame")
         dict = {}
-        dict["fps"] = self.SingleGame.fps
-        dict["LENGTH"] = self.SingleGame.LENGTH
-        dict["HIGHT"] = self.SingleGame.HIGHT
-        dict["step"] = self.SingleGame.step
-        dict["scale"] = self.SingleGame.scale
-        dict["field"] = self.SingleGame.field
-        dict["water_amount"] = self.SingleGame.water_amount
-        dict["water_size"] = self.SingleGame.water_size
-        dict["tree_amount"] = self.SingleGame.tree_amount
-        dict["fertile_soil_amount"] = self.SingleGame.fertile_soil_amount
-        dict["Center_x"] = self.SingleGame.center_x
-        dict["Center_y"] = self.SingleGame.center_y
-        dict["surface"] = self.SingleGame.surface
-        dict["Log"] = self.SingleGame.Log
-        dict["Exit"] = self.SingleGame.Exit
-        dict["Screen"] = self.SingleGame.Screen
-        dict["Draw"] = self.SingleGame.Draw
-        dict["board"] = self.SingleGame.board
-        dict["player"] = self.SingleGame.player
+        dict["fps"] = Game.fps
+        dict["LENGTH"] = Game.LENGTH
+        dict["HIGHT"] = Game.HIGHT
+        dict["step"] = Game.step
+        dict["scale"] = Game.scale
+        dict["field"] = Game.field
+        dict["water_amount"] = Game.water_amount
+        dict["water_size"] = Game.water_size
+        dict["tree_amount"] = Game.tree_amount
+        dict["fertile_soil_amount"] = Game.fertile_soil_amount
+        dict["Center_x"] = Game.center_x
+        dict["Center_y"] = Game.center_y
+        dict["surface"] = Game.surface
+        dict["Log"] = Game.Log
+        dict["Exit"] = Game.Exit
+        dict["Screen"] = Game.Screen
+        dict["Draw"] = Game.Draw
+        dict["board"] = Game.board
+        dict["player"] = Game.player
 
         return dict
 

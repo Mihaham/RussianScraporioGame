@@ -5,8 +5,10 @@ from src.logger.Logger import Logger
 
 
 class Furnace(Building):
+    id : int = 0
     def __init__(self):
-        print("Initializing Furnace")
+        Furnace.id += 1
+        self.__id = Furnace.id
         super().__init__()
         self._skin : str = "sprites/furnace.png"
         self._type : str = "buildings"
@@ -38,7 +40,7 @@ class Furnace(Building):
         self.output_resources : dict[str,int] = {
             "cuprum": 10
         }
-        Logger.add_info("Furnace is initialized")
+        Logger.add_info(f"Furnace is initialized with (id - {self.__id})")
 
     def __repr__(self) -> str:
         return f"Furnace with {self.input} and {self.output} and {self.fuel}"

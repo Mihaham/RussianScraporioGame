@@ -6,7 +6,10 @@ from src.drawing_pygame.Draw import Drawing
 from src.logger.Logger import Logger
 
 class Menu():
+    id : int = 0
     def __init__(self, background=None, buttons=[[]], width=2000, height=1000, x=0, y=0):
+        Menu.id += 1
+        self.__id = Menu.id
         self.surface = pygame.display.set_mode((width, height))
         self.buttons: list[list[Button]] = buttons
         self.background: str = background
@@ -15,7 +18,7 @@ class Menu():
         self.x: int = x
         self.y: int = y
         self.Draw : Drawing = Drawing()
-        Logger.add_info("Menu is initialized")
+        Logger.add_info("Menu is initialized ")
 
     def handle_hover(self) -> None:
         for buttons_list in self.buttons:

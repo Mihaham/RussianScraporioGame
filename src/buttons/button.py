@@ -10,6 +10,7 @@ class Button:
                  position : list[int]=None, parent : Optional=None, parent_position : str = "absolute"):
         Button.id += 1
         self.__id = Button.id
+
         self.text: str = text
         self.position: list[int] = position
         self.is_hovered: bool = False

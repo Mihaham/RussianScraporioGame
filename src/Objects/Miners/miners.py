@@ -4,12 +4,14 @@ from typing import Optional
 from src.logger.Logger import Logger
 
 class Miners(GameObject):
-
+    id : int = 0
     def __init__(self, resource : Optional[Resources]=None, amount : Optional[int]=0, skin : Optional[str]=None):
+        Miners.id += 1
+        self.__id = Miners.id
         self._resource : Optional[resource] = resource
         self._amount : int = amount
         self._skin : Optional[str] = skin
-        Logger.add_info("Miner is initialized")
+        Logger.add_info(f"Miner is initialized with (id - {self.__id})")
 
     def __repr__(self) -> str:
         return f"_resource {self._resource} _amount {self._amount} _skin {self._skin}"

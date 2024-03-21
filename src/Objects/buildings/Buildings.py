@@ -6,8 +6,10 @@ from typing import Optional
 from src.logger.Logger import Logger
 
 class Building(GameObject):
+    id : int = 0
     def __init__(self) -> None:
-        print("Initializing Building")
+        Building.id += 1
+        self.__id = Building.id
         super().__init__()
         self._skin : Optional[str] = None
         self.active_skin : Optional[str] = None
@@ -21,7 +23,7 @@ class Building(GameObject):
         self.__alowded_fuel : list[Optional[Resources]] = []
         self.__is_active : bool = False
         self.__start_of_active : time.time = time.time()
-        Logger.add_info("Building is initialized")
+        Logger.add_info(f"Building is initialized with (id - {self.__id})")
 
     def __repr__(self) -> str:
         return f"Building with {self.input} and {self.output} and {self.fuel}"
