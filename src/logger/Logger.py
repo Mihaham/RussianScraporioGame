@@ -50,3 +50,10 @@ class Logger:
     def add_debug(cls, text : str) -> None:
         logging.debug(text)
         add_str_to_file(text, cls.debug)
+
+
+class GlobalObject:
+    id = 0
+    objects = {}
+    def __init__(self):
+        GlobalObject.id += 1

@@ -4,6 +4,7 @@ import pygame
 
 from src.Player.player import Player
 from src.buttons.button import Button
+from src.logger.Logger import Logger, GlobalObject
 
 
 class Drawing():
@@ -15,6 +16,9 @@ class Drawing():
             return None
 
     def __init__(self, **kwargs):
+        GlobalObject()
+        self.global_id = GlobalObject.id
+        GlobalObject.objects[self.global_id] = self
         self.my_font = pygame.font.SysFont('Comic Sans MS', 30)
         self.sprites = { None : "sprites/empty.png"}
         self.objects : dict = {}

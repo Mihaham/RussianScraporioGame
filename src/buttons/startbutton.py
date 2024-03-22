@@ -1,12 +1,15 @@
 import src.SingleGame as sg
 from src.buttons.button import Button
-from src.logger.Logger import Logger
+from src.logger.Logger import Logger, GlobalObject
 
 class StartButton(Button):
     id = 0
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        GlobalObject()
+        self.global_id = GlobalObject.id
+        GlobalObject.objects[self.global_id] = self
         StartButton.id += 1
         self.__id = StartButton.id
         self.func = sg.start_game

@@ -3,11 +3,14 @@ import time
 from src.Objects.GameObject import GameObject
 from src.Objects.Resources.Resources import Resources
 from typing import Optional
-from src.logger.Logger import Logger
+from src.logger.Logger import Logger, GlobalObject
 
 class Building(GameObject):
     id : int = 0
     def __init__(self) -> None:
+        GlobalObject()
+        self.global_id = GlobalObject.id
+        GlobalObject.objects[self.global_id] = self
         Building.id += 1
         self.__id = Building.id
         super().__init__()

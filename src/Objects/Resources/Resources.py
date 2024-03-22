@@ -1,8 +1,9 @@
 from src.Objects.GameObject import GameObject
 from typing import Optional
-from src.logger.Logger import Logger
+from src.logger.Logger import Logger, GlobalObject
 
 class Resources(GameObject):
+
     id : int = 0
 
     def __from_prototipe(self, prototipe) -> None:
@@ -11,6 +12,9 @@ class Resources(GameObject):
         Logger.add_info("Getting Resources from prototipe")
 
     def __init__(self, prototipe : Optional =None):
+        GlobalObject()
+        self.global_id = GlobalObject.id
+        GlobalObject.objects[self.global_id] = self
         Resources.id += 1
         self.__id = Resources.id
         if prototipe:

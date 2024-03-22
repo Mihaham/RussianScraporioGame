@@ -1,6 +1,7 @@
 import pygame
 
 from src.Player.Inventory import inventory
+from src.logger.Logger import Logger, GlobalObject
 
 
 class Player:
@@ -13,6 +14,9 @@ class Player:
 
     def __init__(self, name="Mihaham", position_x=0, position_y=0, skin="sprites/bottom.png",
                  settings=None, scale=72):
+        GlobalObject()
+        self.global_id = GlobalObject.id
+        GlobalObject.objects[self.global_id] = self
         self.__name = name
         self.__inventory = inventory(scale=scale)
         self.__x = position_x

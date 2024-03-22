@@ -3,7 +3,7 @@ from src.Objects.Miners.miners import Miners
 from src.Objects.Resources.Resources import Resources
 from src.Objects.buildings.Buildings import Building
 from typing import Optional
-from src.logger.Logger import Logger
+from src.logger.Logger import Logger, GlobalObject
 
 
 class SingleSquare:
@@ -18,6 +18,9 @@ class SingleSquare:
         Logger.add_info("Got info for Single Square from prototipe")
 
     def __init__(self, skin : Optional[str] = None, prototipe =None):
+        GlobalObject()
+        self.global_id = GlobalObject.id
+        GlobalObject.objects[self.global_id] = self
         SingleSquare.id += 1
         self.__id : int = SingleSquare.id
         if prototipe == None:

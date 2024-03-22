@@ -1,11 +1,14 @@
 from src.Objects.GameObject import GameObject
 from src.Objects.Resources.Resources import Resources
 from typing import Optional
-from src.logger.Logger import Logger
+from src.logger.Logger import Logger, GlobalObject
 
 class Miners(GameObject):
     id : int = 0
     def __init__(self, resource : Optional[Resources]=None, amount : Optional[int]=0, skin : Optional[str]=None):
+        GlobalObject()
+        self.global_id = GlobalObject.id
+        GlobalObject.objects[self.global_id] = self
         Miners.id += 1
         self.__id = Miners.id
         self._resource : Optional[resource] = resource

@@ -1,12 +1,15 @@
 import time
 
 from src.Objects.buildings.Buildings import Building
-from src.logger.Logger import Logger
+from src.logger.Logger import Logger, GlobalObject
 
 
 class Furnace(Building):
     id : int = 0
     def __init__(self):
+        GlobalObject()
+        self.global_id = GlobalObject.id
+        GlobalObject.objects[self.global_id] = self
         Furnace.id += 1
         self.__id = Furnace.id
         super().__init__()

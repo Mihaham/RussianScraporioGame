@@ -1,5 +1,5 @@
 from typing import Optional
-from src.logger.Logger import Logger
+from src.logger.Logger import Logger, GlobalObject
 import pygame
 
 
@@ -8,6 +8,9 @@ class Button:
     def __init__(self, text : str="START", width : int =100, height : int = 100, hovered_skin : str= "sprites/empty.png",
                  not_hovered_skin : str="sprites/empty.png", func=None,
                  position : list[int]=None, parent : Optional=None, parent_position : str = "absolute"):
+        GlobalObject()
+        self.global_id = GlobalObject.id
+        GlobalObject.objects[self.global_id] = self
         Button.id += 1
         self.__id = Button.id
 

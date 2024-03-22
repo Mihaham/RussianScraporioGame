@@ -1,9 +1,12 @@
 from src.Game.single_square import SingleSquare
-from src.logger.Logger import Logger
+from src.logger.Logger import Logger, GlobalObject
 
 class Water(SingleSquare):
     id = 0
     def __init__(self):
+        GlobalObject()
+        self.global_id = GlobalObject.id
+        GlobalObject.objects[self.global_id] = self
         Water.id += 1
         self.__id = Water.id
         super().__init__()

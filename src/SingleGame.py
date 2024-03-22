@@ -4,13 +4,16 @@ from src.Game.Board import Board
 from src.Player.player import Player
 from src.buttons.button import Button
 from src.drawing_pygame.Draw import Drawing
-from src.logger.Logger import Logger
+from src.logger.Logger import Logger, GlobalObject
 
 class SingleGame():
     id : int = 0
     def __init__(self):
         SingleGame.id += 1
         self.__id : int = SingleGame.id
+        GlobalObject()
+        self.global_id = GlobalObject.id
+        GlobalObject.objects[self.global_id] = self
         self.fps : int = 60
         pygame.init()
         info = pygame.display.Info()
@@ -19,7 +22,7 @@ class SingleGame():
         self.HIGHT : int = screen_height
         self.step : int = 12
         self.scale : int = 72
-        self.field : int = 40
+        self.field : int = 5
         self.water_amount : int = 1
         self.water_size : int = 4
         self.tree_amount : int = 1
@@ -136,4 +139,6 @@ def start_game() -> None:
 
     Game = SingleGame()
     Game.update_screen_size(screen_width, screen_height)
+    for id, object in GlobalObject.objects.items():
+        print(f"{id} - {object}")
     Game.play()
