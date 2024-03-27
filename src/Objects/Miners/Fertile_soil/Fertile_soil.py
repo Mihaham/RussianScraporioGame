@@ -5,9 +5,6 @@ from src.logger.Logger import Logger, GlobalObject
 class Fertile_soil(Miners):
     id : int = 0
     def __init__(self):
-        GlobalObject()
-        self.global_id = GlobalObject.id
-        GlobalObject.objects[self.global_id] = self
         super().__init__(resource=Soil, amount=10, skin="sprites/fertile_soil.png")
         Fertile_soil.id += 1
         self.__id = Fertile_soil.id

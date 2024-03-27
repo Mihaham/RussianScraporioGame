@@ -3,12 +3,10 @@ from src.Objects.buildings.furnace.furnace import Furnace
 from src.logger.Logger import Logger, GlobalObject
 
 
-class inventory():
+class inventory(GlobalObject):
 
     def __init__(self, size_x=5, size_y=10, scale=None):
-        GlobalObject()
-        self.global_id = GlobalObject.id
-        GlobalObject.objects[self.global_id] = self
+        super().__init__()
         self._grid = [[None for i in range(size_y)] for j in range(size_x)]
         self._amount = [[0 for i in range(size_y)] for j in range(size_x)]
         self._size_x = size_x

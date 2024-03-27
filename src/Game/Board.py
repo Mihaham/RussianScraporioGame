@@ -10,14 +10,12 @@ from typing import Optional
 from src.logger.Logger import Logger, GlobalObject
 
 
-class Board:
+class Board(GlobalObject):
     id = 0
 
     def __init__(self, field : int=400, water_amount : int=10, water_size : int = 5, tree_amount : int = 10,
                  fertile_soil_amount : int=10):
-        GlobalObject()
-        self.global_id = GlobalObject.id
-        GlobalObject.objects[self.global_id] = self
+        super().__init__()
         Board.id +=1
         self.__id = Board.id
         self.__grid : list[list[Optional[SingleSquare]]] = [[None for i in range(field)] for j in range(field)]

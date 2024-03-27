@@ -7,9 +7,6 @@ class StartButton(Button):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        GlobalObject()
-        self.global_id = GlobalObject.id
-        GlobalObject.objects[self.global_id] = self
         StartButton.id += 1
         self.__id = StartButton.id
         self.func = sg.start_game

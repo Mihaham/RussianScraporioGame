@@ -7,7 +7,7 @@ from src.buttons.button import Button
 from src.logger.Logger import Logger, GlobalObject
 
 
-class Drawing():
+class Drawing(GlobalObject):
     @staticmethod
     def in_kwargs(find_option, **kwargs):
         if find_option in kwargs.keys():
@@ -16,9 +16,7 @@ class Drawing():
             return None
 
     def __init__(self, **kwargs):
-        GlobalObject()
-        self.global_id = GlobalObject.id
-        GlobalObject.objects[self.global_id] = self
+        super().__init__()
         self.my_font = pygame.font.SysFont('Comic Sans MS', 30)
         self.sprites = { None : "sprites/empty.png"}
         self.objects : dict = {}

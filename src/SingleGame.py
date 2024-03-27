@@ -6,14 +6,12 @@ from src.buttons.button import Button
 from src.drawing_pygame.Draw import Drawing
 from src.logger.Logger import Logger, GlobalObject
 
-class SingleGame():
+class SingleGame(GlobalObject):
     id : int = 0
     def __init__(self):
+        super().__init__()
         SingleGame.id += 1
         self.__id : int = SingleGame.id
-        GlobalObject()
-        self.global_id = GlobalObject.id
-        GlobalObject.objects[self.global_id] = self
         self.fps : int = 60
         pygame.init()
         info = pygame.display.Info()
@@ -139,6 +137,6 @@ def start_game() -> None:
 
     Game = SingleGame()
     Game.update_screen_size(screen_width, screen_height)
-    for id, object in GlobalObject.objects.items():
-        print(f"{id} - {object}")
+    #for id, object in Logger.objects.items():
+    #    print(f"{id} - {object}")
     Game.play()

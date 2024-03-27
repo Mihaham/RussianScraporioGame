@@ -9,6 +9,7 @@ def add_str_to_file(str_to_write: str, file_name: str, filemod: Optional[str] = 
         file.write(str_to_write + "\n")
 
 class Logger:
+    objects = {}
     date = datetime.datetime.now().strftime("%Y-%m-%d---%H:%M:%S")
     os.makedirs(f"logs/{date}", mode=0o777, exist_ok=True)
     info: str = f"logs/{date}/info.log"
@@ -54,6 +55,7 @@ class Logger:
 
 class GlobalObject:
     id = 0
-    objects = {}
     def __init__(self):
         GlobalObject.id += 1
+        Logger.objects[GlobalObject.id] = self
+

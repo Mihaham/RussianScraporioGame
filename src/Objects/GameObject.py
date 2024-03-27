@@ -2,7 +2,7 @@ from collections.abc import Callable
 from typing import Optional
 from src.logger.Logger import Logger, GlobalObject
 
-class GameObject:
+class GameObject(GlobalObject):
     id = 0
 
     def __get_prototipe(self, prototipe) -> None:
@@ -11,9 +11,7 @@ class GameObject:
         Logger.add_info("Object got by prototipe")
 
     def __init__(self, skin : Optional[str]="sprites/furnace.png", type : Optional[str] =None, prototype : Optional=None):
-        GlobalObject()
-        self.global_id = GlobalObject.id
-        GlobalObject.objects[self.global_id] = self
+        super().__init__()
         GameObject.id += 1
         self.__id = GameObject.id
         self._skin = skin

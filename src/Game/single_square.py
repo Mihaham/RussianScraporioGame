@@ -6,7 +6,7 @@ from typing import Optional
 from src.logger.Logger import Logger, GlobalObject
 
 
-class SingleSquare:
+class SingleSquare(GlobalObject):
     id : int = 0
 
     def __take_prototipe__(self, prototipe) -> None:
@@ -18,9 +18,7 @@ class SingleSquare:
         Logger.add_info("Got info for Single Square from prototipe")
 
     def __init__(self, skin : Optional[str] = None, prototipe =None):
-        GlobalObject()
-        self.global_id = GlobalObject.id
-        GlobalObject.objects[self.global_id] = self
+        super().__init__()
         SingleSquare.id += 1
         self.__id : int = SingleSquare.id
         if prototipe == None:

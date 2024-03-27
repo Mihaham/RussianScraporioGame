@@ -5,12 +5,10 @@ from src.buttons.startbutton import StartButton
 from src.drawing_pygame.Draw import Drawing
 from src.logger.Logger import Logger, GlobalObject
 
-class Menu():
+class Menu(GlobalObject):
     id : int = 0
     def __init__(self, background=None, buttons=[[]], width=2000, height=1000, x=0, y=0):
-        GlobalObject()
-        self.global_id = GlobalObject.id
-        GlobalObject.objects[self.global_id] = self
+        super().__init__()
         Menu.id += 1
         self.__id = Menu.id
         self.surface = pygame.display.set_mode((width, height))

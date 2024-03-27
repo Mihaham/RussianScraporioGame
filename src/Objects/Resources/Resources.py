@@ -12,9 +12,6 @@ class Resources(GameObject):
         Logger.add_info("Getting Resources from prototipe")
 
     def __init__(self, prototipe : Optional =None):
-        GlobalObject()
-        self.global_id = GlobalObject.id
-        GlobalObject.objects[self.global_id] = self
         Resources.id += 1
         self.__id = Resources.id
         if prototipe:

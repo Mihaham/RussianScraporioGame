@@ -3,14 +3,12 @@ from src.logger.Logger import Logger, GlobalObject
 import pygame
 
 
-class Button:
+class Button(GlobalObject):
     id = 0
     def __init__(self, text : str="START", width : int =100, height : int = 100, hovered_skin : str= "sprites/empty.png",
                  not_hovered_skin : str="sprites/empty.png", func=None,
                  position : list[int]=None, parent : Optional=None, parent_position : str = "absolute"):
-        GlobalObject()
-        self.global_id = GlobalObject.id
-        GlobalObject.objects[self.global_id] = self
+        super().__init__()
         Button.id += 1
         self.__id = Button.id
 
