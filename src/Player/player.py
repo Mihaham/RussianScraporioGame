@@ -51,7 +51,7 @@ class Player(GlobalObject):
                 if event.key == self.__settings["set_object"]:
                     if board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].get_buildings() != []:
                         board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].get_buildings()[
-                            0].change_active()
+                            0].change_menu()
                     if board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].get_miners() != []:
                         item = board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].mine()
                         self.__inventory.add_item(item)

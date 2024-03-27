@@ -7,7 +7,7 @@ from src.logger.Logger import Logger, GlobalObject
 
 class Menu(GlobalObject):
     id : int = 0
-    def __init__(self, background=None, buttons=[[]], width=2000, height=1000, x=0, y=0):
+    def __init__(self, background=None, buttons = [[]], width=2000, height=1000, x=0, y=0, **kwargs):
         super().__init__()
         Menu.id += 1
         self.__id = Menu.id
@@ -19,6 +19,7 @@ class Menu(GlobalObject):
         self.x: int = x
         self.y: int = y
         self.Draw : Drawing = Drawing()
+        self.is_active = False
         Logger.add_info("Menu is initialized ")
 
     def handle_hover(self) -> None:
@@ -33,21 +34,25 @@ class Menu(GlobalObject):
 
     def show(self) -> None:
         Logger.add_info("Showing menu")
-        while True:
-            self.Draw.draw(surface=self.surface, Menu=self)
-            self.handle_hover()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
-                self.update(event)
-            pygame.display.flip()
-            pygame.display.update()
-            pygame.time.Clock().tick(60)
+        self.is_active = not(self.is_active)
+
+    def draw_menu(self):
+        self.Draw.draw(surface=self.surface, Menu=self)
+
+    def loop(self):
+        self.handle_hover()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+            self.update(event)
+        pygame.display.flip()
+        pygame.display.update()
+        pygame.time.Clock().tick(60)
 
 
 class MainMenu(Menu):
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(buttons = [[]],**kwargs)
         k = 1
         self.buttons[0].append(StartButton(width=600 // k,
                                            height=200 // k,
@@ -55,7 +60,8 @@ class MainMenu(Menu):
                                            not_hovered_skin="sprites/Large Buttons/Large Buttons/Start Button.png",
                                            hovered_skin="sprites/Large Buttons/Colored Large Buttons/Start  col_Button.png",
                                            # position=[self.LENGTH - self.LENGTH // 15, 100],
-                                           position=[self.width // 2 - (600 // k) // 2, 200]))
+                                           position=[self.width // 2 - (600 // k) // 2, 200],
+                                           start = kwargs["start"]))
         self.buttons[0].append(Button(width=600 // k,
                                       height=200 // k,
                                       text="",
@@ -65,3 +71,31 @@ class MainMenu(Menu):
                                       func=exit))
         self.background = "sprites/menu_back.png"
         Logger.add_info("MainMenu is initialized")
+
+class BuildingMenu(Menu):
+    def __init__(self,pos_x, pos_y, width, hight, building, recipes, function, **kwargs):
+        super().__init__(buttons = [[]],**kwargs)
+        self.x = pos_x
+        self.y = pos_y
+        self.width = width
+        self.height = hight
+        self.building = building
+        self.recipes = recipes
+        self.buttons[0].append(Button(width=100,
+                                      height=30,
+                                      text="",
+                                      not_hovered_skin="sprites/Large Buttons/Large Buttons/Exit Button.png",
+                                      hovered_skin="sprites/Large Buttons/Colored Large Buttons/Exit  col_Button.png",
+                                      position=[pos_x + width - 100, pos_y],
+                                      func=function))
+
+        #for recipe in self.recipes:
+        #    recipe.activate_button.func = self.activate_recipe
+        self.has_active_recipe = False
+        self.active_recipe = None
+
+
+    def activate_recipe(self, recipe):
+        self.has_active_recipe = True
+        self.active_recipe = recipe
+

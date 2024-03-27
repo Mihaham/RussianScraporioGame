@@ -3,7 +3,8 @@ import time
 from src.Objects.GameObject import GameObject
 from src.Objects.Resources.Resources import Resources
 from typing import Optional
-from src.logger.Logger import Logger, GlobalObject
+from src.logger.Logger import Logger
+import src.Menu
 
 class Building(GameObject):
     id : int = 0
@@ -23,16 +24,21 @@ class Building(GameObject):
         self.__alowded_fuel : list[Optional[Resources]] = []
         self.__is_active : bool = False
         self.__start_of_active : time.time = time.time()
+        self.is_active_menu = True
+        self.Menu = src.Menu.BuildingMenu(200, 150, 1500,500,self,[None],self.change_menu)
         Logger.add_info(f"Building is initialized with (id - {self.__id})")
 
     def __repr__(self) -> str:
         return f"Building with {self.input} and {self.output} and {self.fuel}"
 
-    def change_active(self):
+    def change_menu(self) -> None:
+        self.is_active_menu = not self.is_active_menu
+
+    def change_active(self) -> None:
         self.__is_active = not self.__is_active
         self.change_skin()
 
-    def change_skin(self):
+    def change_skin(self) -> None:
         if self.__is_active:
             self._skin = self.active_skin
         else:

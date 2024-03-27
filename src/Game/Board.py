@@ -90,4 +90,12 @@ class Board(GlobalObject):
     def update(self) -> None:
         for i in range(self.field):
             for j in range(self.field):
-                self.__grid[i][j].update()
+                    self.__grid[i][j].update()
+
+    def get_active_building_menu(self):
+        for i in range(self.field):
+            for j in range(self.field):
+                for building in self.__grid[i][j].get_buildings():
+                    if building.is_active_menu:
+                        return building.Menu
+        return None
