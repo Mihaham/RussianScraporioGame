@@ -20,7 +20,7 @@ class SingleGame(GlobalObject):
         self.HIGHT : int = screen_height
         self.step : int = 12
         self.scale : int = 72
-        self.field : int = 5
+        self.field : int = 30
         self.water_amount : int = 1
         self.water_size : int = 4
         self.tree_amount : int = 1

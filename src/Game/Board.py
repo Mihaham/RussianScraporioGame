@@ -25,7 +25,7 @@ class Board(GlobalObject):
         self.field : int = field
         for i in range(field):
             for j in range(field):
-                self.__grid[i][j] = SingleSquare(prototipe=Ground())
+                self.__grid[i][j] = Ground()
 
         for k in range(water_amount):
             x = randint(0, field - water_size)
@@ -33,7 +33,7 @@ class Board(GlobalObject):
 
             for i in range(water_size):
                 for j in range(water_size):
-                    self.__grid[x + i][y + j].set_skin(prototipe=Water())
+                    self.__grid[x + i][y + j]=Water()
 
         for k in range(tree_amount):
             x = randint(0, field - water_size)

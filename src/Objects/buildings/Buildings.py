@@ -61,3 +61,9 @@ class Building(GameObject):
                 else:
                     self.__is_active = False
                     self.change_skin()
+
+    def get_skin(self) -> str:
+        return self._skin
+
+    def get_type(self) -> str:
+        return self._type

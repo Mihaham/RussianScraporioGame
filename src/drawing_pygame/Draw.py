@@ -18,7 +18,7 @@ class Drawing(GlobalObject):
     def __init__(self, **kwargs):
         super().__init__()
         self.my_font = pygame.font.SysFont('Comic Sans MS', 30)
-        self.sprites = { None : "sprites/empty.png"}
+        self.sprites = { None : pygame.image.load("sprites/empty.png").convert_alpha()}
         self.objects : dict = {}
         self.scale = self.in_kwargs("scale", **kwargs)
         self.LENGTH = self.in_kwargs("LENGTH", **kwargs)
