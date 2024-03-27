@@ -5,7 +5,8 @@ from src.SingleGame import SingleGame
 import src.Menu
 
 def main() -> None:
-
+    pygame.init()
+    pygame.display.set_mode((2000,1200))
     Game = MainGame()
     Game.play()
 

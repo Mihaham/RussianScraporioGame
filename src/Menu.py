@@ -11,7 +11,7 @@ class Menu(GlobalObject):
         super().__init__()
         Menu.id += 1
         self.__id = Menu.id
-        self.surface = pygame.display.set_mode((width, height))
+        self.surface = pygame.display.get_surface()
         self.buttons: list[list[Button]] = buttons
         self.background: str = background
         self.width: int = width
