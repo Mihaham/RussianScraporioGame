@@ -24,7 +24,7 @@
 
 1. Клонирования репозитория
    ```sh
-   git clone git@github.com:Mihaham/RussianScraporioGame.git
+   git clone git@gitlab.akhcheck.ru:mikhail.gorodetskii/RussianScraporioGame.git
    ```
 2. Установка зависимостей
    ```sh
