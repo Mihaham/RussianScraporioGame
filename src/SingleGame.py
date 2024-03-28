@@ -21,7 +21,7 @@ class SingleGame(GlobalObject):
         self.HIGHT: int = screen_height
         self.step: int = 12
         self.scale: int = 72
-        self.field: int = 10
+        self.field: int = 20
         self.water_amount: int = 1
         self.water_size: int = 4
         self.tree_amount: int = 1
@@ -34,12 +34,12 @@ class SingleGame(GlobalObject):
         pygame.display.set_caption("Really russian game")
 
         self.surface: pygame.display = pygame.display.set_mode((self.LENGTH, self.HIGHT))
-        self.Exit: Button = Button(width=self.LENGTH // 15,
+        self.Exit: Button = Button(width=self.LENGTH // 10,
                                    height=self.HIGHT // 10,
                                    text="",
                                    not_hovered_skin="sprites/Large Buttons/Large Buttons/Exit Button.png",
                                    hovered_skin="sprites/Large Buttons/Colored Large Buttons/Exit  col_Button.png",
-                                   position=[self.LENGTH - self.LENGTH // 15, 0],
+                                   position=[self.LENGTH - self.LENGTH // 10, 0],
                                    func=exit)
         self.Screen: Button = Button(width=self.LENGTH // 15,
                                      height=self.HIGHT // 10,

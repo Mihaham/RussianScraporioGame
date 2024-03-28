@@ -37,6 +37,12 @@ class Drawing(GlobalObject):
             Logger.add_errors(f"Cannot load skin {skin}")
             return self.sprites[None]
 
+    def get_object_skin(self, items):
+        if items not in self.objects:
+            self.objects[items] = items()
+        skin = self.objects[items].get_skin()
+        return skin
+
 
 
     def update_parametrs(self, **kwargs):
@@ -113,9 +119,7 @@ class Drawing(GlobalObject):
                     items = inventory.get_grid()[i][j]
                     amount = inventory.get_amount()[i][j]
                     if items != None:
-                        if items not in self.objects:
-                            self.objects[items] = items()
-                        skin = self.objects[items].get_skin()
+                        skin = self.get_object_skin(items)
                         object_skin = self.get_image(skin)
                         object_skin = pygame.transform.scale(object_skin,
                                                              (small_scale - 10, small_scale - 10))
@@ -203,6 +207,60 @@ class Drawing(GlobalObject):
         image = pygame.transform.scale(self.get_image(building_menu.building.get_skin()), (building_menu.width/2, building_menu.height))
         rect = image.get_rect(topright=(building_menu.x,building_menu.y))
         surface.blit(image, rect.topright)
-        self.draw_button(surface=surface, button=building_menu.buttons[0][0])
+        for button_line in building_menu.buttons:
+            for button in button_line:
+                self.draw_button(surface=surface, button=button)
+
+        for i,recipe in enumerate(building_menu.recipes):
+            self.draw_recipe(surface=surface, recipe=recipe, position = [building_menu.x + building_menu.width/2 + 100, building_menu.y + 20 + i * (50 + 10)])
+
+        if building_menu.building.active_recipe == None:
+            font = pygame.font.Font(None, 72)
+            text_surface = font.render("У вас нет активного рецепта", True, (255,0,0))
+            text_rect = text_surface.get_rect(topright=(building_menu.x + building_menu.width - 20, building_menu.y + building_menu.height * 3/4 ))
+            surface.blit(text_surface, text_rect)
+        else:
+            self.draw_recipe(surface, building_menu.building.active_recipe, position = [building_menu.x + building_menu.width/2 +20, building_menu.y + building_menu.height*3/4])
+
+
+    def draw_recipe(self, surface, recipe, position):
+        size = 50
+        boarder_size = 4
+        rect_color = (40,40,40)
+        for i,(item,amount) in enumerate(recipe.input_resources.items()):
+            pygame.draw.rect(surface, rect_color, (position[0] + 10 + i * (size + 10), position[1], size, size), boarder_size)
+            image = pygame.transform.scale(self.get_image(self.get_object_skin(item)),
+                                           (size-2*boarder_size, size-2*boarder_size))
+            rect = image.get_rect(topright=(position[0] + 10 + i * (size + 10) + boarder_size, position[1] + boarder_size))
+            surface.blit(image, rect.topright)
+            text_skin = self.my_font.render(f"{amount}", False, (255, 0, 0))
+            text_rect = text_skin.get_rect(
+                topleft=(position[0] + 10 + i * (size + 10) + boarder_size, position[1] + boarder_size),
+                width=self.scale)
+            surface.blit(text_skin, text_rect)
+
+        start_output = 10 + len(recipe.input_resources.keys()) * (size + 10)
+
+        arrow = "sprites/Square Buttons/Square Buttons/Next Square Button.png"
+        image = pygame.transform.scale(self.get_image(arrow), (size,size))
+        rect = image.get_rect(topright=(position[0] + start_output, position[1]))
+        surface.blit(image, rect.topright)
+
+
+
+        start_output += 50
+        for i,(item,amount) in enumerate(recipe.output_resources.items()):
+            pygame.draw.rect(surface, rect_color, (position[0] + 10 + i * (size + 10) + start_output, position[1], size, size), boarder_size)
+            image = pygame.transform.scale(self.get_image(self.get_object_skin(item)),
+                                           (size-2*boarder_size, size-2*boarder_size))
+            rect = image.get_rect(topright=(position[0] + 10 + i * (size + 10) + boarder_size + start_output, position[1] + boarder_size))
+            surface.blit(image, rect.topright)
+            text_skin = self.my_font.render(f"{amount}", False, (255, 0, 0))
+            text_rect = text_skin.get_rect(
+                topleft=(position[0] + 10 + i * (size + 10) + boarder_size + start_output, position[1] + boarder_size))
+            surface.blit(text_skin, text_rect)
+
+
+
 
 

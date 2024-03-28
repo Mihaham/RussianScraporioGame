@@ -9,6 +9,8 @@ def add_str_to_file(str_to_write: str, file_name: str, filemod: Optional[str] = 
         file.write(str_to_write + "\n")
 
 class Logger:
+    logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     id = 0
     objects = {}
     date = datetime.datetime.now().strftime("%Y-%m-%d---%H:%M:%S")
@@ -21,19 +23,6 @@ class Logger:
     add_str_to_file("Game started\n", warnings, filemod="w")
     add_str_to_file("Game started\n", errors, filemod="w")
     add_str_to_file("Game started\n", debug, filemod="w")
-
-    def __init__(self) -> None:
-        Logger.id += 1
-        if Logger.id > 1:
-            raise Exception(f"Trying to create more then 1 logger")
-        logging.basicConfig(level=logging.INFO,
-                            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        self.date : datetime.datetime = datetime.datetime.now().strftime('%Y%m%d-%H')
-        os.makedirs(f"logs/{self.date}", mode=0o777, exist_ok=True)
-        self.info : str = f"logs/{self.date}/info.log"
-        self.warnings : str = f"logs/{self.date}/warnings.log"
-        self.errors : str = f"logs/{self.date}/errors.log"
-        self.debug : str = f"logs/{self.date}/debug.log"
 
 
     @classmethod

@@ -23,23 +23,10 @@ class Furnace(Building):
             "burning_time": 1,
             "fuel_cost": 1
         }
-        self.__input_resources : dict[str,int] = {
-            "cuprum ore": 1
-        }
-        self.__output_resources : dict[str,int] = {
-            "cuprum": 1
-        }
-        self.__alowded_fuel : list[str] = ["coal"]
         self.__is_active : bool = False
         self.__start_of_active : time.time = time.time()
         self.active_skin : str = "sprites/burning_furnace.png"
         self.inactive_skin : str = "sprites/furnace.png"
-        self.input_resources : dict[str, int] = {
-            "cuprum ore": 5
-        }
-        self.output_resources : dict[str,int] = {
-            "cuprum": 10
-        }
         Logger.add_info(f"Furnace is initialized with (id - {self.__id})")
 
     def __repr__(self) -> str:

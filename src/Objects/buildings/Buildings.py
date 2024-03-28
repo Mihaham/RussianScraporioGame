@@ -5,6 +5,9 @@ from src.Objects.Resources.Resources import Resources
 from typing import Optional
 from src.logger.Logger import Logger
 import src.Menu
+from src.Objects.buildings.Recipe import Recipe
+from src.Objects.Resources.Wood.Wood import Wood
+from src.Objects.Resources.Soil.Soil import Soil
 
 class Building(GameObject):
     id : int = 0
@@ -18,23 +21,48 @@ class Building(GameObject):
         self._type : str = "buildings"
         self.input : dict = {}
         self.output : dict = {}
-        self.fuel : dict = {}
-        self.input_resources : dict = {}
-        self.output_resources : dict = {}
-        self.__alowded_fuel : list[Optional[Resources]] = []
+        self.fuel = {}
         self.__is_active : bool = False
         self.__start_of_active : time.time = time.time()
         self.is_active_menu = True
-        self.Menu = src.Menu.BuildingMenu(200, 150, 1500,500,self,[None],self.change_menu)
+        self.Menu = src.Menu.BuildingMenu(200, 150, 1500,500,self,[Recipe(input={Wood:1}, output={Soil:20}),Recipe(input={Wood:1}, output={Soil:1}),Recipe(input={Wood:1, Soil:100}, output={Soil:1}),Recipe(input={Soil:1}, output={Wood:1})],self.change_menu)
+        self.has_active_recipe = False
+        self.active_recipe = None
         Logger.add_info(f"Building is initialized with (id - {self.__id})")
 
+
+    def activate_recipe(self, recipe):
+        self.has_active_recipe = True
+        self.active_recipe = recipe
+        print(self.active_recipe)
+
+    def delete_recipe(self):
+        self.has_active_recipe = False
+        self.active_recipe = None
+        self.__is_active = False
     def __repr__(self) -> str:
-        return f"Building with {self.input} and {self.output} and {self.fuel}"
+        return f"Building with {self.input} and {self.output}"
 
     def change_menu(self) -> None:
         self.is_active_menu = not self.is_active_menu
 
     def change_active(self) -> None:
+        if self.active_recipe == None:
+            Logger.add_warnings(f"Trying to activate a building with id {self.__id} without a recipe")
+            self.__is_active : bool = False
+            self.change_skin()
+            return None
+        for item, amount in self.active_recipe.input_resources.items():
+            if item not in self.input.keys():
+                Logger.add_warnings(f"We don`t have resource {item} in building input with id {self.__id}")
+                self.__is_active: bool = False
+                self.change_skin()
+                return None
+            if self.input[item] < amount:
+                Logger.add_warnings(f"We don`t have enough resource {item} in building with id {self.__id}")
+                self.__is_active: bool = False
+                self.change_skin()
+                return None
         self.__is_active = not self.__is_active
         self.change_skin()
 
@@ -50,17 +78,17 @@ class Building(GameObject):
                 print(self)
                 print(f"burning time: {time.time()}")
                 self.__start_of_active = time.time()
-                if self.fuel["amount"]:
+                if self.fuel["amount"] >= self.fuel["fuel_cost"]:
                     self.fuel["amount"] -= self.fuel["fuel_cost"]
-                    for resource, amount in self.input_resources.copy().items():
+                    for resource, amount in self.active_recipe.input.items():
                         if self.input[resource] < amount:
                             self.__is_active = False
                             self.change_skin()
                             break
                     if self.__is_active:
-                        for resource, amount in self.input_resources.items():
+                        for resource, amount in self.active_recipe.input.items():
                             self.input[resource] -= amount
-                        for resource, amount in self.output_resources.items():
+                        for resource, amount in self.active_recipe.output.items():
                             if resource not in self.output.keys():
                                 self.output[resource] = 0
                             self.output[resource] += amount

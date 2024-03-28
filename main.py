@@ -6,7 +6,8 @@ import src.Menu
 
 def main() -> None:
     pygame.init()
-    pygame.display.set_mode((2000,1200))
+    info = pygame.display.Info()
+    pygame.display.set_mode((info.current_w, info.current_h))
     Game = MainGame()
     Game.play()
 

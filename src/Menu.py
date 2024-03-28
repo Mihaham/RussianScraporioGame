@@ -80,7 +80,7 @@ class BuildingMenu(Menu):
         self.width = width
         self.height = hight
         self.building = building
-        self.recipes = recipes
+        self.recipes : list = recipes
         self.buttons[0].append(Button(width=100,
                                       height=30,
                                       text="",
@@ -89,13 +89,39 @@ class BuildingMenu(Menu):
                                       position=[pos_x + width - 100, pos_y],
                                       func=function))
 
-        #for recipe in self.recipes:
-        #    recipe.activate_button.func = self.activate_recipe
+        self.buttons.append([])
+        for i,recipe in enumerate(self.recipes):
+            self.buttons[1].append(Button(width=50,
+                                          height=50,
+                                          text="",
+                                          not_hovered_skin="sprites/Square Buttons/Square Buttons/V Square Button.png",
+                                          hovered_skin="sprites/Square Buttons/Colored Square Buttons/V col_Square Button.png",
+                                          position=[self.x + self.width/2 + 20, self.y + 20 + i * (50 + 10) ],
+                                          func=self.activate_recipe,
+                                          argument = recipe))
+
+        self.buttons.append([])
+        self.buttons[2].append(Button(width=50,
+                                          height=50,
+                                          text="",
+                                          not_hovered_skin="sprites/Square Buttons/Square Buttons/On Off Square Button.png",
+                                          hovered_skin="sprites/Square Buttons/Colored Square Buttons/On Off col_Square Button.png",
+                                          position=[self.x + self.width/2 - 50, self.y],
+                                          func=self.building.change_active))
         self.has_active_recipe = False
         self.active_recipe = None
 
 
     def activate_recipe(self, recipe):
-        self.has_active_recipe = True
-        self.active_recipe = recipe
-
+        self.building.activate_recipe(recipe)
+        if self.buttons[0][-1].func != self.delete_recipe:
+            self.buttons[0].append(Button(width=50,
+                                      height=50,
+                                      text="",
+                                      not_hovered_skin="sprites/Square Buttons/Square Buttons/Return Square Button.png",
+                                      hovered_skin="sprites/Square Buttons/Colored Square Buttons/Return col_Square Button.png",
+                                      position=[self.x + self.width - 50, self.y + self.height*3/4],
+                                      func=self.delete_recipe))
+    def delete_recipe(self):
+        self.building.delete_recipe()
+        self.buttons[0].pop()
