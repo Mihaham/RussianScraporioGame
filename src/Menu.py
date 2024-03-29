@@ -89,6 +89,23 @@ class BuildingMenu(Menu):
                                       position=[pos_x + width - 100, pos_y],
                                       func=function))
 
+        self.buttons[0].append(Button(width=50,
+                                      height=50,
+                                      text="+1",
+                                      not_hovered_skin="sprites/CLEAR.png",
+                                      hovered_skin="sprites/CLEAR col.png",
+                                      position=[self.x + self.width/2 - 100, self.y + self.height/2 + 100],
+                                      func=self.add_fuel))
+
+        self.buttons[0].append(Button(width=50,
+                                      height=50,
+                                      text="+5",
+                                      not_hovered_skin="sprites/CLEAR.png",
+                                      hovered_skin="sprites/CLEAR col.png",
+                                      position=[self.x + self.width/2 - 50, self.y + self.height/2 + 100],
+                                      func=self.add_fuel,
+                                      argument=5))
+
         self.buttons.append([])
         for i,recipe in enumerate(self.recipes):
             self.buttons[1].append(Button(width=50,
@@ -111,7 +128,6 @@ class BuildingMenu(Menu):
         self.has_active_recipe = False
         self.active_recipe = None
 
-
     def activate_recipe(self, recipe):
         self.building.activate_recipe(recipe)
         if self.buttons[0][-1].func != self.delete_recipe:
@@ -122,6 +138,17 @@ class BuildingMenu(Menu):
                                       hovered_skin="sprites/Square Buttons/Colored Square Buttons/Return col_Square Button.png",
                                       position=[self.x + self.width - 50, self.y + self.height*3/4],
                                       func=self.delete_recipe))
+
+    def add_fuel(self, amount = 1):
+        item = self.building.fuel["name"]
+        resource = self.building.active_player.get_item(item, amount)
+        if resource is not None:
+            for item, amount in resource.items():
+                self.building.add_fuel(item, amount)
+
     def delete_recipe(self):
         self.building.delete_recipe()
         self.buttons[0].pop()
+        for object, amount in self.building.output.items():
+            self.building.active_player.add_item(object, amount)
+            self.building.output[object] = 0

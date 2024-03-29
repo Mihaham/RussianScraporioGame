@@ -1,5 +1,6 @@
 from src.Objects.GameObject import GameObject
 from src.Objects.buildings.furnace.furnace import Furnace
+from src.Objects.Resources.Wood.Wood import Wood
 from src.logger.Logger import Logger, GlobalObject
 
 
@@ -15,7 +16,8 @@ class inventory(GlobalObject):
         self._selected_item = None
         self._is_selected = False
         self._scale = scale / 2
-        self._grid[0][0] = Furnace
+        self.add_item(Furnace)
+        self.add_item(Wood, 100)
 
     def __repr__(self) -> str:
         return f"Inventory {self._grid}"
@@ -29,7 +31,7 @@ class inventory(GlobalObject):
     def get_sizes(self) -> tuple:
         return (self._size_x, self._size_y)
 
-    def add_item(self, item, pos=None):
+    def add_item(self, item, amount = 1, pos=None):
         try:
             if item is not None:
                 if pos is None:
@@ -43,7 +45,31 @@ class inventory(GlobalObject):
                                 self._grid[i][j] = item
                                 raise StopIteration
         except StopIteration:
-            self._amount[pos[0]][pos[1]] += 1
+            self._amount[pos[0]][pos[1]] += amount
+
+    def get_item(self, item, amount = 1, pos=None):
+        try:
+            if item is not None:
+                if pos is None:
+                    for i in range(self._size_x):
+                        for j in range(self._size_y):
+                            if self._grid[i][j] != None and item == self._grid[i][j]:
+                                pos = (i, j)
+                                raise StopIteration
+                            if self._grid[i][j] == None:
+                                pos = (i, j)
+                                self._grid[i][j] = item
+                                raise StopIteration
+
+            return None
+        except StopIteration:
+            if self._amount[pos[0]][pos[1]] < amount:
+                can_return = self._amount[pos[0]][pos[1]]
+                self._amount[pos[0]][pos[1]] = 0
+                self._grid[pos[0]][pos[1]] = None
+                return {item : can_return}
+            self._amount[pos[0]][pos[1]] -= amount
+            return {item : amount}
 
     def move_right(self):
         self._cursor[0] += 1

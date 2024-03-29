@@ -2,6 +2,7 @@ import time
 
 from src.Objects.buildings.Buildings import Building
 from src.logger.Logger import Logger, GlobalObject
+from src.Objects.Resources.Wood.Wood import Wood
 
 
 class Furnace(Building):
@@ -13,13 +14,13 @@ class Furnace(Building):
         self._skin : str = "sprites/furnace.png"
         self._type : str = "buildings"
         self.input : dict = {
-            "cuprum ore": 1000
+            Wood : 1000
         }
         self.output : dict[str,int] = {
         }
         self.fuel : dict[str,int | str] = {
-            "name": "coal",
-            "amount": 100,
+            "name": Wood,
+            "amount": 10,
             "burning_time": 1,
             "fuel_cost": 1
         }

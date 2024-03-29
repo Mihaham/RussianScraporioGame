@@ -185,7 +185,7 @@ class Drawing(GlobalObject):
         surface.blit(image, rect.topright)
         font = pygame.font.Font(None, 36)
         text_surface = font.render(button.text, True, (255, 255, 255))
-        text_rect = text_surface.get_rect(topright=rect.topright)
+        text_rect = text_surface.get_rect(center=(button.position[0] + button.width/2, button.position[1] + button.height/2))
         surface.blit(text_surface, text_rect)
 
     def draw_menu(self, surface: pygame, menu):
@@ -211,6 +211,28 @@ class Drawing(GlobalObject):
             for button in button_line:
                 self.draw_button(surface=surface, button=button)
 
+        rect_color = (50,50,50)
+        size = 100
+        boarder_size = 4
+        pygame.draw.rect(surface, rect_color, (building_menu.x + building_menu.width/2 - size, building_menu.y + building_menu.height/2, size, size), boarder_size)
+        image = pygame.transform.scale(self.get_image(self.get_object_skin(building_menu.building.fuel["name"])),
+                                       (size - 2 * boarder_size, size - 2 * boarder_size))
+        rect = image.get_rect(topright=(building_menu.x + building_menu.width/2 + boarder_size  - size, building_menu.y + building_menu.height/2 + boarder_size))
+        amount = building_menu.building.fuel["amount"]
+        surface.blit(image, rect.topright)
+        text_skin = self.my_font.render(f"{amount}", False, (255, 0, 0))
+        text_rect = text_skin.get_rect(
+            topleft=(building_menu.x + building_menu.width/2 + boarder_size  - size, building_menu.y + building_menu.height/2 + boarder_size),
+            width=self.scale)
+        surface.blit(text_skin, text_rect)
+        text_skin = self.my_font.render("Топливо:", False, (255, 0, 0))
+        text_rect = text_skin.get_rect(
+            topleft=(building_menu.x + building_menu.width / 2 + boarder_size - size,
+                     building_menu.y + building_menu.height / 2 - 30),
+            width=self.scale)
+        surface.blit(text_skin, text_rect)
+
+
         for i,recipe in enumerate(building_menu.recipes):
             self.draw_recipe(surface=surface, recipe=recipe, position = [building_menu.x + building_menu.width/2 + 100, building_menu.y + 20 + i * (50 + 10)])
 
@@ -221,6 +243,8 @@ class Drawing(GlobalObject):
             surface.blit(text_surface, text_rect)
         else:
             self.draw_recipe(surface, building_menu.building.active_recipe, position = [building_menu.x + building_menu.width/2 +20, building_menu.y + building_menu.height*3/4])
+
+
 
 
     def draw_recipe(self, surface, recipe, position):

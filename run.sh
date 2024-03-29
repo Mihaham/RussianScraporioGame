@@ -38,6 +38,7 @@ then
 	if [[ $filename == *.$extension ]]
 	then
 		cat "$filename" >> $output_file
+		echo "Catting $filename"
 		echo $'\n' >> $output_file
 	fi
 fi

@@ -3,17 +3,42 @@ import pygame
 
 from src.Menu import MainMenu
 from src.SingleGame import SingleGame
+import src.Menu
 
 def main() -> None:
     pygame.init()
     info = pygame.display.Info()
-    screen_width, screen_height = info.current_w, info.current_h
+    pygame.display.set_mode((info.current_w, info.current_h))
+    Game = MainGame()
+    Game.play()
 
-    Menu = MainMenu(width=screen_width, height=screen_height)
-    Menu.show()
-    # Game = SingleGame()
-    # Game.update_screen_size(screen_width, screen_height)
-    # Game.play()
+class MainGame:
+    def __init__(self):
+        self.Status = "Menu"
+        pygame.init()
+        info = pygame.display.Info()
+        screen_width, screen_height = info.current_w, info.current_h
+        self.Menu = MainMenu(width=screen_width, height=screen_height, start = self.change)
+        self.Menu.show()
+
+    def change(self, Status : str):
+        self.Status = Status
+
+
+
+    def play(self):
+        while (True):
+            if self.Status == "Menu":
+                self.Menu.draw_menu()
+                self.Menu.loop()
+            elif self.Status == "Start_game":
+                self.Menu.show()
+                del self.Menu
+                self.Status = "Game"
+                self.Game = SingleGame()
+            elif self.Status == "Game":
+                self.Game.play()
+
 
 
 if __name__ == "__main__":
@@ -29,7 +54,7 @@ class Button(GlobalObject):
     id = 0
     def __init__(self, text : str="START", width : int =100, height : int = 100, hovered_skin : str= "sprites/empty.png",
                  not_hovered_skin : str="sprites/empty.png", func=None,
-                 position : list[int]=None, parent : Optional=None, parent_position : str = "absolute"):
+                 position : list[int]=None, parent : Optional=None, parent_position : str = "absolute", argument = None, **kwargs) -> None:
         super().__init__()
         Button.id += 1
         self.__id = Button.id
@@ -45,6 +70,7 @@ class Button(GlobalObject):
         self.height: int = height
         self.parent_position : str = parent_position
         self.parent = parent
+        self.argument = argument
 
         self.image = pygame.image.load(self.hovered_skin)
         if self.parent_position == "absolute":
@@ -61,7 +87,10 @@ class Button(GlobalObject):
     def handle_event(self, event : pygame.event) -> None:
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.is_hovered:
             if self.func:
-                self.func()
+                if self.argument:
+                    self.func(self.argument)
+                else:
+                    self.func()
 
     def update(self, event : pygame.event) -> None:
         self.handle_hover()
@@ -73,9 +102,9 @@ class Button(GlobalObject):
         else:
             self.skin = self.not_hovered_skin
 
-import src.SingleGame as sg
 from src.buttons.button import Button
-from src.logger.Logger import Logger, GlobalObject
+from src.logger.Logger import Logger
+import pygame
 
 class StartButton(Button):
     id = 0
@@ -84,9 +113,13 @@ class StartButton(Button):
         super().__init__(**kwargs)
         StartButton.id += 1
         self.__id = StartButton.id
-        self.func = sg.start_game
+        self.func = kwargs["start"]
         Logger.add_info(f"StartButton is initialized with id {self.__id}")
 
+    def handle_event(self, event : pygame.event) -> None:
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.is_hovered:
+            if self.func:
+                self.func("Start_game")
 
 
 
@@ -118,13 +151,24 @@ class Drawing(GlobalObject):
         self.field = self.in_kwargs("field", **kwargs)
         self.step = self.in_kwargs("step", **kwargs)
 
-        for filename in glob('sprites/**/*.png', recursive=True):
-            my_filename = filename.replace("\\", "/")
-            self.sprites[my_filename] = pygame.image.load(filename).convert_alpha()
-        for filename in glob('sprites/**/*.jpg', recursive=True):
-            my_filename = filename.replace("\\", "/")
-            self.sprites[my_filename] = pygame.image.load(filename).convert_alpha()
-        print(self.sprites)
+    def get_image(self, skin : str):
+        if skin in self.sprites.keys():
+            return self.sprites[skin]
+
+        try:
+            self.sprites[skin] = pygame.image.load(skin).convert_alpha()
+            return self.sprites[skin]
+        except Exception:
+            Logger.add_errors(f"Cannot load skin {skin}")
+            return self.sprites[None]
+
+    def get_object_skin(self, items):
+        if items not in self.objects:
+            self.objects[items] = items()
+        skin = self.objects[items].get_skin()
+        return skin
+
+
 
     def update_parametrs(self, **kwargs):
         self.scale = kwargs["scale"]
@@ -135,7 +179,7 @@ class Drawing(GlobalObject):
 
     def draw(self, surface, player=None, board=None, this_single_square=None, object=None,
              inventory=None, pos_x=None,
-             pos_y=None, draw_scale=1, button=None, Menu=None):
+             pos_y=None, draw_scale=1, button=None, Menu=None, building_menu=None, **kwargs):
         if board is not None:
             self.draw_board(surface=surface, board=board)
         if this_single_square is not None:
@@ -147,12 +191,12 @@ class Drawing(GlobalObject):
             self.draw_inventory(surface, inventory=inventory)
         if button is not None:
             self.draw_button(surface, button=button)
-
         if player is not None:
             self.draw_player(surface=surface, player=player, board=board)
-
         if Menu is not None:
             self.draw_menu(surface=surface, menu=Menu)
+        if building_menu is not None:
+            self.draw_building_menu(surface = surface, building_menu=building_menu)
 
     def draw_player(self, surface: pygame, player, board, draw_scale=1):
         text_skin = self.my_font.render(player.get_name(), False, (255, 0, 0))
@@ -161,7 +205,7 @@ class Drawing(GlobalObject):
                     player.get_y() - board.get_game_pos_y() - self.scale // 2),
             width=self.scale)
         surface.blit(text_skin, text_rect)
-        player_skin = self.sprites[player.get_skin()]
+        player_skin = self.get_image(player.get_skin())
         player_skin = pygame.transform.scale(player_skin, (
         2 * draw_scale * self.scale, 2 * draw_scale * self.scale))
         player_rect = player_skin.get_rect(
@@ -173,7 +217,7 @@ class Drawing(GlobalObject):
             self.draw_inventory(surface, inventory=player.get_inventory())
 
     def draw_object(self, surface: pygame, object, board, pos_x, pos_y, draw_scale=1):
-        object_skin = self.sprites[object.get_skin()]
+        object_skin = self.get_image(object.get_skin())
         object_skin = pygame.transform.scale(object_skin,
                                              (draw_scale * self.scale, draw_scale * self.scale))
         object_rect = object_skin.get_rect(
@@ -200,10 +244,8 @@ class Drawing(GlobalObject):
                     items = inventory.get_grid()[i][j]
                     amount = inventory.get_amount()[i][j]
                     if items != None:
-                        if items not in self.objects:
-                            self.objects[items] = items()
-                        skin = self.objects[items].get_skin()
-                        object_skin = self.sprites[skin]
+                        skin = self.get_object_skin(items)
+                        object_skin = self.get_image(skin)
                         object_skin = pygame.transform.scale(object_skin,
                                                              (small_scale - 10, small_scale - 10))
                         object_rect = object_skin.get_rect(
@@ -237,14 +279,13 @@ class Drawing(GlobalObject):
         if (board.get_game_pos_x() - self.scale <= pos_x <= board.get_game_pos_x() + (
                 self.LENGTH) + self.scale and board.get_game_pos_y() - self.scale <= pos_y <= board.get_game_pos_y() + (
                 self.HIGHT) + self.scale):
-            square_skin = self.sprites[single_square.get_skin()]
+            square_skin = self.get_image(single_square.get_skin())
             square_skin = pygame.transform.scale(square_skin,
                                                  (draw_scale * self.scale, draw_scale * self.scale))
             square_rect = square_skin.get_rect(
                 topleft=(pos_x - board.get_game_pos_x(), pos_y - board.get_game_pos_y()),
                 width=self.scale)
             surface.blit(square_skin, square_rect)
-            # print(f"Single Square {this_single_square}")
             for object in single_square.get_buildings():
                 self.draw_object(surface, object=object, pos_x=pos_x,
                                  pos_y=pos_y, board=board)
@@ -264,16 +305,16 @@ class Drawing(GlobalObject):
                                         single_square=board.get_grid()[i][j])
 
     def draw_button(self, surface: pygame, button: Button):
-        image = pygame.transform.scale(self.sprites[button.skin], (button.width, button.height))
+        image = pygame.transform.scale(self.get_image(button.skin), (button.width, button.height))
         rect = image.get_rect(topright=button.position)
         surface.blit(image, rect.topright)
         font = pygame.font.Font(None, 36)
         text_surface = font.render(button.text, True, (255, 255, 255))
-        text_rect = text_surface.get_rect(topright=rect.topright)
+        text_rect = text_surface.get_rect(center=(button.position[0] + button.width/2, button.position[1] + button.height/2))
         surface.blit(text_surface, text_rect)
 
     def draw_menu(self, surface: pygame, menu):
-        square_skin = self.sprites[menu.background]
+        square_skin = self.get_image(menu.background)
         square_skin = pygame.transform.scale(square_skin, (menu.width, menu.height))
         square_rect = square_skin.get_rect(
             topleft=(menu.x, menu.y))
@@ -281,6 +322,97 @@ class Drawing(GlobalObject):
         for button_line in menu.buttons:
             for button in button_line:
                 self.draw_button(surface=surface, button=button)
+
+    def draw_building_menu(self, surface: pygame, building_menu = None):
+        pygame.draw.rect(surface, (20, 20, 20), (building_menu.x, building_menu.y, building_menu.width, building_menu.height))
+        pygame.draw.rect(surface, (30, 30, 30), (
+        building_menu.x, building_menu.y, building_menu.width/2, building_menu.height))
+        pygame.draw.rect(surface, (10, 10, 10), (
+        building_menu.x + building_menu.width/2, building_menu.y, building_menu.width/2, building_menu.height/2))
+        image = pygame.transform.scale(self.get_image(building_menu.building.get_skin()), (building_menu.width/2, building_menu.height))
+        rect = image.get_rect(topright=(building_menu.x,building_menu.y))
+        surface.blit(image, rect.topright)
+        for button_line in building_menu.buttons:
+            for button in button_line:
+                self.draw_button(surface=surface, button=button)
+
+        rect_color = (50,50,50)
+        size = 100
+        boarder_size = 4
+        pygame.draw.rect(surface, rect_color, (building_menu.x + building_menu.width/2 - size, building_menu.y + building_menu.height/2, size, size), boarder_size)
+        image = pygame.transform.scale(self.get_image(self.get_object_skin(building_menu.building.fuel["name"])),
+                                       (size - 2 * boarder_size, size - 2 * boarder_size))
+        rect = image.get_rect(topright=(building_menu.x + building_menu.width/2 + boarder_size  - size, building_menu.y + building_menu.height/2 + boarder_size))
+        amount = building_menu.building.fuel["amount"]
+        surface.blit(image, rect.topright)
+        text_skin = self.my_font.render(f"{amount}", False, (255, 0, 0))
+        text_rect = text_skin.get_rect(
+            topleft=(building_menu.x + building_menu.width/2 + boarder_size  - size, building_menu.y + building_menu.height/2 + boarder_size),
+            width=self.scale)
+        surface.blit(text_skin, text_rect)
+        text_skin = self.my_font.render("Топливо:", False, (255, 0, 0))
+        text_rect = text_skin.get_rect(
+            topleft=(building_menu.x + building_menu.width / 2 + boarder_size - size,
+                     building_menu.y + building_menu.height / 2 - 30),
+            width=self.scale)
+        surface.blit(text_skin, text_rect)
+
+
+        for i,recipe in enumerate(building_menu.recipes):
+            self.draw_recipe(surface=surface, recipe=recipe, position = [building_menu.x + building_menu.width/2 + 100, building_menu.y + 20 + i * (50 + 10)])
+
+        if building_menu.building.active_recipe == None:
+            font = pygame.font.Font(None, 72)
+            text_surface = font.render("У вас нет активного рецепта", True, (255,0,0))
+            text_rect = text_surface.get_rect(topright=(building_menu.x + building_menu.width - 20, building_menu.y + building_menu.height * 3/4 ))
+            surface.blit(text_surface, text_rect)
+        else:
+            self.draw_recipe(surface, building_menu.building.active_recipe, position = [building_menu.x + building_menu.width/2 +20, building_menu.y + building_menu.height*3/4])
+
+
+
+
+    def draw_recipe(self, surface, recipe, position):
+        size = 50
+        boarder_size = 4
+        rect_color = (40,40,40)
+        for i,(item,amount) in enumerate(recipe.input_resources.items()):
+            pygame.draw.rect(surface, rect_color, (position[0] + 10 + i * (size + 10), position[1], size, size), boarder_size)
+            image = pygame.transform.scale(self.get_image(self.get_object_skin(item)),
+                                           (size-2*boarder_size, size-2*boarder_size))
+            rect = image.get_rect(topright=(position[0] + 10 + i * (size + 10) + boarder_size, position[1] + boarder_size))
+            surface.blit(image, rect.topright)
+            text_skin = self.my_font.render(f"{amount}", False, (255, 0, 0))
+            text_rect = text_skin.get_rect(
+                topleft=(position[0] + 10 + i * (size + 10) + boarder_size, position[1] + boarder_size),
+                width=self.scale)
+            surface.blit(text_skin, text_rect)
+
+        start_output = 10 + len(recipe.input_resources.keys()) * (size + 10)
+
+        arrow = "sprites/Square Buttons/Square Buttons/Next Square Button.png"
+        image = pygame.transform.scale(self.get_image(arrow), (size,size))
+        rect = image.get_rect(topright=(position[0] + start_output, position[1]))
+        surface.blit(image, rect.topright)
+
+
+
+        start_output += 50
+        for i,(item,amount) in enumerate(recipe.output_resources.items()):
+            pygame.draw.rect(surface, rect_color, (position[0] + 10 + i * (size + 10) + start_output, position[1], size, size), boarder_size)
+            image = pygame.transform.scale(self.get_image(self.get_object_skin(item)),
+                                           (size-2*boarder_size, size-2*boarder_size))
+            rect = image.get_rect(topright=(position[0] + 10 + i * (size + 10) + boarder_size + start_output, position[1] + boarder_size))
+            surface.blit(image, rect.topright)
+            text_skin = self.my_font.render(f"{amount}", False, (255, 0, 0))
+            text_rect = text_skin.get_rect(
+                topleft=(position[0] + 10 + i * (size + 10) + boarder_size + start_output, position[1] + boarder_size))
+            surface.blit(text_skin, text_rect)
+
+
+
+
+
 
 
 from random import randint
@@ -310,7 +442,7 @@ class Board(GlobalObject):
         self.field : int = field
         for i in range(field):
             for j in range(field):
-                self.__grid[i][j] = SingleSquare(prototipe=Ground())
+                self.__grid[i][j] = Ground()
 
         for k in range(water_amount):
             x = randint(0, field - water_size)
@@ -318,7 +450,7 @@ class Board(GlobalObject):
 
             for i in range(water_size):
                 for j in range(water_size):
-                    self.__grid[x + i][y + j].set_skin(prototipe=Water())
+                    self.__grid[x + i][y + j]=Water()
 
         for k in range(tree_amount):
             x = randint(0, field - water_size)
@@ -375,7 +507,15 @@ class Board(GlobalObject):
     def update(self) -> None:
         for i in range(self.field):
             for j in range(self.field):
-                self.__grid[i][j].update()
+                    self.__grid[i][j].update()
+
+    def get_active_building_menu(self):
+        for i in range(self.field):
+            for j in range(self.field):
+                for building in self.__grid[i][j].get_buildings():
+                    if building.is_active_menu:
+                        return building.Menu
+        return None
 
 
 from src.Objects.GameObject import GameObject
@@ -496,6 +636,9 @@ def add_str_to_file(str_to_write: str, file_name: str, filemod: Optional[str] = 
         file.write(str_to_write + "\n")
 
 class Logger:
+    logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    id = 0
     objects = {}
     date = datetime.datetime.now().strftime("%Y-%m-%d---%H:%M:%S")
     os.makedirs(f"logs/{date}", mode=0o777, exist_ok=True)
@@ -507,16 +650,6 @@ class Logger:
     add_str_to_file("Game started\n", warnings, filemod="w")
     add_str_to_file("Game started\n", errors, filemod="w")
     add_str_to_file("Game started\n", debug, filemod="w")
-
-    def __init__(self) -> None:
-        logging.basicConfig(level=logging.INFO,
-                            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        self.date : datetime.datetime = datetime.datetime.now().strftime('%Y%m%d-%H')
-        os.makedirs(f"logs/{self.date}", mode=0o777, exist_ok=True)
-        self.info : str = f"logs/{self.date}/info.log"
-        self.warnings : str = f"logs/{self.date}/warnings.log"
-        self.errors : str = f"logs/{self.date}/errors.log"
-        self.debug : str = f"logs/{self.date}/debug.log"
 
 
     @classmethod
@@ -557,11 +690,11 @@ from src.logger.Logger import Logger, GlobalObject
 
 class Menu(GlobalObject):
     id : int = 0
-    def __init__(self, background=None, buttons=[[]], width=2000, height=1000, x=0, y=0):
+    def __init__(self, background=None, buttons = [[]], width=2000, height=1000, x=0, y=0, **kwargs):
         super().__init__()
         Menu.id += 1
         self.__id = Menu.id
-        self.surface = pygame.display.set_mode((width, height))
+        self.surface = pygame.display.get_surface()
         self.buttons: list[list[Button]] = buttons
         self.background: str = background
         self.width: int = width
@@ -569,6 +702,7 @@ class Menu(GlobalObject):
         self.x: int = x
         self.y: int = y
         self.Draw : Drawing = Drawing()
+        self.is_active = False
         Logger.add_info("Menu is initialized ")
 
     def handle_hover(self) -> None:
@@ -583,21 +717,25 @@ class Menu(GlobalObject):
 
     def show(self) -> None:
         Logger.add_info("Showing menu")
-        while True:
-            self.Draw.draw(surface=self.surface, Menu=self)
-            self.handle_hover()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
-                self.update(event)
-            pygame.display.flip()
-            pygame.display.update()
-            pygame.time.Clock().tick(60)
+        self.is_active = not(self.is_active)
+
+    def draw_menu(self):
+        self.Draw.draw(surface=self.surface, Menu=self)
+
+    def loop(self):
+        self.handle_hover()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+            self.update(event)
+        pygame.display.flip()
+        pygame.display.update()
+        pygame.time.Clock().tick(60)
 
 
 class MainMenu(Menu):
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(buttons = [[]],**kwargs)
         k = 1
         self.buttons[0].append(StartButton(width=600 // k,
                                            height=200 // k,
@@ -605,7 +743,8 @@ class MainMenu(Menu):
                                            not_hovered_skin="sprites/Large Buttons/Large Buttons/Start Button.png",
                                            hovered_skin="sprites/Large Buttons/Colored Large Buttons/Start  col_Button.png",
                                            # position=[self.LENGTH - self.LENGTH // 15, 100],
-                                           position=[self.width // 2 - (600 // k) // 2, 200]))
+                                           position=[self.width // 2 - (600 // k) // 2, 200],
+                                           start = kwargs["start"]))
         self.buttons[0].append(Button(width=600 // k,
                                       height=200 // k,
                                       text="",
@@ -616,12 +755,98 @@ class MainMenu(Menu):
         self.background = "sprites/menu_back.png"
         Logger.add_info("MainMenu is initialized")
 
+class BuildingMenu(Menu):
+    def __init__(self,pos_x, pos_y, width, hight, building, recipes, function, **kwargs):
+        super().__init__(buttons = [[]],**kwargs)
+        self.x = pos_x
+        self.y = pos_y
+        self.width = width
+        self.height = hight
+        self.building = building
+        self.recipes : list = recipes
+        self.buttons[0].append(Button(width=100,
+                                      height=30,
+                                      text="",
+                                      not_hovered_skin="sprites/Large Buttons/Large Buttons/Exit Button.png",
+                                      hovered_skin="sprites/Large Buttons/Colored Large Buttons/Exit  col_Button.png",
+                                      position=[pos_x + width - 100, pos_y],
+                                      func=function))
+
+        self.buttons[0].append(Button(width=50,
+                                      height=50,
+                                      text="+1",
+                                      not_hovered_skin="sprites/CLEAR.png",
+                                      hovered_skin="sprites/CLEAR col.png",
+                                      position=[self.x + self.width/2 - 100, self.y + self.height/2 + 100],
+                                      func=self.add_fuel))
+
+        self.buttons[0].append(Button(width=50,
+                                      height=50,
+                                      text="+5",
+                                      not_hovered_skin="sprites/CLEAR.png",
+                                      hovered_skin="sprites/CLEAR col.png",
+                                      position=[self.x + self.width/2 - 50, self.y + self.height/2 + 100],
+                                      func=self.add_fuel,
+                                      argument=5))
+
+        self.buttons.append([])
+        for i,recipe in enumerate(self.recipes):
+            self.buttons[1].append(Button(width=50,
+                                          height=50,
+                                          text="",
+                                          not_hovered_skin="sprites/Square Buttons/Square Buttons/V Square Button.png",
+                                          hovered_skin="sprites/Square Buttons/Colored Square Buttons/V col_Square Button.png",
+                                          position=[self.x + self.width/2 + 20, self.y + 20 + i * (50 + 10) ],
+                                          func=self.activate_recipe,
+                                          argument = recipe))
+
+        self.buttons.append([])
+        self.buttons[2].append(Button(width=50,
+                                          height=50,
+                                          text="",
+                                          not_hovered_skin="sprites/Square Buttons/Square Buttons/On Off Square Button.png",
+                                          hovered_skin="sprites/Square Buttons/Colored Square Buttons/On Off col_Square Button.png",
+                                          position=[self.x + self.width/2 - 50, self.y],
+                                          func=self.building.change_active))
+        self.has_active_recipe = False
+        self.active_recipe = None
+
+    def activate_recipe(self, recipe):
+        self.building.activate_recipe(recipe)
+        if self.buttons[0][-1].func != self.delete_recipe:
+            self.buttons[0].append(Button(width=50,
+                                      height=50,
+                                      text="",
+                                      not_hovered_skin="sprites/Square Buttons/Square Buttons/Return Square Button.png",
+                                      hovered_skin="sprites/Square Buttons/Colored Square Buttons/Return col_Square Button.png",
+                                      position=[self.x + self.width - 50, self.y + self.height*3/4],
+                                      func=self.delete_recipe))
+
+    def add_fuel(self, amount = 1):
+        item = self.building.fuel["name"]
+        resource = self.building.active_player.get_item(item, amount)
+        if resource is not None:
+            for item, amount in resource.items():
+                self.building.add_fuel(item, amount)
+
+    def delete_recipe(self):
+        self.building.delete_recipe()
+        self.buttons[0].pop()
+        for object, amount in self.building.output.items():
+            self.building.active_player.add_item(object, amount)
+            self.building.output[object] = 0
+
+
 import time
 
 from src.Objects.GameObject import GameObject
 from src.Objects.Resources.Resources import Resources
 from typing import Optional
-from src.logger.Logger import Logger, GlobalObject
+from src.logger.Logger import Logger
+import src.Menu
+from src.Objects.buildings.Recipe import Recipe
+from src.Objects.Resources.Wood.Wood import Wood
+from src.Objects.Resources.Soil.Soil import Soil
 
 class Building(GameObject):
     id : int = 0
@@ -635,22 +860,64 @@ class Building(GameObject):
         self._type : str = "buildings"
         self.input : dict = {}
         self.output : dict = {}
-        self.fuel : dict = {}
-        self.input_resources : dict = {}
-        self.output_resources : dict = {}
-        self.__alowded_fuel : list[Optional[Resources]] = []
+        self.fuel = {}
         self.__is_active : bool = False
         self.__start_of_active : time.time = time.time()
+        self.is_active_menu = False
+        self.Menu = src.Menu.BuildingMenu(200, 150, 1500,500,self,[Recipe(input={Wood:1}, output={Soil:20}),Recipe(input={Wood:1}, output={Soil:1}),Recipe(input={Wood:1, Soil:100}, output={Soil:1}),Recipe(input={Soil:1}, output={Wood:1})],self.change_menu)
+        self.has_active_recipe = False
+        self.active_recipe = None
+        self.active_player = None
         Logger.add_info(f"Building is initialized with (id - {self.__id})")
 
-    def __repr__(self) -> str:
-        return f"Building with {self.input} and {self.output} and {self.fuel}"
+    def add_fuel(self, item, amount = 1):
+        self.fuel["amount"] += amount
 
-    def change_active(self):
+    def activate_recipe(self, recipe):
+        self.has_active_recipe = True
+        self.active_recipe = recipe
+        print(self.active_recipe)
+
+    def delete_recipe(self):
+        self.has_active_recipe = False
+        self.active_recipe = None
+        self.__is_active = False
+        self.change_skin()
+
+    def __repr__(self) -> str:
+        return f"Building with {self.input} and {self.output}"
+
+    def change_menu(self, player=None) -> None:
+        self.is_active_menu = not self.is_active_menu
+        self.active_player = player
+
+    def change_active(self) -> None:
+        if self.active_recipe == None:
+            Logger.add_warnings(f"Trying to activate a building with id {self.__id} without a recipe")
+            self.__is_active : bool = False
+            self.change_skin()
+            return None
+        if self.fuel["amount"] < self.fuel["fuel_cost"]:
+            Logger.add_warnings(
+                f"Trying to activate a building with id {self.__id} without enough fuel")
+            self.__is_active: bool = False
+            self.change_skin()
+            return None
+        for item, amount in self.active_recipe.input_resources.items():
+            if item not in self.input.keys():
+                Logger.add_warnings(f"We don`t have resource {item} in building input with id {self.__id}")
+                self.__is_active: bool = False
+                self.change_skin()
+                return None
+            if self.input[item] < amount:
+                Logger.add_warnings(f"We don`t have enough resource {item} in building with id {self.__id}")
+                self.__is_active: bool = False
+                self.change_skin()
+                return None
         self.__is_active = not self.__is_active
         self.change_skin()
 
-    def change_skin(self):
+    def change_skin(self) -> None:
         if self.__is_active:
             self._skin = self.active_skin
         else:
@@ -662,17 +929,17 @@ class Building(GameObject):
                 print(self)
                 print(f"burning time: {time.time()}")
                 self.__start_of_active = time.time()
-                if self.fuel["amount"]:
+                if self.fuel["amount"] >= self.fuel["fuel_cost"]:
                     self.fuel["amount"] -= self.fuel["fuel_cost"]
-                    for resource, amount in self.input_resources.copy().items():
+                    for resource, amount in self.active_recipe.input_resources.items():
                         if self.input[resource] < amount:
                             self.__is_active = False
                             self.change_skin()
                             break
                     if self.__is_active:
-                        for resource, amount in self.input_resources.items():
+                        for resource, amount in self.active_recipe.input_resources.items():
                             self.input[resource] -= amount
-                        for resource, amount in self.output_resources.items():
+                        for resource, amount in self.active_recipe.output_resources.items():
                             if resource not in self.output.keys():
                                 self.output[resource] = 0
                             self.output[resource] += amount
@@ -691,6 +958,7 @@ import time
 
 from src.Objects.buildings.Buildings import Building
 from src.logger.Logger import Logger, GlobalObject
+from src.Objects.Resources.Wood.Wood import Wood
 
 
 class Furnace(Building):
@@ -702,37 +970,35 @@ class Furnace(Building):
         self._skin : str = "sprites/furnace.png"
         self._type : str = "buildings"
         self.input : dict = {
-            "cuprum ore": 1000
+            Wood : 1000
         }
         self.output : dict[str,int] = {
         }
         self.fuel : dict[str,int | str] = {
-            "name": "coal",
-            "amount": 100,
+            "name": Wood,
+            "amount": 10,
             "burning_time": 1,
             "fuel_cost": 1
         }
-        self.__input_resources : dict[str,int] = {
-            "cuprum ore": 1
-        }
-        self.__output_resources : dict[str,int] = {
-            "cuprum": 1
-        }
-        self.__alowded_fuel : list[str] = ["coal"]
         self.__is_active : bool = False
         self.__start_of_active : time.time = time.time()
         self.active_skin : str = "sprites/burning_furnace.png"
         self.inactive_skin : str = "sprites/furnace.png"
-        self.input_resources : dict[str, int] = {
-            "cuprum ore": 5
-        }
-        self.output_resources : dict[str,int] = {
-            "cuprum": 10
-        }
         Logger.add_info(f"Furnace is initialized with (id - {self.__id})")
 
     def __repr__(self) -> str:
         return f"Furnace with {self.input} and {self.output} and {self.fuel}"
+
+
+from src.logger.Logger import GlobalObject
+
+class Recipe(GlobalObject):
+    def __init__(self, input = {}, output = {}):
+        super().__init__()
+        self.input_resources = input
+        self.output_resources = output
+
+
 
 
 from collections.abc import Callable
@@ -747,7 +1013,7 @@ class GameObject(GlobalObject):
     def __init__(self):
         super().__init__()
 
-        Logger.add_info(f"GameObject created with (id - {self.__id})")
+        Logger.add_info(f"GameObject created")
 
     def get_skin(self) -> str:
         pass
@@ -875,6 +1141,7 @@ class Wood(Resources):
 
 from src.Objects.GameObject import GameObject
 from src.Objects.buildings.furnace.furnace import Furnace
+from src.Objects.Resources.Wood.Wood import Wood
 from src.logger.Logger import Logger, GlobalObject
 
 
@@ -890,7 +1157,8 @@ class inventory(GlobalObject):
         self._selected_item = None
         self._is_selected = False
         self._scale = scale / 2
-        self._grid[0][0] = Furnace
+        self.add_item(Furnace)
+        self.add_item(Wood, 100)
 
     def __repr__(self) -> str:
         return f"Inventory {self._grid}"
@@ -904,7 +1172,7 @@ class inventory(GlobalObject):
     def get_sizes(self) -> tuple:
         return (self._size_x, self._size_y)
 
-    def add_item(self, item, pos=None):
+    def add_item(self, item, amount = 1, pos=None):
         try:
             if item is not None:
                 if pos is None:
@@ -918,7 +1186,31 @@ class inventory(GlobalObject):
                                 self._grid[i][j] = item
                                 raise StopIteration
         except StopIteration:
-            self._amount[pos[0]][pos[1]] += 1
+            self._amount[pos[0]][pos[1]] += amount
+
+    def get_item(self, item, amount = 1, pos=None):
+        try:
+            if item is not None:
+                if pos is None:
+                    for i in range(self._size_x):
+                        for j in range(self._size_y):
+                            if self._grid[i][j] != None and item == self._grid[i][j]:
+                                pos = (i, j)
+                                raise StopIteration
+                            if self._grid[i][j] == None:
+                                pos = (i, j)
+                                self._grid[i][j] = item
+                                raise StopIteration
+
+            return None
+        except StopIteration:
+            if self._amount[pos[0]][pos[1]] < amount:
+                can_return = self._amount[pos[0]][pos[1]]
+                self._amount[pos[0]][pos[1]] = 0
+                self._grid[pos[0]][pos[1]] = None
+                return {item : can_return}
+            self._amount[pos[0]][pos[1]] -= amount
+            return {item : amount}
 
     def move_right(self):
         self._cursor[0] += 1
@@ -1008,7 +1300,7 @@ class Player(GlobalObject):
                 if event.key == self.__settings["set_object"]:
                     if board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].get_buildings() != []:
                         board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].get_buildings()[
-                            0].change_active()
+                            0].change_menu(player = self)
                     if board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].get_miners() != []:
                         item = board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].mine()
                         self.__inventory.add_item(item)
@@ -1112,6 +1404,11 @@ class Player(GlobalObject):
                 self.update_position(
                     (self.__direction[0] * step + self.__x, self.__direction[1] * step + self.__y))
 
+    def add_item(self, object, amount = 1):
+        self.__inventory.add_item(object, amount)
+
+    def get_item(self, object, amount = 1):
+        return self.__inventory.get_item(object, amount)
 
 import pygame
 
@@ -1121,83 +1418,91 @@ from src.buttons.button import Button
 from src.drawing_pygame.Draw import Drawing
 from src.logger.Logger import Logger, GlobalObject
 
+
 class SingleGame(GlobalObject):
-    id : int = 0
-    def __init__(self):
+    id: int = 0
+
+    def __init__(self, ):
         super().__init__()
         SingleGame.id += 1
-        self.__id : int = SingleGame.id
-        self.fps : int = 60
-        pygame.init()
+        self.__id: int = SingleGame.id
+        self.fps: int = 60
         info = pygame.display.Info()
         screen_width, screen_height = info.current_w, info.current_h
-        self.LENGTH : int = screen_width
-        self.HIGHT : int = screen_height
-        self.step : int = 12
-        self.scale : int = 72
-        self.field : int = 30
-        self.water_amount : int = 1
-        self.water_size : int = 4
-        self.tree_amount : int = 1
-        self.fertile_soil_amount : int = 10
-        self.center_x : int = self.LENGTH // 2
-        self.center_y : int = self.HIGHT // 2
+        self.LENGTH: int = screen_width
+        self.HIGHT: int = screen_height
+        self.step: int = 12
+        self.scale: int = 72
+        self.field: int = 20
+        self.water_amount: int = 1
+        self.water_size: int = 4
+        self.tree_amount: int = 1
+        self.fertile_soil_amount: int = 10
+        self.center_x: int = self.LENGTH // 2
+        self.center_y: int = self.HIGHT // 2
         pygame.font.init()
 
-        self.clock : pygame.time.Clock = pygame.time.Clock()
+        self.clock: pygame.time.Clock = pygame.time.Clock()
         pygame.display.set_caption("Really russian game")
 
-        self.surface : pygame.display = pygame.display.set_mode((self.LENGTH, self.HIGHT))
-        self.Exit : Button = Button(width=self.LENGTH // 15,
-                           height=self.HIGHT // 10,
-                           text="",
-                           not_hovered_skin="sprites/Large Buttons/Large Buttons/Exit Button.png",
-                           hovered_skin="sprites/Large Buttons/Colored Large Buttons/Exit  col_Button.png",
-                           position=[self.LENGTH - self.LENGTH // 15, 0],
-                           func=exit)
-        self.Screen : Button = Button(width=self.LENGTH // 15,
-                             height=self.HIGHT // 10,
-                             text="FULLSCREEN MODE",
-                             not_hovered_skin="sprites/Large Buttons/Large Buttons/Exit Button.png",
-                             hovered_skin="sprites/Large Buttons/Colored Large Buttons/Exit  col_Button.png",
-                             # position=[self.LENGTH - self.LENGTH // 15, 100],
-                             position=[0, 0],
-                             func=self.change_screen_size)
-        self.Draw : Drawing = Drawing(scale=self.scale, LENGTH=self.LENGTH, HIGHT=self.HIGHT,
-                            field=self.field, step=self.step)
-        self.board : Board = Board(field=self.field, water_amount=self.water_amount,
-                           water_size=self.water_size,
-                           tree_amount=self.tree_amount,
-                           fertile_soil_amount=self.fertile_soil_amount)
-        self.player : Player = Player(position_x=self.center_x, position_y=self.center_y, scale=self.scale)
+        self.surface: pygame.display = pygame.display.set_mode((self.LENGTH, self.HIGHT))
+        self.Exit: Button = Button(width=self.LENGTH // 10,
+                                   height=self.HIGHT // 10,
+                                   text="",
+                                   not_hovered_skin="sprites/Large Buttons/Large Buttons/Exit Button.png",
+                                   hovered_skin="sprites/Large Buttons/Colored Large Buttons/Exit  col_Button.png",
+                                   position=[self.LENGTH - self.LENGTH // 10, 0],
+                                   func=exit)
+        self.Screen: Button = Button(width=self.LENGTH // 15,
+                                     height=self.HIGHT // 10,
+                                     text="FULLSCREEN MODE",
+                                     not_hovered_skin="sprites/Large Buttons/Large Buttons/Exit Button.png",
+                                     hovered_skin="sprites/Large Buttons/Colored Large Buttons/Exit  col_Button.png",
+                                     # position=[self.LENGTH - self.LENGTH // 15, 100],
+                                     position=[0, 0],
+                                     func=self.change_screen_size)
+        self.Draw: Drawing = Drawing(scale=self.scale, LENGTH=self.LENGTH, HIGHT=self.HIGHT,
+                                     field=self.field, step=self.step)
+        self.board: Board = Board(field=self.field, water_amount=self.water_amount,
+                                  water_size=self.water_size,
+                                  tree_amount=self.tree_amount,
+                                  fertile_soil_amount=self.fertile_soil_amount)
+        self.player: Player = Player(position_x=self.center_x, position_y=self.center_y,
+                                     scale=self.scale)
+
+        self.active_building_menu = None
+
         Logger.add_info(f"Game is initialized with (id - {self.__id})")
 
     def play(self) -> None:
-        Logger.add_info("Started single game")
-        while True:
-            self.Draw.draw(self.surface, player=self.player, board=self.board, button=self.Exit)
-            self.Draw.draw(self.surface, button=self.Screen)
-            self.Exit.handle_hover()
-            self.Screen.handle_hover()
-            for event in pygame.event.get():
+        self.Draw.draw(self.surface, player=self.player, board=self.board, button=self.Exit)
+        #self.Draw.draw(self.surface, button=self.Screen)
+        self.active_building_menu = self.board.get_active_building_menu()
+        self.Draw.draw(self.surface, building_menu=self.active_building_menu)
+        self.Exit.handle_hover()
+        self.Screen.handle_hover()
+        if self.active_building_menu is not None:
+            self.active_building_menu.handle_hover()
+        for event in pygame.event.get():
+            if self.active_building_menu is not None:
+                self.active_building_menu.update(event)
+            self.Exit.update(event)
+            self.Screen.update(event)
+            if event.type == pygame.QUIT:
+                self.Log.add_info("Game is over")
+                exit()
+            if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
+                self.player.move(event, board=self.board, scale=self.scale)
+        self.player.update(self.board, scale=self.scale, field=self.field,
+                           Center_x=self.center_x,
+                           Center_y=self.center_y, step=self.step)
+        self.board.update()
 
-                self.Exit.update(event)
-                self.Screen.update(event)
-                if event.type == pygame.QUIT:
-                    self.Log.add_info("Game is over")
-                    exit()
-                if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
-                    self.player.move(event, board=self.board, scale=self.scale)
-            self.player.update(self.board, scale=self.scale, field=self.field,
-                               Center_x=self.center_x,
-                               Center_y=self.center_y, step=self.step)
-            self.board.update()
+        pygame.display.flip()
+        pygame.display.update()
+        self.clock.tick(self.fps)
 
-            pygame.display.flip()
-            pygame.display.update()
-            self.clock.tick(self.fps)
-
-    def update_screen_size(self, x : int, y : int) -> None:
+    def update_screen_size(self, x: int, y: int) -> None:
         Logger.add_info(f"Screen sizes are updated with parametrs x = {x}, y = {y}")
         self.LENGTH = x
         self.HIGHT = y
@@ -1218,7 +1523,7 @@ class SingleGame(GlobalObject):
 
 class GameAdapter:
     @classmethod
-    def get_game_parameters(cls, Game : SingleGame) -> dict:
+    def get_game_parameters(cls, Game: SingleGame) -> dict:
         Logger.add_info("Getting info about SingleGame")
         dict = {}
         dict["fps"] = Game.fps
@@ -1240,21 +1545,8 @@ class GameAdapter:
         dict["Draw"] = Game.Draw
         dict["board"] = Game.board
         dict["player"] = Game.player
-
         return dict
 
-
-def start_game() -> None:
-    Logger.add_info("Starting SingleGame")
-    pygame.init()
-    info = pygame.display.Info()
-    screen_width, screen_height = info.current_w, info.current_h
-
-    Game = SingleGame()
-    Game.update_screen_size(screen_width, screen_height)
-    #for id, object in Logger.objects.items():
-    #    print(f"{id} - {object}")
-    Game.play()
 
 
 

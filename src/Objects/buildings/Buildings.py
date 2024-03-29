@@ -24,12 +24,15 @@ class Building(GameObject):
         self.fuel = {}
         self.__is_active : bool = False
         self.__start_of_active : time.time = time.time()
-        self.is_active_menu = True
+        self.is_active_menu = False
         self.Menu = src.Menu.BuildingMenu(200, 150, 1500,500,self,[Recipe(input={Wood:1}, output={Soil:20}),Recipe(input={Wood:1}, output={Soil:1}),Recipe(input={Wood:1, Soil:100}, output={Soil:1}),Recipe(input={Soil:1}, output={Wood:1})],self.change_menu)
         self.has_active_recipe = False
         self.active_recipe = None
+        self.active_player = None
         Logger.add_info(f"Building is initialized with (id - {self.__id})")
 
+    def add_fuel(self, item, amount = 1):
+        self.fuel["amount"] += amount
 
     def activate_recipe(self, recipe):
         self.has_active_recipe = True
@@ -40,16 +43,25 @@ class Building(GameObject):
         self.has_active_recipe = False
         self.active_recipe = None
         self.__is_active = False
+        self.change_skin()
+
     def __repr__(self) -> str:
         return f"Building with {self.input} and {self.output}"
 
-    def change_menu(self) -> None:
+    def change_menu(self, player=None) -> None:
         self.is_active_menu = not self.is_active_menu
+        self.active_player = player
 
     def change_active(self) -> None:
         if self.active_recipe == None:
             Logger.add_warnings(f"Trying to activate a building with id {self.__id} without a recipe")
             self.__is_active : bool = False
+            self.change_skin()
+            return None
+        if self.fuel["amount"] < self.fuel["fuel_cost"]:
+            Logger.add_warnings(
+                f"Trying to activate a building with id {self.__id} without enough fuel")
+            self.__is_active: bool = False
             self.change_skin()
             return None
         for item, amount in self.active_recipe.input_resources.items():
@@ -80,15 +92,15 @@ class Building(GameObject):
                 self.__start_of_active = time.time()
                 if self.fuel["amount"] >= self.fuel["fuel_cost"]:
                     self.fuel["amount"] -= self.fuel["fuel_cost"]
-                    for resource, amount in self.active_recipe.input.items():
+                    for resource, amount in self.active_recipe.input_resources.items():
                         if self.input[resource] < amount:
                             self.__is_active = False
                             self.change_skin()
                             break
                     if self.__is_active:
-                        for resource, amount in self.active_recipe.input.items():
+                        for resource, amount in self.active_recipe.input_resources.items():
                             self.input[resource] -= amount
-                        for resource, amount in self.active_recipe.output.items():
+                        for resource, amount in self.active_recipe.output_resources.items():
                             if resource not in self.output.keys():
                                 self.output[resource] = 0
                             self.output[resource] += amount
