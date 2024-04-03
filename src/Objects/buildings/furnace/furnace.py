@@ -14,7 +14,7 @@ class Furnace(Building):
         self._skin : str = "sprites/furnace.png"
         self._type : str = "buildings"
         self.input : dict = {
-            Wood : 1000
+            Wood : 100
         }
         self.output : dict[str,int] = {
         }

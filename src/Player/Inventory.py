@@ -1,6 +1,7 @@
 from src.Objects.GameObject import GameObject
 from src.Objects.buildings.furnace.furnace import Furnace
 from src.Objects.Resources.Wood.Wood import Wood
+from src.Objects.Resources.Soil.Soil import Soil
 from src.logger.Logger import Logger, GlobalObject
 
 
@@ -17,7 +18,8 @@ class inventory(GlobalObject):
         self._is_selected = False
         self._scale = scale / 2
         self.add_item(Furnace)
-        self.add_item(Wood, 100)
+        self.add_item(Wood, 1000)
+        self.add_item(Soil, 1000)
 
     def __repr__(self) -> str:
         return f"Inventory {self._grid}"
@@ -35,8 +37,8 @@ class inventory(GlobalObject):
         try:
             if item is not None:
                 if pos is None:
-                    for i in range(self._size_x):
-                        for j in range(self._size_y):
+                    for j in range(self._size_y):
+                        for i in range(self._size_x):
                             if self._grid[i][j] != None and item == self._grid[i][j]:
                                 pos = (i, j)
                                 raise StopIteration
@@ -51,8 +53,8 @@ class inventory(GlobalObject):
         try:
             if item is not None:
                 if pos is None:
-                    for i in range(self._size_x):
-                        for j in range(self._size_y):
+                    for j in range(self._size_y):
+                        for i in range(self._size_x):
                             if self._grid[i][j] != None and item == self._grid[i][j]:
                                 pos = (i, j)
                                 raise StopIteration
@@ -69,6 +71,9 @@ class inventory(GlobalObject):
                 self._grid[pos[0]][pos[1]] = None
                 return {item : can_return}
             self._amount[pos[0]][pos[1]] -= amount
+
+            if self._amount[pos[0]][pos[1]] == 0:
+                self._grid[pos[0]][pos[1]] = None
             return {item : amount}
 
     def move_right(self):

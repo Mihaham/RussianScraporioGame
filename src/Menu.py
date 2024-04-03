@@ -131,6 +131,24 @@ class BuildingMenu(Menu):
     def activate_recipe(self, recipe):
         self.building.activate_recipe(recipe)
         if self.buttons[0][-1].func != self.delete_recipe:
+            self.buttons[0].append(Button(width=100,
+                                          height=50,
+                                          text="ADD",
+                                          not_hovered_skin="sprites/CLEAR.png",
+                                          hovered_skin="sprites/CLEAR col.png",
+                                          position=[self.x + self.width - 270,
+                                                    self.y + self.height * 3 / 4],
+                                          func=self.add_resources))
+
+            self.buttons[0].append(Button(width=100,
+                                          height=50,
+                                          text="GET",
+                                          not_hovered_skin="sprites/CLEAR.png",
+                                          hovered_skin="sprites/CLEAR col.png",
+                                          position=[self.x + self.width - 160,
+                                                    self.y + self.height * 3 / 4],
+                                          func=self.get_resources))
+
             self.buttons[0].append(Button(width=50,
                                       height=50,
                                       text="",
@@ -146,9 +164,22 @@ class BuildingMenu(Menu):
             for item, amount in resource.items():
                 self.building.add_fuel(item, amount)
 
-    def delete_recipe(self):
-        self.building.delete_recipe()
-        self.buttons[0].pop()
+    def add_resources(self, amount = 1):
+        items = self.building.active_recipe.input_resources
+        for item, amount in items.items():
+            resource = self.building.active_player.get_item(item, amount)
+            if resource is not None:
+                for item, amount in resource.items():
+                    self.building.add_input(item, amount)
+
+    def get_resources(self):
         for object, amount in self.building.output.items():
             self.building.active_player.add_item(object, amount)
             self.building.output[object] = 0
+
+    def delete_recipe(self):
+        self.building.delete_recipe()
+        self.buttons[0].pop()
+        self.buttons[0].pop()
+        self.buttons[0].pop()
+        self.get_resources()

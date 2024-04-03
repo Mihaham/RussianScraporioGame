@@ -39,7 +39,6 @@ class Player(GlobalObject):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     exit()
-
                 if event.key == self.__settings["up"]:
                     self.__direction[1] = -1
                 if event.key == self.__settings["left"]:

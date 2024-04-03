@@ -34,6 +34,11 @@ class Building(GameObject):
     def add_fuel(self, item, amount = 1):
         self.fuel["amount"] += amount
 
+    def add_input(self, item, amount = 1):
+        if item not in self.input.keys():
+            self.input[item] = 0
+        self.input[item] += amount
+
     def activate_recipe(self, recipe):
         self.has_active_recipe = True
         self.active_recipe = recipe
