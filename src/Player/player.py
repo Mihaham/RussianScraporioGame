@@ -79,9 +79,15 @@ class Player(GlobalObject):
                     self.__inventory.move_left()
                 if event.key == self.__settings["set_object"]:
                     self.__inventory.select()
-
                 if event.key == self.__settings["inventory"]:
                     self.__status = self.statuses["walking"]
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if self.__inventory.is_selected:
+                    mouse_position = pygame.mouse.get_pos()
+                    mouse_position = [mouse_position[0] + board.get_game_pos_x(), mouse_position[1] + board.get_game_pos_y()]
+                    board.get_grid()[min(mouse_position[0] // scale, len(board.get_grid()) - 1)][
+                    min(mouse_position[1] // scale, len(board.get_grid()[0]) - 1)].add_item(self.__inventory.get_selected_item())
+
 
     def update_skin(self):
         if self.__direction == [0, 0]:

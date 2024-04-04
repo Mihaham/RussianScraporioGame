@@ -139,7 +139,7 @@ class Drawing(GlobalObject):
 
         selected = inventory.is_selected()
         if selected:
-            x, y = inventory.get_selected_item()
+            x, y = inventory.get_selected_position()
             pygame.draw.rect(surface, (0, 0, 255), (
                 20 + self.LENGTH * 3 / 4 + x * (small_scale + 10), 60 + (small_scale + 10) * y,
                 small_scale,
@@ -201,12 +201,56 @@ class Drawing(GlobalObject):
     def draw_building_menu(self, surface: pygame, building_menu = None):
         pygame.draw.rect(surface, (20, 20, 20), (building_menu.x, building_menu.y, building_menu.width, building_menu.height))
         pygame.draw.rect(surface, (30, 30, 30), (
-        building_menu.x, building_menu.y, building_menu.width/2, building_menu.height))
+        building_menu.x, building_menu.y, building_menu.width/2, building_menu.height), 2)
         pygame.draw.rect(surface, (10, 10, 10), (
         building_menu.x + building_menu.width/2, building_menu.y, building_menu.width/2, building_menu.height/2))
+        pygame.draw.rect(surface, (40, 40, 40), (
+            building_menu.x + building_menu.width * 3 / 4, building_menu.y, building_menu.width / 4,
+            building_menu.height / 2))
         image = pygame.transform.scale(self.get_image(building_menu.building.get_skin()), (building_menu.width/2, building_menu.height))
         rect = image.get_rect(topright=(building_menu.x,building_menu.y))
         surface.blit(image, rect.topright)
+        size = 50
+        boarder_size = 4
+        rect_color = (40, 40, 40)
+        position = [building_menu.x + building_menu.width * 3 / 4, building_menu.y + 40]
+        text_skin = self.my_font.render(f"ВХОД:", False, (255, 0, 0))
+        text_rect = text_skin.get_rect(
+            topleft=(position[0] + 10 + boarder_size, position[1] + boarder_size - 40),
+            width=self.scale)
+        surface.blit(text_skin, text_rect)
+        for i,(item,amount) in enumerate(building_menu.building.input.items()):
+            pygame.draw.rect(surface, rect_color, (position[0] + 10 + i * (size + 10), position[1], size, size), boarder_size)
+            image = pygame.transform.scale(self.get_image(self.get_object_skin(item)),
+                                           (size-2*boarder_size, size-2*boarder_size))
+            rect = image.get_rect(topright=(position[0] + 10 + boarder_size, position[1] + boarder_size + i * (size + 10)))
+            surface.blit(image, rect.topright)
+            text_skin = self.my_font.render(f"{amount}", False, (255, 0, 0))
+            text_rect = text_skin.get_rect(
+                topleft=(position[0] + 10 + boarder_size, position[1] + boarder_size + i * (size + 10)),
+                width=self.scale)
+            surface.blit(text_skin, text_rect)
+        position = [building_menu.x + building_menu.width * 3 / 4 + 100, building_menu.y + 40]
+        text_skin = self.my_font.render(f"ВЫХОД:", False, (255, 0, 0))
+        text_rect = text_skin.get_rect(
+            topleft=(position[0] + 10 + boarder_size, position[1] + boarder_size - 40),
+            width=self.scale)
+        surface.blit(text_skin, text_rect)
+        for i, (item, amount) in enumerate(building_menu.building.output.items()):
+            pygame.draw.rect(surface, rect_color,
+                             (position[0] + 10 + i * (size + 10), position[1], size, size),
+                             boarder_size)
+            image = pygame.transform.scale(self.get_image(self.get_object_skin(item)),
+                                           (size - 2 * boarder_size, size - 2 * boarder_size))
+            rect = image.get_rect(topright=(
+            position[0] + 10 + boarder_size, position[1] + boarder_size + i * (size + 10)))
+            surface.blit(image, rect.topright)
+            text_skin = self.my_font.render(f"{amount}", False, (255, 0, 0))
+            text_rect = text_skin.get_rect(
+                topleft=(
+                position[0] + 10 + boarder_size, position[1] + boarder_size + i * (size + 10)),
+                width=self.scale)
+            surface.blit(text_skin, text_rect)
         for button_line in building_menu.buttons:
             for button in button_line:
                 self.draw_button(surface=surface, button=button)

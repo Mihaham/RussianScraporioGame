@@ -7,6 +7,7 @@ class Miners(GameObject):
     id : int = 0
     def __init__(self, resource : Optional[Resources]=None, amount : Optional[int]=0, skin : Optional[str]=None):
         Miners.id += 1
+        self._type = "miners"
         self.__id = Miners.id
         self._resource : Optional[resource] = resource
         self._amount : int = amount

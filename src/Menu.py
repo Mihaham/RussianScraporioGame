@@ -173,9 +173,15 @@ class BuildingMenu(Menu):
                     self.building.add_input(item, amount)
 
     def get_resources(self):
+        need_deleting = []
         for object, amount in self.building.output.items():
+            print(object, amount)
             self.building.active_player.add_item(object, amount)
             self.building.output[object] = 0
+            need_deleting.append(object)
+        for object in need_deleting:
+            del self.building.output[object]
+            print(self.building.output)
 
     def delete_recipe(self):
         self.building.delete_recipe()

@@ -17,7 +17,7 @@ class inventory(GlobalObject):
         self._selected_item = None
         self._is_selected = False
         self._scale = scale / 2
-        self.add_item(Furnace)
+        self.add_item(Furnace, 10)
         self.add_item(Wood, 1000)
         self.add_item(Soil, 1000)
 
@@ -25,6 +25,19 @@ class inventory(GlobalObject):
         return f"Inventory {self._grid}"
 
     def get_selected_item(self) -> GameObject:
+        if self._is_selected:
+            if self._grid[self._selected_item[0]][self._selected_item[1]] is not None:
+                item = self._grid[self._selected_item[0]][self._selected_item[1]]
+            else:
+                item = None
+            if self._amount[self._selected_item[0]][self._selected_item[1]] > 0:
+                self._amount[self._selected_item[0]][self._selected_item[1]] -= 1
+                if self._amount[self._selected_item[0]][self._selected_item[1]] == 0:
+                    self._grid[self._selected_item[0]][self._selected_item[1]] = None
+                    self._is_selected = False
+            return item() if item is not None else None
+
+    def get_selected_position(self) -> list[int]:
         return self._selected_item
 
     def get_cursor(self) -> list[int]:

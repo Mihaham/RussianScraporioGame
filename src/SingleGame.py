@@ -79,8 +79,7 @@ class SingleGame(GlobalObject):
             if event.type == pygame.QUIT:
                 self.Log.add_info("Game is over")
                 exit()
-            if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
-                self.player.move(event, board=self.board, scale=self.scale)
+            self.player.move(event, board=self.board, scale=self.scale)
         self.player.update(self.board, scale=self.scale, field=self.field,
                            Center_x=self.center_x,
                            Center_y=self.center_y, step=self.step)

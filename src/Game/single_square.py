@@ -74,3 +74,23 @@ class SingleSquare(GlobalObject):
 
     def get_resources(self) -> list[Resources]:
         return self._resources
+
+    def add_resource(self, resource: Resources) -> None:
+        Logger.add_info(f"Adding resource for SingleSquare with id {self.__id}")
+        self._resources.append(resource)
+
+    def add_item(self, item):
+        if item is not None:
+            Logger.add_info(f"Adding item for SingleSquare with id {self.__id}")
+            if item._type == "buildings":
+                self.add_building(item)
+            elif item._type == "miners":
+                self.add_miner(item)
+            elif item._type == "resources":
+                self.add_resource(item)
+            else:
+                Logger.add_errors(f"Bad item type: {item._type}")
+
+            Logger.add_info(f"Now single square with id {self.__id} has {self}")
+        else:
+            Logger.add_warnings(f"Trying to add None for SingleSquare with id {self.__id}")

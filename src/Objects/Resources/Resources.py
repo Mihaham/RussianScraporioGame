@@ -12,6 +12,7 @@ class Resources(GameObject):
         Logger.add_info("Getting Resources from prototipe")
 
     def __init__(self, prototipe : Optional =None):
+        self._type = "resources"
         Resources.id += 1
         self.__id = Resources.id
         if prototipe:
