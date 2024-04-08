@@ -88,6 +88,20 @@ class Drawing(GlobalObject):
             player.get_x() - board.get_game_pos_x(), player.get_y() - board.get_game_pos_y()),
             width=self.scale)
         surface.blit(player_skin, player_rect)
+        if player.get_inventory().is_selected():
+            i,j = player.get_inventory().get_selected_position()
+            items = player.get_inventory().get_grid()[i][j]
+            small_scale = self.scale
+            if items != None:
+                skin = self.get_object_skin(items)
+                object_skin = self.get_image(skin)
+                object_skin = pygame.transform.scale(object_skin,
+                                                     (small_scale, small_scale))
+                object_skin.set_alpha(200)
+                object_rect = object_skin.get_rect(
+                    center=pygame.mouse.get_pos(),
+                    width=self.scale)
+                surface.blit(object_skin, object_rect)
         if player.get_status() == Player.statuses["inventory"]:
             self.draw_inventory(surface, inventory=player.get_inventory())
 

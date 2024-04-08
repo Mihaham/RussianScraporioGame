@@ -77,7 +77,7 @@ class SingleGame(GlobalObject):
             self.Exit.update(event)
             self.Screen.update(event)
             if event.type == pygame.QUIT:
-                self.Log.add_info("Game is over")
+                Logger.add_info("Game is over")
                 exit()
             self.player.move(event, board=self.board, scale=self.scale)
         self.player.update(self.board, scale=self.scale, field=self.field,

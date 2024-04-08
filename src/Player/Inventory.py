@@ -37,6 +37,9 @@ class inventory(GlobalObject):
                     self._is_selected = False
             return item() if item is not None else None
 
+    def get_selected_item_class(self):
+        return self._grid[self._selected_item[0]][self._selected_item[1]]
+
     def get_selected_position(self) -> list[int]:
         return self._selected_item
 
