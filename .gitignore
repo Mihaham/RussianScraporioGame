@@ -2,8 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+.gitignore
 # C extensions
+pyvenv.cfg
+run.sh
 *.so
 
 # Distribution / packaging
