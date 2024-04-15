@@ -77,7 +77,7 @@ class GameConstants:
 
     # FontSizeConstants
 
-    small_font = 36
+    small_font = 30
     large_font = 72
 
     # Positions
@@ -85,3 +85,6 @@ class GameConstants:
     last_quarter = 3 / 4
     last_half = 1 / 2
     second_quarter = 1 / 4
+
+    #Boarders
+    default_boarder = 5

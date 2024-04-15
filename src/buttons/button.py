@@ -1,14 +1,13 @@
 from typing import Optional
-
 import pygame
-
 from src.logger.Logger import Logger, GlobalObject
+from src.CONST import GameConstants
 
 
 class Button(GlobalObject):
     id = 0
 
-    def __init__(self, text: str = "START", width: int = 100, height: int = 100,
+    def __init__(self, text: str = "START", width: int = GameConstants.small_button_size, height: int = GameConstants.small_button_size,
                  hovered_skin: str = "sprites/empty.png",
                  not_hovered_skin: str = "sprites/empty.png", func=None,
                  position: list[int] = None, parent: Optional = None,

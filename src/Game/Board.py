@@ -8,14 +8,14 @@ from src.Objects.Miners.Fertile_soil.Fertile_soil import Fertile_soil
 from src.Objects.Miners.Trees.Tree import Tree
 from src.Objects.buildings.furnace.furnace import Furnace
 from src.logger.Logger import Logger, GlobalObject
-
+from src.CONST import GameConstants
 
 class Board(GlobalObject):
     id = 0
 
-    def __init__(self, field: int = 400, water_amount: int = 10, water_size: int = 5,
-                 tree_amount: int = 10,
-                 fertile_soil_amount: int = 10):
+    def __init__(self, field: int = GameConstants.field, water_amount: int = GameConstants.water_amount, water_size: int = GameConstants.water_size,
+                 tree_amount: int = GameConstants.tree_amount,
+                 fertile_soil_amount: int = GameConstants.fertile_soil_amount):
         super().__init__()
         Board.id += 1
         self.__id = Board.id
@@ -23,7 +23,7 @@ class Board(GlobalObject):
                                                            range(field)]
         self.__game_pos_x: int = 0
         self.__game_pos_y: int = 0
-        self.__cat_box: tuple[int, int] = (300, 150)
+        self.__cat_box: tuple[int, int] = GameConstants.game_cat_box
         self.field: int = field
         for i in range(field):
             for j in range(field):
@@ -49,6 +49,8 @@ class Board(GlobalObject):
 
             self.__grid[x][y].add_miner(Fertile_soil())
 
+
+        #Adding Building for tests
         self.__grid[1][1].add_building(Furnace())
         Logger.add_info(f"Board is initialized with id {self.__id}")
 
