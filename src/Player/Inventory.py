@@ -6,7 +6,7 @@ from src.logger.Logger import GlobalObject
 from src.CONST import GameConstants
 
 
-class inventory(GlobalObject):
+class Inventory(GlobalObject):
 
     def __init__(self, size_x=GameConstants.inventory_size_x, size_y=GameConstants.inventory_size_y, scale=None):
         super().__init__()

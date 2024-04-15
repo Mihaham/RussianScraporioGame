@@ -1,6 +1,6 @@
 import pygame
 
-from src.Player.Inventory import inventory
+from src.Player.Inventory import Inventory
 from src.logger.Logger import GlobalObject
 from src.CONST import GameConstants
 
@@ -17,7 +17,7 @@ class Player(GlobalObject):
                  settings=None, scale=GameConstants.scale):
         super().__init__()
         self.__name = name
-        self.__inventory = inventory(scale=scale)
+        self.__inventory = Inventory(scale=scale)
         self.__x = position_x
         self.__y = position_y
         self.__skin = skin
@@ -115,7 +115,7 @@ class Player(GlobalObject):
         if self.__direction == [1, -1]:
             self.__skin = "sprites/topright.png"
 
-    def get_inventory(self) -> inventory:
+    def get_inventory(self) -> Inventory:
         return self.__inventory
 
     def get_status(self) -> int:
