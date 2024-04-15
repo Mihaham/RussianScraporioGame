@@ -32,7 +32,7 @@
 
 1. Клонирования репозитория
    ```sh
-   git clone git@gitlab.akhcheck.ru:mikhail.gorodetskii/RussianScraporioGame.git
+   git clone git@github.com:Mihaham/RussianScraporioGame.git
    ```
 2. Установка зависимостей
    ```sh
@@ -282,6 +282,7 @@ RussianScraporioGame
 1. Игрок делает запрос в систему об изменении настроек игры
 1. Система останавливает игровой процесс и открывает меню настроек
    <a name="pagenumwizard_footer_базовый1_копия_2"></a>11
+
 
 ## Контакты
 
