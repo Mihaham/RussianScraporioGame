@@ -1,5 +1,6 @@
 import pygame
 
+from src.CONST import GameConstants
 from src.Game.Board import Board
 from src.Player.player import Player
 from src.buttons.button import Button
@@ -14,18 +15,18 @@ class SingleGame(GlobalObject):
         super().__init__()
         SingleGame.id += 1
         self.__id: int = SingleGame.id
-        self.fps: int = 60
+        self.fps: int = GameConstants.fps
         info = pygame.display.Info()
         screen_width, screen_height = info.current_w, info.current_h
         self.LENGTH: int = screen_width
         self.HIGHT: int = screen_height
-        self.step: int = 12
-        self.scale: int = 72
-        self.field: int = 20
-        self.water_amount: int = 1
-        self.water_size: int = 4
-        self.tree_amount: int = 1
-        self.fertile_soil_amount: int = 10
+        self.step: int = GameConstants.step
+        self.scale: int = GameConstants.scale
+        self.field: int = GameConstants.field
+        self.water_amount: int = GameConstants.water_amount
+        self.water_size: int = GameConstants.water_size
+        self.tree_amount: int = GameConstants.tree_amount
+        self.fertile_soil_amount: int = GameConstants.fertile_soil_amount
         self.center_x: int = self.LENGTH // 2
         self.center_y: int = self.HIGHT // 2
         pygame.font.init()
@@ -34,19 +35,18 @@ class SingleGame(GlobalObject):
         pygame.display.set_caption("Really russian game")
 
         self.surface: pygame.display = pygame.display.set_mode((self.LENGTH, self.HIGHT))
-        self.Exit: Button = Button(width=self.LENGTH // 10,
-                                   height=self.HIGHT // 10,
+        self.Exit: Button = Button(width=GameConstants.small_button_size,
+                                   height=GameConstants.very_small_button_size,
                                    text="",
                                    not_hovered_skin="sprites/Large Buttons/Large Buttons/Exit Button.png",
                                    hovered_skin="sprites/Large Buttons/Colored Large Buttons/Exit  col_Button.png",
-                                   position=[self.LENGTH - self.LENGTH // 10, 0],
+                                   position=[self.LENGTH - GameConstants.small_button_size, 0],
                                    func=exit)
-        self.Screen: Button = Button(width=self.LENGTH // 15,
-                                     height=self.HIGHT // 10,
+        self.Screen: Button = Button(width=GameConstants.small_button_size,
+                                     height=GameConstants.very_small_button_size,
                                      text="FULLSCREEN MODE",
                                      not_hovered_skin="sprites/Large Buttons/Large Buttons/Exit Button.png",
                                      hovered_skin="sprites/Large Buttons/Colored Large Buttons/Exit  col_Button.png",
-                                     # position=[self.LENGTH - self.LENGTH // 15, 100],
                                      position=[0, 0],
                                      func=self.change_screen_size)
         self.Draw: Drawing = Drawing(scale=self.scale, LENGTH=self.LENGTH, HIGHT=self.HIGHT,
@@ -64,7 +64,7 @@ class SingleGame(GlobalObject):
 
     def play(self) -> None:
         self.Draw.draw(self.surface, player=self.player, board=self.board, button=self.Exit)
-        #self.Draw.draw(self.surface, button=self.Screen)
+        # self.Draw.draw(self.surface, button=self.Screen)
         self.active_building_menu = self.board.get_active_building_menu()
         self.Draw.draw(self.surface, building_menu=self.active_building_menu)
         self.Exit.handle_hover()
@@ -95,6 +95,8 @@ class SingleGame(GlobalObject):
         self.HIGHT = y
 
     def change_screen_size(self) -> None:
+        # NOW IS UNUSED, WILL BE REFACTORED
+        return None
         Logger.add_info("Screen size is updated")
         if self.LENGTH == pygame.display.Info().current_w:
             self.LENGTH = 2000
@@ -126,7 +128,6 @@ class GameAdapter:
         dict["Center_x"] = Game.center_x
         dict["Center_y"] = Game.center_y
         dict["surface"] = Game.surface
-        dict["Log"] = Game.Log
         dict["Exit"] = Game.Exit
         dict["Screen"] = Game.Screen
         dict["Draw"] = Game.Draw

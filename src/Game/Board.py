@@ -1,4 +1,5 @@
 from random import randint
+from typing import Optional
 
 from src.Game.Squares.Ground import Ground
 from src.Game.Squares.Water import Water
@@ -6,23 +7,24 @@ from src.Game.single_square import SingleSquare
 from src.Objects.Miners.Fertile_soil.Fertile_soil import Fertile_soil
 from src.Objects.Miners.Trees.Tree import Tree
 from src.Objects.buildings.furnace.furnace import Furnace
-from typing import Optional
 from src.logger.Logger import Logger, GlobalObject
 
 
 class Board(GlobalObject):
     id = 0
 
-    def __init__(self, field : int=400, water_amount : int=10, water_size : int = 5, tree_amount : int = 10,
-                 fertile_soil_amount : int=10):
+    def __init__(self, field: int = 400, water_amount: int = 10, water_size: int = 5,
+                 tree_amount: int = 10,
+                 fertile_soil_amount: int = 10):
         super().__init__()
-        Board.id +=1
+        Board.id += 1
         self.__id = Board.id
-        self.__grid : list[list[Optional[SingleSquare]]] = [[None for i in range(field)] for j in range(field)]
-        self.__game_pos_x : int = 0
-        self.__game_pos_y : int = 0
-        self.__cat_box : tuple[int,int] = (300, 150)
-        self.field : int = field
+        self.__grid: list[list[Optional[SingleSquare]]] = [[None for i in range(field)] for j in
+                                                           range(field)]
+        self.__game_pos_x: int = 0
+        self.__game_pos_y: int = 0
+        self.__cat_box: tuple[int, int] = (300, 150)
+        self.field: int = field
         for i in range(field):
             for j in range(field):
                 self.__grid[i][j] = Ground()
@@ -33,7 +35,7 @@ class Board(GlobalObject):
 
             for i in range(water_size):
                 for j in range(water_size):
-                    self.__grid[x + i][y + j]=Water()
+                    self.__grid[x + i][y + j] = Water()
 
         for k in range(tree_amount):
             x = randint(0, field - water_size)
@@ -56,12 +58,12 @@ class Board(GlobalObject):
                 print(self.__grid[i][j])
         return ""
 
-    def increase_coordinates(self, x : int, y : int) -> None:
+    def increase_coordinates(self, x: int, y: int) -> None:
         self.update_cordinates(self.__game_pos_x + x, self.__game_pos_y + y)
 
-    def update_cordinates(self, new_x : int, new_y : int) -> None:
-        self.__game_pos_x : int = new_x
-        self.__game_pos_y : int = new_y
+    def update_cordinates(self, new_x: int, new_y: int) -> None:
+        self.__game_pos_x: int = new_x
+        self.__game_pos_y: int = new_y
 
     def get_grid(self) -> Optional[list[list[Optional[SingleSquare]]]]:
         return self.__grid
@@ -72,10 +74,10 @@ class Board(GlobalObject):
     def get_cat_box(self) -> tuple:
         return self.__cat_box
 
-    def set_grid(self, new_grid : list[list[Optional[SingleSquare]]]):
+    def set_grid(self, new_grid: list[list[Optional[SingleSquare]]]):
         self.__grid = new_grid
 
-    def set_cat_box(self, new_cat : tuple[int,int]):
+    def set_cat_box(self, new_cat: tuple[int, int]):
         self.__cat_box = new_cat
 
     def get_game_pos(self) -> tuple:
@@ -90,7 +92,7 @@ class Board(GlobalObject):
     def update(self) -> None:
         for i in range(self.field):
             for j in range(self.field):
-                    self.__grid[i][j].update()
+                self.__grid[i][j].update()
 
     def get_active_building_menu(self):
         for i in range(self.field):

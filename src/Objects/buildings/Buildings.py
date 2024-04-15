@@ -1,40 +1,46 @@
 import time
-
-from src.Objects.GameObject import GameObject
-from src.Objects.Resources.Resources import Resources
 from typing import Optional
-from src.logger.Logger import Logger
+
 import src.Menu
-from src.Objects.buildings.Recipe import Recipe
-from src.Objects.Resources.Wood.Wood import Wood
+from src.Objects.GameObject import GameObject
 from src.Objects.Resources.Soil.Soil import Soil
+from src.Objects.Resources.Wood.Wood import Wood
+from src.Objects.buildings.Recipe import Recipe
+from src.logger.Logger import Logger
+
 
 class Building(GameObject):
-    id : int = 0
+    id: int = 0
+
     def __init__(self) -> None:
         Building.id += 1
         self.__id = Building.id
         super().__init__()
-        self._skin : Optional[str] = None
-        self.active_skin : Optional[str] = None
-        self.inactive_skin : Optional[str] = None
-        self._type : str = "buildings"
-        self.input : dict = {}
-        self.output : dict = {}
+        self._skin: Optional[str] = None
+        self.active_skin: Optional[str] = None
+        self.inactive_skin: Optional[str] = None
+        self._type: str = "buildings"
+        self.input: dict = {}
+        self.output: dict = {}
         self.fuel = {}
-        self.__is_active : bool = False
-        self.__start_of_active : time.time = time.time()
+        self.__is_active: bool = False
+        self.__start_of_active: time.time = time.time()
         self.is_active_menu = False
-        self.Menu = src.Menu.BuildingMenu(200, 150, 1500,500,self,[Recipe(input={Wood:1}, output={Soil:20}),Recipe(input={Wood:1}, output={Soil:1}),Recipe(input={Wood:1, Soil:100}, output={Soil:1}),Recipe(input={Soil:1}, output={Wood:1})],self.change_menu)
+        self.Menu = src.Menu.BuildingMenu(200, 150, 1500, 500, self,
+                                          [Recipe(input={Wood: 1}, output={Soil: 20}),
+                                           Recipe(input={Wood: 1}, output={Soil: 1}),
+                                           Recipe(input={Wood: 1, Soil: 100}, output={Soil: 1}),
+                                           Recipe(input={Soil: 1}, output={Wood: 1})],
+                                          self.change_menu)
         self.has_active_recipe = False
         self.active_recipe = None
         self.active_player = None
         Logger.add_info(f"Building is initialized with (id - {self.__id})")
 
-    def add_fuel(self, item, amount = 1):
+    def add_fuel(self, item, amount=1):
         self.fuel["amount"] += amount
 
-    def add_input(self, item, amount = 1):
+    def add_input(self, item, amount=1):
         if item not in self.input.keys():
             self.input[item] = 0
         self.input[item] += amount
@@ -59,8 +65,9 @@ class Building(GameObject):
 
     def change_active(self) -> None:
         if self.active_recipe == None:
-            Logger.add_warnings(f"Trying to activate a building with id {self.__id} without a recipe")
-            self.__is_active : bool = False
+            Logger.add_warnings(
+                f"Trying to activate a building with id {self.__id} without a recipe")
+            self.__is_active: bool = False
             self.change_skin()
             return None
         if self.fuel["amount"] < self.fuel["fuel_cost"]:
@@ -71,12 +78,14 @@ class Building(GameObject):
             return None
         for item, amount in self.active_recipe.input_resources.items():
             if item not in self.input.keys():
-                Logger.add_warnings(f"We don`t have resource {item} in building input with id {self.__id}")
+                Logger.add_warnings(
+                    f"We don`t have resource {item} in building input with id {self.__id}")
                 self.__is_active: bool = False
                 self.change_skin()
                 return None
             if self.input[item] < amount:
-                Logger.add_warnings(f"We don`t have enough resource {item} in building with id {self.__id}")
+                Logger.add_warnings(
+                    f"We don`t have enough resource {item} in building with id {self.__id}")
                 self.__is_active: bool = False
                 self.change_skin()
                 return None

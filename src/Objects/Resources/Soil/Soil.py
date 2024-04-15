@@ -1,8 +1,10 @@
 from src.Objects.Resources.Resources import Resources
-from src.logger.Logger import Logger, GlobalObject
+from src.logger.Logger import Logger
+
 
 class Soil(Resources):
-    id : int = 0
+    id: int = 0
+
     def __init__(self) -> None:
         Soil.id += 1
         self.__id = Soil.id

@@ -1,6 +1,5 @@
-from collections.abc import Callable
-from typing import Optional
 from src.logger.Logger import Logger, GlobalObject
+
 
 class GameObject(GlobalObject):
 

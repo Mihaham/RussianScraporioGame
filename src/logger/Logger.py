@@ -8,6 +8,7 @@ def add_str_to_file(str_to_write: str, file_name: str, filemod: Optional[str] = 
     with open(f"{file_name}", filemod) as file:
         file.write(str_to_write + "\n")
 
+
 class CustomFormatter(logging.Formatter):
     """Logging colored formatter, adapted from https://stackoverflow.com/a/56944256/3638629"""
 
@@ -34,6 +35,7 @@ class CustomFormatter(logging.Formatter):
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 
+
 class Logger:
     # Create custom logger logging all five levels
     logger = logging.getLogger(__name__)
@@ -58,7 +60,6 @@ class Logger:
     logger.addHandler(stdout_handler)
     logger.addHandler(file_handler)
 
-
     id = 0
     objects = {}
 
@@ -77,31 +78,30 @@ class Logger:
     logger.error('This is an error-level message')
     logger.critical('This is a critical-level message')
 
-
     @classmethod
-    def add_info(cls, text : str) -> None:
+    def add_info(cls, text: str) -> None:
         cls.logger.info(text)
         add_str_to_file(text, cls.info)
 
     @classmethod
-    def add_warnings(cls, text : str) -> None:
+    def add_warnings(cls, text: str) -> None:
         cls.logger.warning(text)
         add_str_to_file(text, cls.warnings)
 
     @classmethod
-    def add_errors(cls, text : str) -> None:
+    def add_errors(cls, text: str) -> None:
         cls.logger.error(text)
         add_str_to_file(text, cls.errors)
 
     @classmethod
-    def add_debug(cls, text : str) -> None:
+    def add_debug(cls, text: str) -> None:
         cls.logger.debug(text)
         add_str_to_file(text, cls.debug)
 
 
 class GlobalObject:
     id = 0
+
     def __init__(self):
         GlobalObject.id += 1
         Logger.objects[GlobalObject.id] = self
-

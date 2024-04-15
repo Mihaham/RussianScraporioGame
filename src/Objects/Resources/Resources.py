@@ -1,17 +1,18 @@
-from src.Objects.GameObject import GameObject
 from typing import Optional
-from src.logger.Logger import Logger, GlobalObject
+
+from src.Objects.GameObject import GameObject
+from src.logger.Logger import Logger
+
 
 class Resources(GameObject):
-
-    id : int = 0
+    id: int = 0
 
     def __from_prototipe(self, prototipe) -> None:
         self._skin = prototipe.get_skin()
         self._is_burnable = prototipe.get_is_burnable()
         Logger.add_info("Getting Resources from prototipe")
 
-    def __init__(self, prototipe : Optional =None):
+    def __init__(self, prototipe: Optional = None):
         self._type = "resources"
         Resources.id += 1
         self.__id = Resources.id

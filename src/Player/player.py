@@ -1,7 +1,8 @@
 import pygame
 
 from src.Player.Inventory import inventory
-from src.logger.Logger import Logger, GlobalObject
+from src.logger.Logger import GlobalObject
+from src.CONST import GameConstants
 
 
 class Player(GlobalObject):
@@ -13,7 +14,7 @@ class Player(GlobalObject):
     }
 
     def __init__(self, name="Mihaham", position_x=0, position_y=0, skin="sprites/bottom.png",
-                 settings=None, scale=72):
+                 settings=None, scale=GameConstants.scale):
         super().__init__()
         self.__name = name
         self.__inventory = inventory(scale=scale)
@@ -34,7 +35,7 @@ class Player(GlobalObject):
     def __repr__(self) -> str:
         return f"Player {self.__name}"
 
-    def move(self, event, board=None, scale=72):
+    def move(self, event, board=None, scale=GameConstants.scale):
         if self.__status == Player.statuses["walking"]:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
@@ -48,11 +49,15 @@ class Player(GlobalObject):
                 if event.key == self.__settings["right"]:
                     self.__direction[0] = 1
                 if event.key == self.__settings["set_object"]:
-                    if board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].get_buildings() != []:
-                        board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].get_buildings()[
-                            0].change_menu(player = self)
-                    if board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].get_miners() != []:
-                        item = board.get_grid()[min(self.__x // scale,len(board.get_grid())-1)][min(self.__y // scale,len(board.get_grid()[0])-1)].mine()
+                    if board.get_grid()[min(self.__x // scale, len(board.get_grid()) - 1)][
+                        min(self.__y // scale, len(board.get_grid()[0]) - 1)].get_buildings() != []:
+                        board.get_grid()[min(self.__x // scale, len(board.get_grid()) - 1)][
+                            min(self.__y // scale, len(board.get_grid()[0]) - 1)].get_buildings()[
+                            0].change_menu(player=self)
+                    if board.get_grid()[min(self.__x // scale, len(board.get_grid()) - 1)][
+                        min(self.__y // scale, len(board.get_grid()[0]) - 1)].get_miners() != []:
+                        item = board.get_grid()[min(self.__x // scale, len(board.get_grid()) - 1)][
+                            min(self.__y // scale, len(board.get_grid()[0]) - 1)].mine()
                         self.__inventory.add_item(item)
                 if event.key == self.__settings["inventory"]:
                     self.__direction = [0, 0]
@@ -84,10 +89,11 @@ class Player(GlobalObject):
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if self.__inventory.is_selected:
                     mouse_position = pygame.mouse.get_pos()
-                    mouse_position = [mouse_position[0] + board.get_game_pos_x(), mouse_position[1] + board.get_game_pos_y()]
+                    mouse_position = [mouse_position[0] + board.get_game_pos_x(),
+                                      mouse_position[1] + board.get_game_pos_y()]
                     board.get_grid()[min(mouse_position[0] // scale, len(board.get_grid()) - 1)][
-                    min(mouse_position[1] // scale, len(board.get_grid()[0]) - 1)].add_item(self.__inventory.get_selected_item())
-
+                        min(mouse_position[1] // scale, len(board.get_grid()[0]) - 1)].add_item(
+                        self.__inventory.get_selected_item())
 
     def update_skin(self):
         if self.__direction == [0, 0]:
@@ -160,8 +166,8 @@ class Player(GlobalObject):
                 self.update_position(
                     (self.__direction[0] * step + self.__x, self.__direction[1] * step + self.__y))
 
-    def add_item(self, object, amount = 1):
+    def add_item(self, object, amount=1):
         self.__inventory.add_item(object, amount)
 
-    def get_item(self, object, amount = 1):
+    def get_item(self, object, amount=1):
         return self.__inventory.get_item(object, amount)

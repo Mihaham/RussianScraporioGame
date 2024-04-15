@@ -1,8 +1,10 @@
 from src.Game.single_square import SingleSquare
-from src.logger.Logger import Logger, GlobalObject
+from src.logger.Logger import Logger
+
 
 class Ground(SingleSquare):
     id = 0
+
     def __init__(self):
         Ground.id += 1
         self.__id = Ground.id

@@ -1,13 +1,14 @@
 from src.Objects.GameObject import GameObject
-from src.Objects.buildings.furnace.furnace import Furnace
-from src.Objects.Resources.Wood.Wood import Wood
 from src.Objects.Resources.Soil.Soil import Soil
-from src.logger.Logger import Logger, GlobalObject
+from src.Objects.Resources.Wood.Wood import Wood
+from src.Objects.buildings.furnace.furnace import Furnace
+from src.logger.Logger import GlobalObject
+from src.CONST import GameConstants
 
 
 class inventory(GlobalObject):
 
-    def __init__(self, size_x=5, size_y=10, scale=None):
+    def __init__(self, size_x=GameConstants.inventory_size_x, size_y=GameConstants.inventory_size_y, scale=None):
         super().__init__()
         self._grid = [[None for i in range(size_y)] for j in range(size_x)]
         self._amount = [[0 for i in range(size_y)] for j in range(size_x)]
@@ -17,6 +18,9 @@ class inventory(GlobalObject):
         self._selected_item = None
         self._is_selected = False
         self._scale = scale / 2
+
+
+        #Adding objects for test
         self.add_item(Furnace, 10)
         self.add_item(Wood, 1000)
         self.add_item(Soil, 1000)
@@ -49,7 +53,7 @@ class inventory(GlobalObject):
     def get_sizes(self) -> tuple:
         return (self._size_x, self._size_y)
 
-    def add_item(self, item, amount = 1, pos=None):
+    def add_item(self, item, amount=1, pos=None):
         try:
             if item is not None:
                 if pos is None:
@@ -65,7 +69,7 @@ class inventory(GlobalObject):
         except StopIteration:
             self._amount[pos[0]][pos[1]] += amount
 
-    def get_item(self, item, amount = 1, pos=None):
+    def get_item(self, item, amount=1, pos=None):
         try:
             if item is not None:
                 if pos is None:
@@ -85,12 +89,12 @@ class inventory(GlobalObject):
                 can_return = self._amount[pos[0]][pos[1]]
                 self._amount[pos[0]][pos[1]] = 0
                 self._grid[pos[0]][pos[1]] = None
-                return {item : can_return}
+                return {item: can_return}
             self._amount[pos[0]][pos[1]] -= amount
 
             if self._amount[pos[0]][pos[1]] == 0:
                 self._grid[pos[0]][pos[1]] = None
-            return {item : amount}
+            return {item: amount}
 
     def move_right(self):
         self._cursor[0] += 1

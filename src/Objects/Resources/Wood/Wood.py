@@ -1,8 +1,10 @@
 from src.Objects.Resources.Resources import Resources
-from src.logger.Logger import Logger, GlobalObject
+from src.logger.Logger import Logger
+
 
 class Wood(Resources):
     id = 0
+
     def __init__(self) -> None:
         Wood.id += 1
         self.__id = Wood.id
