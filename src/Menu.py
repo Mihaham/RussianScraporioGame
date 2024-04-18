@@ -6,7 +6,6 @@ from src.buttons.startbutton import StartButton
 from src.drawing_pygame.Draw import Drawing
 from src.logger.Logger import Logger, GlobalObject
 
-
 class Menu(GlobalObject):
     id: int = 0
 
