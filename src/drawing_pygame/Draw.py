@@ -32,7 +32,8 @@ class Drawing(GlobalObject):
         try:
             self.sprites[skin] = pygame.image.load(skin).convert_alpha()
             return self.sprites[skin]
-        except Exception:
+        except Exception as e:
+            Logger.add_errors(str(e))
             Logger.add_errors(f"Cannot load skin {skin}")
             return self.sprites[None]
 

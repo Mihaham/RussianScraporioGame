@@ -14,7 +14,7 @@ class Steel_furnace(Building):
         Steel_furnace.id += 1
         self.__id = Steel_furnace.id
         super().__init__()
-        self._skin: str = "sprites/furnace.png"
+        self._skin: str = "sprites/my_rect_sprites/steel-furnace.png"
         self._type: str = "buildings"
         self.input: dict = {
             Wood: GameConstants.building_default_input_amount
@@ -29,8 +29,8 @@ class Steel_furnace(Building):
         }
         self.__is_active: bool = False
         self.__start_of_active: time.time = time.time()
-        self.active_skin: str = "sprites/my_rect_sprites/steel-furnace.png"
-        self.inactive_skin: str = "sprites/furnace.png"
+        self.active_skin: str = "sprites/furnace.png"
+        self.inactive_skin: str = "sprites/my_rect_sprites/steel-furnace.png"
         Logger.add_info(f"Steel Furnace is initialized with (id - {self.__id})")
 
     def __repr__(self) -> str:

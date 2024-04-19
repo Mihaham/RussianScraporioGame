@@ -3,6 +3,10 @@ from src.Objects.Resources.Soil.Soil import Soil
 from src.Objects.Resources.Wood.Wood import Wood
 from src.Objects.buildings.furnace.furnace import Furnace
 from src.Objects.buildings.Steel_furnace.steel_furnace import Steel_furnace
+from src.Objects.buildings.Worker_lvl1.worker_lvl1 import Worker_lvl1
+from src.Objects.buildings.Worker_lvl2.worker_lvl2 import Worker_lvl2
+from src.Objects.buildings.Worker_lvl3.worker_lvl3 import Worker_lvl3
+
 from src.logger.Logger import GlobalObject
 from src.CONST import GameConstants
 
@@ -23,9 +27,12 @@ class Inventory(GlobalObject):
 
         #Adding objects for test
         self.add_item(Furnace, 10)
-        self.add_item(Wood, 1000)
-        self.add_item(Soil, 1000)
-        self.add_item(Steel_furnace,100)
+        self.add_item(Wood, 100)
+        self.add_item(Soil, 100)
+        self.add_item(Steel_furnace,10)
+        self.add_item(Worker_lvl1,10)
+        self.add_item(Worker_lvl2,10)
+        self.add_item(Worker_lvl3,10)
 
     def __repr__(self) -> str:
         return f"Inventory {self._grid}"
