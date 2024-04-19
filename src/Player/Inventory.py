@@ -2,6 +2,7 @@ from src.Objects.GameObject import GameObject
 from src.Objects.Resources.Soil.Soil import Soil
 from src.Objects.Resources.Wood.Wood import Wood
 from src.Objects.buildings.furnace.furnace import Furnace
+from src.Objects.buildings.Steel_furnace.steel_furnace import Steel_furnace
 from src.logger.Logger import GlobalObject
 from src.CONST import GameConstants
 
@@ -24,6 +25,7 @@ class Inventory(GlobalObject):
         self.add_item(Furnace, 10)
         self.add_item(Wood, 1000)
         self.add_item(Soil, 1000)
+        self.add_item(Steel_furnace,100)
 
     def __repr__(self) -> str:
         return f"Inventory {self._grid}"
